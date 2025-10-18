@@ -20,6 +20,9 @@ void main() {
       ),
     );
 
+    // Wait for the first frame
+    await tester.pump();
+
     // Verify that our splash screen is shown.
     expect(find.text('Ofis Yönetim Sistemi'), findsOneWidget);
     expect(find.text('Rezervasyon ve QR Check-in Sistemi'), findsOneWidget);
