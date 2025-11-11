@@ -1,134 +1,103 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   AppTheme._();
 
-  // Renk paleti
-  static const Color primaryColor = Color(0xFF1976D2);
-  static const Color secondaryColor = Color(0xFF03DAC6);
-  static const Color surfaceColor = Color(0xFFF5F5F5);
-  static const Color errorColor = Color(0xFFB00020);
+  static const Color primaryIndigo = Color(0xFF6366F1);
+  static const Color accentIndigo = Color(0xFF818CF8);
+  static const Color primaryIndigoLight = Color(0xFF818CF8);
+  static const Color backgroundLight = Color(0xFFF8FAFC);
+  static const Color surfaceLight = Color(0xFFEEF2FF);
+  static const Color surfaceBorder = Color(0xFFE0E7FF);
+  static const Color textPrimary = Color(0xFF312E81);
+  static const Color textSecondary = Color(0xFF818CF8);
+  static const Color textTertiary = Color(0xFF6366F1);
+  
+  static const LinearGradient backgroundGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF818CF8), Color(0xFF6366F1), Color(0xFF4F46E5)],
+  );
 
-  // Light Theme
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: primaryColor,
-        brightness: Brightness.light,
+      colorScheme: const ColorScheme.light(
+        primary: primaryIndigo,
+        secondary: primaryIndigoLight,
+        surface: backgroundLight,
+        onPrimary: Colors.white,
+        onSurface: textPrimary,
       ),
-      appBarTheme: const AppBarTheme(
-        centerTitle: true,
-        elevation: 0,
-        scrolledUnderElevation: 1,
-      ),
-      cardTheme: const CardThemeData(
-        elevation: 1,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
+      textTheme: GoogleFonts.interTextTheme(),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: surfaceLight,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: surfaceBorder),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: primaryIndigo, width: 2),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          minimumSize: const Size(88, 44),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          backgroundColor: primaryIndigo,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         ),
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Colors.grey),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: primaryColor, width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: errorColor),
-        ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      ),
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        type: BottomNavigationBarType.fixed,
-        elevation: 8,
       ),
     );
   }
+  
+  static ThemeData get darkTheme => lightTheme;
 
-  // Dark Theme
-  static ThemeData get darkTheme {
-    return ThemeData(
-      useMaterial3: true,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: primaryColor,
-        brightness: Brightness.dark,
-      ),
-      appBarTheme: const AppBarTheme(
-        centerTitle: true,
-        elevation: 0,
-        scrolledUnderElevation: 1,
-      ),
-      cardTheme: const CardThemeData(
-        elevation: 1,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
+  static BoxDecoration glassCard() {
+    return BoxDecoration(
+      color: Colors.white.withOpacity(0.85),
+      borderRadius: BorderRadius.circular(24),
+      border: Border.all(color: Colors.white.withOpacity(0.2)),
+      boxShadow: [
+        BoxShadow(
+          color: primaryIndigo.withOpacity(0.18),
+          blurRadius: 32,
+          offset: const Offset(0, 8),
         ),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          minimumSize: const Size(88, 44),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Colors.grey),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: primaryColor, width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: errorColor),
-        ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      ),
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        type: BottomNavigationBarType.fixed,
-        elevation: 8,
-      ),
+      ],
     );
   }
-
-  // Custom Colors
-  static const MaterialColor primaryMaterialColor = MaterialColor(
-    0xFF1976D2,
-    <int, Color>{
-      50: Color(0xFFE3F2FD),
-      100: Color(0xFFBBDEFB),
-      200: Color(0xFF90CAF9),
-      300: Color(0xFF64B5F6),
-      400: Color(0xFF42A5F5),
-      500: Color(0xFF2196F3),
-      600: Color(0xFF1E88E5),
-      700: Color(0xFF1976D2),
-      800: Color(0xFF1565C0),
-      900: Color(0xFF0D47A1),
-    },
-  );
+  
+  static BoxDecoration dashboardCard() {
+    return BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(19.2),
+      border: Border.all(color: surfaceBorder),
+      boxShadow: [
+        BoxShadow(
+          color: primaryIndigo.withOpacity(0.10),
+          blurRadius: 16,
+          offset: const Offset(0, 4),
+        ),
+      ],
+    );
+  }
+  
+  static BoxDecoration statCard() {
+    return BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(19.2),
+      border: Border.all(color: surfaceBorder),
+      boxShadow: [
+        BoxShadow(
+          color: primaryIndigo.withOpacity(0.10),
+          blurRadius: 16,
+          offset: const Offset(0, 4),
+        ),
+      ],
+    );
+  }
 }

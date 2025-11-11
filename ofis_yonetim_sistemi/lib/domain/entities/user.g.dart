@@ -16,6 +16,8 @@ _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
       roles: (json['roles'] as List<dynamic>).map((e) => e as String).toList(),
       tenantId: json['tenantId'] as String?,
       organizationId: json['organizationId'] as String?,
+      department: json['department'] as String?,
+      jobTitle: json['jobTitle'] as String?,
       createdAt: DateTime.parse(json['createdAt'] as String),
       lastLoginAt: json['lastLoginAt'] == null
           ? null
@@ -34,6 +36,8 @@ Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
       'roles': instance.roles,
       'tenantId': instance.tenantId,
       'organizationId': instance.organizationId,
+      'department': instance.department,
+      'jobTitle': instance.jobTitle,
       'createdAt': instance.createdAt.toIso8601String(),
       'lastLoginAt': instance.lastLoginAt?.toIso8601String(),
       'isActive': instance.isActive,

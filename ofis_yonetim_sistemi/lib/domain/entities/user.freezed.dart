@@ -29,6 +29,8 @@ mixin _$User {
   List<String> get roles => throw _privateConstructorUsedError;
   String? get tenantId => throw _privateConstructorUsedError;
   String? get organizationId => throw _privateConstructorUsedError;
+  String? get department => throw _privateConstructorUsedError;
+  String? get jobTitle => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
   DateTime? get lastLoginAt => throw _privateConstructorUsedError;
   bool get isActive => throw _privateConstructorUsedError;
@@ -53,6 +55,8 @@ abstract class $UserCopyWith<$Res> {
       List<String> roles,
       String? tenantId,
       String? organizationId,
+      String? department,
+      String? jobTitle,
       DateTime createdAt,
       DateTime? lastLoginAt,
       bool isActive});
@@ -80,6 +84,8 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
     Object? roles = null,
     Object? tenantId = freezed,
     Object? organizationId = freezed,
+    Object? department = freezed,
+    Object? jobTitle = freezed,
     Object? createdAt = null,
     Object? lastLoginAt = freezed,
     Object? isActive = null,
@@ -121,6 +127,14 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
           ? _value.organizationId
           : organizationId // ignore: cast_nullable_to_non_nullable
               as String?,
+      department: freezed == department
+          ? _value.department
+          : department // ignore: cast_nullable_to_non_nullable
+              as String?,
+      jobTitle: freezed == jobTitle
+          ? _value.jobTitle
+          : jobTitle // ignore: cast_nullable_to_non_nullable
+              as String?,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -154,6 +168,8 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
       List<String> roles,
       String? tenantId,
       String? organizationId,
+      String? department,
+      String? jobTitle,
       DateTime createdAt,
       DateTime? lastLoginAt,
       bool isActive});
@@ -178,6 +194,8 @@ class __$$UserImplCopyWithImpl<$Res>
     Object? roles = null,
     Object? tenantId = freezed,
     Object? organizationId = freezed,
+    Object? department = freezed,
+    Object? jobTitle = freezed,
     Object? createdAt = null,
     Object? lastLoginAt = freezed,
     Object? isActive = null,
@@ -219,6 +237,14 @@ class __$$UserImplCopyWithImpl<$Res>
           ? _value.organizationId
           : organizationId // ignore: cast_nullable_to_non_nullable
               as String?,
+      department: freezed == department
+          ? _value.department
+          : department // ignore: cast_nullable_to_non_nullable
+              as String?,
+      jobTitle: freezed == jobTitle
+          ? _value.jobTitle
+          : jobTitle // ignore: cast_nullable_to_non_nullable
+              as String?,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -237,7 +263,7 @@ class __$$UserImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$UserImpl implements _User {
+class _$UserImpl extends _User {
   const _$UserImpl(
       {required this.id,
       required this.email,
@@ -248,10 +274,13 @@ class _$UserImpl implements _User {
       required final List<String> roles,
       this.tenantId,
       this.organizationId,
+      this.department,
+      this.jobTitle,
       required this.createdAt,
       this.lastLoginAt,
       this.isActive = true})
-      : _roles = roles;
+      : _roles = roles,
+        super._();
 
   factory _$UserImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserImplFromJson(json);
@@ -281,6 +310,10 @@ class _$UserImpl implements _User {
   @override
   final String? organizationId;
   @override
+  final String? department;
+  @override
+  final String? jobTitle;
+  @override
   final DateTime createdAt;
   @override
   final DateTime? lastLoginAt;
@@ -290,7 +323,7 @@ class _$UserImpl implements _User {
 
   @override
   String toString() {
-    return 'User(id: $id, email: $email, firstName: $firstName, lastName: $lastName, displayName: $displayName, avatarUrl: $avatarUrl, roles: $roles, tenantId: $tenantId, organizationId: $organizationId, createdAt: $createdAt, lastLoginAt: $lastLoginAt, isActive: $isActive)';
+    return 'User(id: $id, email: $email, firstName: $firstName, lastName: $lastName, displayName: $displayName, avatarUrl: $avatarUrl, roles: $roles, tenantId: $tenantId, organizationId: $organizationId, department: $department, jobTitle: $jobTitle, createdAt: $createdAt, lastLoginAt: $lastLoginAt, isActive: $isActive)';
   }
 
   @override
@@ -313,6 +346,10 @@ class _$UserImpl implements _User {
                 other.tenantId == tenantId) &&
             (identical(other.organizationId, organizationId) ||
                 other.organizationId == organizationId) &&
+            (identical(other.department, department) ||
+                other.department == department) &&
+            (identical(other.jobTitle, jobTitle) ||
+                other.jobTitle == jobTitle) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.lastLoginAt, lastLoginAt) ||
@@ -334,6 +371,8 @@ class _$UserImpl implements _User {
       const DeepCollectionEquality().hash(_roles),
       tenantId,
       organizationId,
+      department,
+      jobTitle,
       createdAt,
       lastLoginAt,
       isActive);
@@ -352,7 +391,7 @@ class _$UserImpl implements _User {
   }
 }
 
-abstract class _User implements User {
+abstract class _User extends User {
   const factory _User(
       {required final String id,
       required final String email,
@@ -363,9 +402,12 @@ abstract class _User implements User {
       required final List<String> roles,
       final String? tenantId,
       final String? organizationId,
+      final String? department,
+      final String? jobTitle,
       required final DateTime createdAt,
       final DateTime? lastLoginAt,
       final bool isActive}) = _$UserImpl;
+  const _User._() : super._();
 
   factory _User.fromJson(Map<String, dynamic> json) = _$UserImpl.fromJson;
 
@@ -387,6 +429,10 @@ abstract class _User implements User {
   String? get tenantId;
   @override
   String? get organizationId;
+  @override
+  String? get department;
+  @override
+  String? get jobTitle;
   @override
   DateTime get createdAt;
   @override

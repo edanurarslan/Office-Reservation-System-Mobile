@@ -1,0 +1,157 @@
+Using launch settings from src/API/Properties/launchSettings.json...
+Building...
+warn: Microsoft.EntityFrameworkCore.Model.Validation[10622]
+      Entity 'User' has a global query filter defined and is the required end of a relationship with the entity 'CheckIn'. This may lead to unexpected results when the required entity is filtered out. Either configure the navigation as optional, or define matching query filters for both entities in the navigation. See https://go.microsoft.com/fwlink/?linkid=2131316 for more information.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[10622]
+      Entity 'User' has a global query filter defined and is the required end of a relationship with the entity 'QrToken'. This may lead to unexpected results when the required entity is filtered out. Either configure the navigation as optional, or define matching query filters for both entities in the navigation. See https://go.microsoft.com/fwlink/?linkid=2131316 for more information.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[10622]
+      Entity 'Location' has a global query filter defined and is the required end of a relationship with the entity 'Room'. This may lead to unexpected results when the required entity is filtered out. Either configure the navigation as optional, or define matching query filters for both entities in the navigation. See https://go.microsoft.com/fwlink/?linkid=2131316 for more information.
+warn: Microsoft.EntityFrameworkCore.Model.Validation[10400]
+      Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (12ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT EXISTS (
+          SELECT 1
+          FROM "Users" AS u
+          WHERE NOT (u."IsDeleted") AND u."Email" = 'admin@ofis.com')
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT EXISTS (
+          SELECT 1
+          FROM "Users" AS u
+          WHERE NOT (u."IsDeleted") AND u."Email" = 'manager@ofis.com')
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[62]
+      User profile is available. Using '/Users/macbook/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5088
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/GitHub/Ofis-Yonetim-Sistemi--Flutter/src/API
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost:5088/swagger/index.html - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost:5088/swagger/index.html - 200 - text/html;charset=utf-8 57.9238ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost:5088/api/auth/login - application/json 48
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost:5088/api/auth/login - 404 0 - 28.4640ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[16]
+      Request reached the end of the middleware pipeline without being handled by application code. Request path: POST http://localhost:5088/api/auth/login, Response status code: 404
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost:5088/api/auth/login - application/json 48
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost:5088/api/auth/login - 404 0 - 1.4630ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[16]
+      Request reached the end of the middleware pipeline without being handled by application code. Request path: POST http://localhost:5088/api/auth/login, Response status code: 404
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost:5088/swagger/v1/swagger.json - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost:5088/swagger/v1/swagger.json - 200 - application/json;charset=utf-8 52.7067ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost:5088/swagger/v1/swagger.json - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost:5088/swagger/v1/swagger.json - 200 - application/json;charset=utf-8 4.6547ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost:5088/api/v1/auth/login - application/json 48
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'OfisYonetimSistemi.API.Controllers.AuthController.Login (OfisYonetimSistemi)'
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker[102]
+      Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(OfisYonetimSistemi.Infrastructure.Data.ApplicationDbContext, OfisYonetimSistemi.API.Controllers.LoginRequest) on controller OfisYonetimSistemi.API.Controllers.AuthController (OfisYonetimSistemi).
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (9ms) [Parameters=[@__request_Email_0='admin@ofis.com'], CommandType='Text', CommandTimeout='30']
+      SELECT u."Id", u."CreatedAt", u."DeletedAt", u."Department", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."IsDeleted", u."JobTitle", u."LastName", u."ManagerId", u."PasswordHash", u."PhoneNumber", u."Role", u."UpdatedAt"
+      FROM "Users" AS u
+      WHERE NOT (u."IsDeleted") AND u."Email" = @__request_Email_0 AND u."IsActive"
+      LIMIT 1
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor[1]
+      Executing UnauthorizedObjectResult, writing value of type '<>f__AnonymousType3`1[[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker[105]
+      Executed action OfisYonetimSistemi.API.Controllers.AuthController.Login (OfisYonetimSistemi) in 141.484ms
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'OfisYonetimSistemi.API.Controllers.AuthController.Login (OfisYonetimSistemi)'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost:5088/api/v1/auth/login - 401 - application/json;+charset=utf-8 161.2927ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 POST http://localhost:5088/api/v1/auth/login - application/json 49
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'OfisYonetimSistemi.API.Controllers.AuthController.Login (OfisYonetimSistemi)'
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker[102]
+      Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(OfisYonetimSistemi.Infrastructure.Data.ApplicationDbContext, OfisYonetimSistemi.API.Controllers.LoginRequest) on controller OfisYonetimSistemi.API.Controllers.AuthController (OfisYonetimSistemi).
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__request_Email_0='admin@ofis.com'], CommandType='Text', CommandTimeout='30']
+      SELECT u."Id", u."CreatedAt", u."DeletedAt", u."Department", u."Email", u."ExternalId", u."FirstName", u."IsActive", u."IsDeleted", u."JobTitle", u."LastName", u."ManagerId", u."PasswordHash", u."PhoneNumber", u."Role", u."UpdatedAt"
+      FROM "Users" AS u
+      WHERE NOT (u."IsDeleted") AND u."Email" = @__request_Email_0 AND u."IsActive"
+      LIMIT 1
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor[1]
+      Executing OkObjectResult, writing value of type '<>f__AnonymousType4`5[[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[<>f__AnonymousType5`7[[System.Guid, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[OfisYonetimSistemi.Domain.Enums.UserRole, OfisYonetimSistemi.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], OfisYonetimSistemi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker[105]
+      Executed action OfisYonetimSistemi.API.Controllers.AuthController.Login (OfisYonetimSistemi) in 52.6857ms
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'OfisYonetimSistemi.API.Controllers.AuthController.Login (OfisYonetimSistemi)'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 POST http://localhost:5088/api/v1/auth/login - 200 - application/json;+charset=utf-8 54.3933ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost:5088/api/v1/reservations - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'OfisYonetimSistemi.API.Controllers.ReservationsController.GetReservations (OfisYonetimSistemi)'
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker[102]
+      Route matched with {action = "GetReservations", controller = "Reservations"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetReservations(OfisYonetimSistemi.Infrastructure.Data.ApplicationDbContext, System.Nullable`1[System.Guid], System.String, System.String, System.String) on controller OfisYonetimSistemi.API.Controllers.ReservationsController (OfisYonetimSistemi).
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT r."Id", r."ResourceType", r."ResourceId", r."StartsAt", r."EndsAt", r."Status"
+      FROM "Reservations" AS r
+      WHERE NOT (r."IsDeleted")
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor[1]
+      Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[<>f__AnonymousType22`6[[System.Guid, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[OfisYonetimSistemi.Domain.Enums.ResourceType, OfisYonetimSistemi.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[System.Guid, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[OfisYonetimSistemi.Domain.Enums.ReservationStatus, OfisYonetimSistemi.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], OfisYonetimSistemi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker[105]
+      Executed action OfisYonetimSistemi.API.Controllers.ReservationsController.GetReservations (OfisYonetimSistemi) in 21.46ms
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'OfisYonetimSistemi.API.Controllers.ReservationsController.GetReservations (OfisYonetimSistemi)'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost:5088/api/v1/reservations - 200 - application/json;+charset=utf-8 50.2890ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost:5088/swagger/index.html - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost:5088/swagger/index.html - 200 - text/html;charset=utf-8 0.4058ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost:5088/api/v1/health - - -
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'OfisYonetimSistemi.API.Controllers.HealthController.Get (OfisYonetimSistemi)'
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker[102]
+      Route matched with {action = "Get", controller = "Health"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Get() on controller OfisYonetimSistemi.API.Controllers.HealthController (OfisYonetimSistemi).
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ObjectResultExecutor[1]
+      Executing OkObjectResult, writing value of type '<>f__AnonymousType12`4[[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+info: Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker[105]
+      Executed action OfisYonetimSistemi.API.Controllers.HealthController.Get (OfisYonetimSistemi) in 1.4761ms
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'OfisYonetimSistemi.API.Controllers.HealthController.Get (OfisYonetimSistemi)'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost:5088/api/v1/health - 200 - application/json;+charset=utf-8 2.4443ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 OPTIONS http://localhost:5088/api/v1/reservations - - -
+info: Microsoft.AspNetCore.Cors.Infrastructure.CorsService[5]
+      CORS policy execution failed.
+info: Microsoft.AspNetCore.Cors.Infrastructure.CorsService[6]
+      Request origin http://localhost:54004 does not have permission to access the resource.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 OPTIONS http://localhost:5088/api/v1/reservations - 204 - - 8.4647ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 OPTIONS http://localhost:5088/api/v1/reservations - - -
+info: Microsoft.AspNetCore.Cors.Infrastructure.CorsService[5]
+      CORS policy execution failed.
+info: Microsoft.AspNetCore.Cors.Infrastructure.CorsService[6]
+      Request origin http://localhost:54004 does not have permission to access the resource.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 OPTIONS http://localhost:5088/api/v1/reservations - 204 - - 0.3375ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 OPTIONS http://localhost:5088/api/v1/reservations - - -
+info: Microsoft.AspNetCore.Cors.Infrastructure.CorsService[5]
+      CORS policy execution failed.
+info: Microsoft.AspNetCore.Cors.Infrastructure.CorsService[6]
+      Request origin http://localhost:54221 does not have permission to access the resource.
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 OPTIONS http://localhost:5088/api/v1/reservations - 204 - - 1.2386ms

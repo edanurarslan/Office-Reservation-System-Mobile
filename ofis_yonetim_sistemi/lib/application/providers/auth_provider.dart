@@ -1,9 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../domain/entities/user.dart';
-
-// Storage provider
-const _storage = FlutterSecureStorage();
+import '../../domain/repositories/auth_repository.dart';
+import '../../infrastructure/providers/repository_providers.dart';
 
 // Auth state enum
 enum AuthStatus {
@@ -41,7 +39,9 @@ class AuthState {
 
 // Auth provider
 class AuthNotifier extends StateNotifier<AuthState> {
-  AuthNotifier() : super(const AuthState(status: AuthStatus.initial)) {
+  final AuthRepository _authRepository;
+
+  AuthNotifier(this._authRepository) : super(const AuthState(status: AuthStatus.initial)) {
     _checkAuthStatus();
   }
 
@@ -50,21 +50,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(status: AuthStatus.loading);
     
     try {
-      final token = await _storage.read(key: 'auth_token');
-      final userJson = await _storage.read(key: 'user_data');
+      final user = await _authRepository.getCurrentUser();
       
-      if (token != null && userJson != null) {
-        // Simulate user data parsing
-        final user = User(
-          id: '1',
-          email: 'user@example.com',
-          firstName: 'Test',
-          lastName: 'User',
-          roles: ['employee'],
-          isActive: true,
-          createdAt: DateTime.now(),
-        );
-        
+      if (user != null) {
         state = state.copyWith(
           status: AuthStatus.authenticated,
           user: user,
@@ -80,31 +68,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  // Login method (mock implementation)
+  // Login method
   Future<void> login(String email, String password) async {
     state = state.copyWith(status: AuthStatus.loading);
     
     try {
-      // Simulate API call delay
-      await Future.delayed(const Duration(seconds: 2));
+      final user = await _authRepository.login(email, password);
       
-      // Mock login validation
-      if (email.isNotEmpty && password.isNotEmpty) {
-        // Create mock user
-        final user = User(
-          id: '1',
-          email: email,
-          firstName: 'Test',
-          lastName: 'User',
-          roles: email.contains('admin') ? ['admin'] : ['employee'],
-          isActive: true,
-          createdAt: DateTime.now(),
-        );
-        
-        // Save to secure storage
-        await _storage.write(key: 'auth_token', value: 'mock_jwt_token_${DateTime.now().millisecondsSinceEpoch}');
-        await _storage.write(key: 'user_data', value: user.toJson().toString());
-        
+      if (user != null) {
         state = state.copyWith(
           status: AuthStatus.authenticated,
           user: user,
@@ -112,7 +83,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       } else {
         state = state.copyWith(
           status: AuthStatus.error,
-          errorMessage: 'Email ve şifre gereklidir',
+          errorMessage: 'Giriş başarısız: Geçersiz kimlik bilgileri',
         );
       }
     } catch (e) {
@@ -128,9 +99,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(status: AuthStatus.loading);
     
     try {
-      // Clear secure storage
-      await _storage.delete(key: 'auth_token');
-      await _storage.delete(key: 'user_data');
+      await _authRepository.logout();
       
       state = state.copyWith(
         status: AuthStatus.unauthenticated,
@@ -155,7 +124,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
 // Auth provider instance
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
-  return AuthNotifier();
+  final authRepository = ref.watch(authRepositoryProvider);
+  return AuthNotifier(authRepository);
 });
 
 // Convenience providers

@@ -20,6 +20,7 @@ dependencies:
 
   # UI & Material Design
   cupertino_icons: ^1.0.8
+  google_fonts: ^6.1.0
   
   # State Management & Dependency Injection
   flutter_riverpod: ^2.4.10
