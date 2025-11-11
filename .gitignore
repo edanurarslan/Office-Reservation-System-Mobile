@@ -1,0 +1,19 @@
+# Flutter/Dart specific
+**/build/
+**/.dart_tool/
+**/.packages
+**/pubspec.lock
+
+# macOS specific
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE specific
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Markdown files
+*.md
