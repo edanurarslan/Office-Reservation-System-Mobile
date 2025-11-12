@@ -113,13 +113,13 @@ class ManagerDashboard extends StatelessWidget {
           ),
           const Spacer(),
           Text(
-            value,
-            style: GoogleFonts.inter(
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-              color: AppTheme.textPrimary,
-            ),
-          ),
+                value.toString(),
+                style: GoogleFonts.inter(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.textPrimary,
+                ),
+              ),
           const SizedBox(height: 4),
           Text(
             title,

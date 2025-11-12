@@ -110,7 +110,7 @@ class EmployeeDashboard extends StatelessWidget {
           Text(
             value,
             style: GoogleFonts.inter(
-              fontSize: 32,
+              fontSize: 24,
               fontWeight: FontWeight.bold,
               color: AppTheme.textPrimary,
             ),

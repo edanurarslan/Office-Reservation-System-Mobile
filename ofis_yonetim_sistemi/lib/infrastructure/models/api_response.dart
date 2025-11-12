@@ -37,8 +37,8 @@ class ApiError with _$ApiError {
 @freezed
 class LoginRequest with _$LoginRequest {
   const factory LoginRequest({
-    @JsonKey(name: 'Email') required String email,
-    @JsonKey(name: 'Password') required String password,
+    required String email,
+    required String password,
   }) = _LoginRequest;
 
   factory LoginRequest.fromJson(Map<String, dynamic> json) =>
@@ -49,11 +49,11 @@ class LoginRequest with _$LoginRequest {
 @freezed
 class LoginResponse with _$LoginResponse {
   const factory LoginResponse({
-    @JsonKey(name: 'AccessToken') required String accessToken,
-    @JsonKey(name: 'RefreshToken') required String refreshToken,
-    @JsonKey(name: 'ExpiresIn') required int expiresIn,
-    @JsonKey(name: 'TokenType') required String tokenType,
-    @JsonKey(name: 'User') required UserDto user,
+    required String accessToken,
+    required String refreshToken,
+    required int expiresIn,
+    required String tokenType,
+    required UserDto user,
   }) = _LoginResponse;
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) =>
@@ -64,13 +64,13 @@ class LoginResponse with _$LoginResponse {
 @freezed
 class UserDto with _$UserDto {
   const factory UserDto({
-    @JsonKey(name: 'Id') required String id,
-    @JsonKey(name: 'Email') required String email,
-    @JsonKey(name: 'FirstName') required String firstName,
-    @JsonKey(name: 'LastName') required String lastName,
-    @JsonKey(name: 'Role') required String role,
-    @JsonKey(name: 'Department') String? department,
-    @JsonKey(name: 'JobTitle') String? jobTitle,
+    required String id,
+    required String email,
+    required String firstName,
+    required String lastName,
+    required String role,
+    String? department,
+    String? jobTitle,
   }) = _UserDto;
 
   factory UserDto.fromJson(Map<String, dynamic> json) =>
@@ -81,13 +81,13 @@ class UserDto with _$UserDto {
 @freezed
 class ReservationDto with _$ReservationDto {
   const factory ReservationDto({
-    @JsonKey(name: 'Id') required String id,
-    @JsonKey(name: 'ResourceType') required String resourceType,
-    @JsonKey(name: 'ResourceId') required String resourceId,
-    @JsonKey(name: 'StartsAt') required String startsAt,
-    @JsonKey(name: 'EndsAt') required String endsAt,
-    @JsonKey(name: 'Status') required String status,
-    @JsonKey(name: 'Meta') Map<String, dynamic>? meta,
+    required String id,
+    required String resourceType,
+    required String resourceId,
+    required String startsAt,
+    required String endsAt,
+    required String status,
+    Map<String, dynamic>? meta,
   }) = _ReservationDto;
 
   factory ReservationDto.fromJson(Map<String, dynamic> json) =>
@@ -98,11 +98,11 @@ class ReservationDto with _$ReservationDto {
 @freezed
 class CreateReservationRequest with _$CreateReservationRequest {
   const factory CreateReservationRequest({
-    @JsonKey(name: 'ResourceType') required String resourceType,
-    @JsonKey(name: 'ResourceId') required String resourceId,
-    @JsonKey(name: 'StartsAt') required String startsAt,
-    @JsonKey(name: 'EndsAt') required String endsAt,
-    @JsonKey(name: 'Meta') Map<String, dynamic>? meta,
+    required String resourceType,
+    required String resourceId,
+    required String startsAt,
+    required String endsAt,
+    Map<String, dynamic>? meta,
   }) = _CreateReservationRequest;
 
   factory CreateReservationRequest.fromJson(Map<String, dynamic> json) =>
@@ -113,12 +113,12 @@ class CreateReservationRequest with _$CreateReservationRequest {
 @freezed
 class UpdateReservationRequest with _$UpdateReservationRequest {
   const factory UpdateReservationRequest({
-    @JsonKey(name: 'ResourceType') String? resourceType,
-    @JsonKey(name: 'ResourceId') String? resourceId,
-    @JsonKey(name: 'StartsAt') String? startsAt,
-    @JsonKey(name: 'EndsAt') String? endsAt,
-    @JsonKey(name: 'Status') String? status,
-    @JsonKey(name: 'Meta') Map<String, dynamic>? meta,
+    String? resourceType,
+    String? resourceId,
+    String? startsAt,
+    String? endsAt,
+    String? status,
+    Map<String, dynamic>? meta,
   }) = _UpdateReservationRequest;
 
   factory UpdateReservationRequest.fromJson(Map<String, dynamic> json) =>
@@ -129,9 +129,9 @@ class UpdateReservationRequest with _$UpdateReservationRequest {
 @freezed
 class LocationDto with _$LocationDto {
   const factory LocationDto({
-    @JsonKey(name: 'Id') required String id,
-    @JsonKey(name: 'Name') required String name,
-    @JsonKey(name: 'Address') String? address,
+    required String id,
+    required String name,
+    String? address,
   }) = _LocationDto;
 
   factory LocationDto.fromJson(Map<String, dynamic> json) =>
@@ -142,10 +142,10 @@ class LocationDto with _$LocationDto {
 @freezed
 class DeskDto with _$DeskDto {
   const factory DeskDto({
-    @JsonKey(name: 'Id') required String id,
-    @JsonKey(name: 'Name') required String name,
-    @JsonKey(name: 'ZoneId') required String zoneId,
-    @JsonKey(name: 'Features') List<String>? features,
+    required String id,
+    required String name,
+    required String zoneId,
+    List<String>? features,
   }) = _DeskDto;
 
   factory DeskDto.fromJson(Map<String, dynamic> json) =>
@@ -156,10 +156,10 @@ class DeskDto with _$DeskDto {
 @freezed
 class RoomDto with _$RoomDto {
   const factory RoomDto({
-    @JsonKey(name: 'Id') required String id,
-    @JsonKey(name: 'Name') required String name,
-    @JsonKey(name: 'LocationId') required String locationId,
-    @JsonKey(name: 'Capacity') required int capacity,
+    required String id,
+    required String name,
+    required String locationId,
+    required int capacity,
   }) = _RoomDto;
 
   factory RoomDto.fromJson(Map<String, dynamic> json) =>

@@ -155,3 +155,9 @@ info: Microsoft.AspNetCore.Cors.Infrastructure.CorsService[6]
       Request origin http://localhost:54221 does not have permission to access the resource.
 info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
       Request finished HTTP/1.1 OPTIONS http://localhost:5088/api/v1/reservations - 204 - - 1.2386ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/1.1 GET http://localhost:5088/health - - -
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/1.1 GET http://localhost:5088/health - 404 0 - 1.7155ms
+info: Microsoft.AspNetCore.Hosting.Diagnostics[16]
+      Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5088/health, Response status code: 404

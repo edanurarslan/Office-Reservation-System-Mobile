@@ -58,165 +58,165 @@ Map<String, dynamic> _$$ApiErrorImplToJson(_$ApiErrorImpl instance) =>
 
 _$LoginRequestImpl _$$LoginRequestImplFromJson(Map<String, dynamic> json) =>
     _$LoginRequestImpl(
-      email: json['Email'] as String,
-      password: json['Password'] as String,
+      email: json['email'] as String,
+      password: json['password'] as String,
     );
 
 Map<String, dynamic> _$$LoginRequestImplToJson(_$LoginRequestImpl instance) =>
     <String, dynamic>{
-      'Email': instance.email,
-      'Password': instance.password,
+      'email': instance.email,
+      'password': instance.password,
     };
 
 _$LoginResponseImpl _$$LoginResponseImplFromJson(Map<String, dynamic> json) =>
     _$LoginResponseImpl(
-      accessToken: json['AccessToken'] as String,
-      refreshToken: json['RefreshToken'] as String,
-      expiresIn: (json['ExpiresIn'] as num).toInt(),
-      tokenType: json['TokenType'] as String,
-      user: UserDto.fromJson(json['User'] as Map<String, dynamic>),
+      accessToken: json['accessToken'] as String,
+      refreshToken: json['refreshToken'] as String,
+      expiresIn: (json['expiresIn'] as num).toInt(),
+      tokenType: json['tokenType'] as String,
+      user: UserDto.fromJson(json['user'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$$LoginResponseImplToJson(_$LoginResponseImpl instance) =>
     <String, dynamic>{
-      'AccessToken': instance.accessToken,
-      'RefreshToken': instance.refreshToken,
-      'ExpiresIn': instance.expiresIn,
-      'TokenType': instance.tokenType,
-      'User': instance.user,
+      'accessToken': instance.accessToken,
+      'refreshToken': instance.refreshToken,
+      'expiresIn': instance.expiresIn,
+      'tokenType': instance.tokenType,
+      'user': instance.user,
     };
 
 _$UserDtoImpl _$$UserDtoImplFromJson(Map<String, dynamic> json) =>
     _$UserDtoImpl(
-      id: json['Id'] as String,
-      email: json['Email'] as String,
-      firstName: json['FirstName'] as String,
-      lastName: json['LastName'] as String,
-      role: json['Role'] as String,
-      department: json['Department'] as String?,
-      jobTitle: json['JobTitle'] as String?,
+      id: json['id'] as String,
+      email: json['email'] as String,
+      firstName: json['firstName'] as String,
+      lastName: json['lastName'] as String,
+      role: json['role'] as String,
+      department: json['department'] as String?,
+      jobTitle: json['jobTitle'] as String?,
     );
 
 Map<String, dynamic> _$$UserDtoImplToJson(_$UserDtoImpl instance) =>
     <String, dynamic>{
-      'Id': instance.id,
-      'Email': instance.email,
-      'FirstName': instance.firstName,
-      'LastName': instance.lastName,
-      'Role': instance.role,
-      'Department': instance.department,
-      'JobTitle': instance.jobTitle,
+      'id': instance.id,
+      'email': instance.email,
+      'firstName': instance.firstName,
+      'lastName': instance.lastName,
+      'role': instance.role,
+      'department': instance.department,
+      'jobTitle': instance.jobTitle,
     };
 
 _$ReservationDtoImpl _$$ReservationDtoImplFromJson(Map<String, dynamic> json) =>
     _$ReservationDtoImpl(
-      id: json['Id'] as String,
-      resourceType: json['ResourceType'] as String,
-      resourceId: json['ResourceId'] as String,
-      startsAt: json['StartsAt'] as String,
-      endsAt: json['EndsAt'] as String,
-      status: json['Status'] as String,
-      meta: json['Meta'] as Map<String, dynamic>?,
+      id: json['id'] as String,
+      resourceType: json['resourceType'] as String,
+      resourceId: json['resourceId'] as String,
+      startsAt: json['startsAt'] as String,
+      endsAt: json['endsAt'] as String,
+      status: json['status'] as String,
+      meta: json['meta'] as Map<String, dynamic>?,
     );
 
 Map<String, dynamic> _$$ReservationDtoImplToJson(
         _$ReservationDtoImpl instance) =>
     <String, dynamic>{
-      'Id': instance.id,
-      'ResourceType': instance.resourceType,
-      'ResourceId': instance.resourceId,
-      'StartsAt': instance.startsAt,
-      'EndsAt': instance.endsAt,
-      'Status': instance.status,
-      'Meta': instance.meta,
+      'id': instance.id,
+      'resourceType': instance.resourceType,
+      'resourceId': instance.resourceId,
+      'startsAt': instance.startsAt,
+      'endsAt': instance.endsAt,
+      'status': instance.status,
+      'meta': instance.meta,
     };
 
 _$CreateReservationRequestImpl _$$CreateReservationRequestImplFromJson(
         Map<String, dynamic> json) =>
     _$CreateReservationRequestImpl(
-      resourceType: json['ResourceType'] as String,
-      resourceId: json['ResourceId'] as String,
-      startsAt: json['StartsAt'] as String,
-      endsAt: json['EndsAt'] as String,
-      meta: json['Meta'] as Map<String, dynamic>?,
+      resourceType: json['resourceType'] as String,
+      resourceId: json['resourceId'] as String,
+      startsAt: json['startsAt'] as String,
+      endsAt: json['endsAt'] as String,
+      meta: json['meta'] as Map<String, dynamic>?,
     );
 
 Map<String, dynamic> _$$CreateReservationRequestImplToJson(
         _$CreateReservationRequestImpl instance) =>
     <String, dynamic>{
-      'ResourceType': instance.resourceType,
-      'ResourceId': instance.resourceId,
-      'StartsAt': instance.startsAt,
-      'EndsAt': instance.endsAt,
-      'Meta': instance.meta,
+      'resourceType': instance.resourceType,
+      'resourceId': instance.resourceId,
+      'startsAt': instance.startsAt,
+      'endsAt': instance.endsAt,
+      'meta': instance.meta,
     };
 
 _$UpdateReservationRequestImpl _$$UpdateReservationRequestImplFromJson(
         Map<String, dynamic> json) =>
     _$UpdateReservationRequestImpl(
-      resourceType: json['ResourceType'] as String?,
-      resourceId: json['ResourceId'] as String?,
-      startsAt: json['StartsAt'] as String?,
-      endsAt: json['EndsAt'] as String?,
-      status: json['Status'] as String?,
-      meta: json['Meta'] as Map<String, dynamic>?,
+      resourceType: json['resourceType'] as String?,
+      resourceId: json['resourceId'] as String?,
+      startsAt: json['startsAt'] as String?,
+      endsAt: json['endsAt'] as String?,
+      status: json['status'] as String?,
+      meta: json['meta'] as Map<String, dynamic>?,
     );
 
 Map<String, dynamic> _$$UpdateReservationRequestImplToJson(
         _$UpdateReservationRequestImpl instance) =>
     <String, dynamic>{
-      'ResourceType': instance.resourceType,
-      'ResourceId': instance.resourceId,
-      'StartsAt': instance.startsAt,
-      'EndsAt': instance.endsAt,
-      'Status': instance.status,
-      'Meta': instance.meta,
+      'resourceType': instance.resourceType,
+      'resourceId': instance.resourceId,
+      'startsAt': instance.startsAt,
+      'endsAt': instance.endsAt,
+      'status': instance.status,
+      'meta': instance.meta,
     };
 
 _$LocationDtoImpl _$$LocationDtoImplFromJson(Map<String, dynamic> json) =>
     _$LocationDtoImpl(
-      id: json['Id'] as String,
-      name: json['Name'] as String,
-      address: json['Address'] as String?,
+      id: json['id'] as String,
+      name: json['name'] as String,
+      address: json['address'] as String?,
     );
 
 Map<String, dynamic> _$$LocationDtoImplToJson(_$LocationDtoImpl instance) =>
     <String, dynamic>{
-      'Id': instance.id,
-      'Name': instance.name,
-      'Address': instance.address,
+      'id': instance.id,
+      'name': instance.name,
+      'address': instance.address,
     };
 
 _$DeskDtoImpl _$$DeskDtoImplFromJson(Map<String, dynamic> json) =>
     _$DeskDtoImpl(
-      id: json['Id'] as String,
-      name: json['Name'] as String,
-      zoneId: json['ZoneId'] as String,
-      features: (json['Features'] as List<dynamic>?)
+      id: json['id'] as String,
+      name: json['name'] as String,
+      zoneId: json['zoneId'] as String,
+      features: (json['features'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
     );
 
 Map<String, dynamic> _$$DeskDtoImplToJson(_$DeskDtoImpl instance) =>
     <String, dynamic>{
-      'Id': instance.id,
-      'Name': instance.name,
-      'ZoneId': instance.zoneId,
-      'Features': instance.features,
+      'id': instance.id,
+      'name': instance.name,
+      'zoneId': instance.zoneId,
+      'features': instance.features,
     };
 
 _$RoomDtoImpl _$$RoomDtoImplFromJson(Map<String, dynamic> json) =>
     _$RoomDtoImpl(
-      id: json['Id'] as String,
-      name: json['Name'] as String,
-      locationId: json['LocationId'] as String,
-      capacity: (json['Capacity'] as num).toInt(),
+      id: json['id'] as String,
+      name: json['name'] as String,
+      locationId: json['locationId'] as String,
+      capacity: (json['capacity'] as num).toInt(),
     );
 
 Map<String, dynamic> _$$RoomDtoImplToJson(_$RoomDtoImpl instance) =>
     <String, dynamic>{
-      'Id': instance.id,
-      'Name': instance.name,
-      'LocationId': instance.locationId,
-      'Capacity': instance.capacity,
+      'id': instance.id,
+      'name': instance.name,
+      'locationId': instance.locationId,
+      'capacity': instance.capacity,
     };

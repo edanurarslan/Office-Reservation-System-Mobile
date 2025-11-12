@@ -412,9 +412,7 @@ LoginRequest _$LoginRequestFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$LoginRequest {
-  @JsonKey(name: 'Email')
   String get email => throw _privateConstructorUsedError;
-  @JsonKey(name: 'Password')
   String get password => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -429,9 +427,7 @@ abstract class $LoginRequestCopyWith<$Res> {
           LoginRequest value, $Res Function(LoginRequest) then) =
       _$LoginRequestCopyWithImpl<$Res, LoginRequest>;
   @useResult
-  $Res call(
-      {@JsonKey(name: 'Email') String email,
-      @JsonKey(name: 'Password') String password});
+  $Res call({String email, String password});
 }
 
 /// @nodoc
@@ -471,9 +467,7 @@ abstract class _$$LoginRequestImplCopyWith<$Res>
       __$$LoginRequestImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {@JsonKey(name: 'Email') String email,
-      @JsonKey(name: 'Password') String password});
+  $Res call({String email, String password});
 }
 
 /// @nodoc
@@ -506,18 +500,14 @@ class __$$LoginRequestImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$LoginRequestImpl implements _LoginRequest {
-  const _$LoginRequestImpl(
-      {@JsonKey(name: 'Email') required this.email,
-      @JsonKey(name: 'Password') required this.password});
+  const _$LoginRequestImpl({required this.email, required this.password});
 
   factory _$LoginRequestImpl.fromJson(Map<String, dynamic> json) =>
       _$$LoginRequestImplFromJson(json);
 
   @override
-  @JsonKey(name: 'Email')
   final String email;
   @override
-  @JsonKey(name: 'Password')
   final String password;
 
   @override
@@ -555,18 +545,15 @@ class _$LoginRequestImpl implements _LoginRequest {
 
 abstract class _LoginRequest implements LoginRequest {
   const factory _LoginRequest(
-          {@JsonKey(name: 'Email') required final String email,
-          @JsonKey(name: 'Password') required final String password}) =
-      _$LoginRequestImpl;
+      {required final String email,
+      required final String password}) = _$LoginRequestImpl;
 
   factory _LoginRequest.fromJson(Map<String, dynamic> json) =
       _$LoginRequestImpl.fromJson;
 
   @override
-  @JsonKey(name: 'Email')
   String get email;
   @override
-  @JsonKey(name: 'Password')
   String get password;
   @override
   @JsonKey(ignore: true)
@@ -580,15 +567,10 @@ LoginResponse _$LoginResponseFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$LoginResponse {
-  @JsonKey(name: 'AccessToken')
   String get accessToken => throw _privateConstructorUsedError;
-  @JsonKey(name: 'RefreshToken')
   String get refreshToken => throw _privateConstructorUsedError;
-  @JsonKey(name: 'ExpiresIn')
   int get expiresIn => throw _privateConstructorUsedError;
-  @JsonKey(name: 'TokenType')
   String get tokenType => throw _privateConstructorUsedError;
-  @JsonKey(name: 'User')
   UserDto get user => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -604,11 +586,11 @@ abstract class $LoginResponseCopyWith<$Res> {
       _$LoginResponseCopyWithImpl<$Res, LoginResponse>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'AccessToken') String accessToken,
-      @JsonKey(name: 'RefreshToken') String refreshToken,
-      @JsonKey(name: 'ExpiresIn') int expiresIn,
-      @JsonKey(name: 'TokenType') String tokenType,
-      @JsonKey(name: 'User') UserDto user});
+      {String accessToken,
+      String refreshToken,
+      int expiresIn,
+      String tokenType,
+      UserDto user});
 
   $UserDtoCopyWith<$Res> get user;
 }
@@ -674,11 +656,11 @@ abstract class _$$LoginResponseImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'AccessToken') String accessToken,
-      @JsonKey(name: 'RefreshToken') String refreshToken,
-      @JsonKey(name: 'ExpiresIn') int expiresIn,
-      @JsonKey(name: 'TokenType') String tokenType,
-      @JsonKey(name: 'User') UserDto user});
+      {String accessToken,
+      String refreshToken,
+      int expiresIn,
+      String tokenType,
+      UserDto user});
 
   @override
   $UserDtoCopyWith<$Res> get user;
@@ -730,29 +712,24 @@ class __$$LoginResponseImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$LoginResponseImpl implements _LoginResponse {
   const _$LoginResponseImpl(
-      {@JsonKey(name: 'AccessToken') required this.accessToken,
-      @JsonKey(name: 'RefreshToken') required this.refreshToken,
-      @JsonKey(name: 'ExpiresIn') required this.expiresIn,
-      @JsonKey(name: 'TokenType') required this.tokenType,
-      @JsonKey(name: 'User') required this.user});
+      {required this.accessToken,
+      required this.refreshToken,
+      required this.expiresIn,
+      required this.tokenType,
+      required this.user});
 
   factory _$LoginResponseImpl.fromJson(Map<String, dynamic> json) =>
       _$$LoginResponseImplFromJson(json);
 
   @override
-  @JsonKey(name: 'AccessToken')
   final String accessToken;
   @override
-  @JsonKey(name: 'RefreshToken')
   final String refreshToken;
   @override
-  @JsonKey(name: 'ExpiresIn')
   final int expiresIn;
   @override
-  @JsonKey(name: 'TokenType')
   final String tokenType;
   @override
-  @JsonKey(name: 'User')
   final UserDto user;
 
   @override
@@ -797,30 +774,24 @@ class _$LoginResponseImpl implements _LoginResponse {
 
 abstract class _LoginResponse implements LoginResponse {
   const factory _LoginResponse(
-          {@JsonKey(name: 'AccessToken') required final String accessToken,
-          @JsonKey(name: 'RefreshToken') required final String refreshToken,
-          @JsonKey(name: 'ExpiresIn') required final int expiresIn,
-          @JsonKey(name: 'TokenType') required final String tokenType,
-          @JsonKey(name: 'User') required final UserDto user}) =
-      _$LoginResponseImpl;
+      {required final String accessToken,
+      required final String refreshToken,
+      required final int expiresIn,
+      required final String tokenType,
+      required final UserDto user}) = _$LoginResponseImpl;
 
   factory _LoginResponse.fromJson(Map<String, dynamic> json) =
       _$LoginResponseImpl.fromJson;
 
   @override
-  @JsonKey(name: 'AccessToken')
   String get accessToken;
   @override
-  @JsonKey(name: 'RefreshToken')
   String get refreshToken;
   @override
-  @JsonKey(name: 'ExpiresIn')
   int get expiresIn;
   @override
-  @JsonKey(name: 'TokenType')
   String get tokenType;
   @override
-  @JsonKey(name: 'User')
   UserDto get user;
   @override
   @JsonKey(ignore: true)
@@ -834,19 +805,12 @@ UserDto _$UserDtoFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$UserDto {
-  @JsonKey(name: 'Id')
   String get id => throw _privateConstructorUsedError;
-  @JsonKey(name: 'Email')
   String get email => throw _privateConstructorUsedError;
-  @JsonKey(name: 'FirstName')
   String get firstName => throw _privateConstructorUsedError;
-  @JsonKey(name: 'LastName')
   String get lastName => throw _privateConstructorUsedError;
-  @JsonKey(name: 'Role')
   String get role => throw _privateConstructorUsedError;
-  @JsonKey(name: 'Department')
   String? get department => throw _privateConstructorUsedError;
-  @JsonKey(name: 'JobTitle')
   String? get jobTitle => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -860,13 +824,13 @@ abstract class $UserDtoCopyWith<$Res> {
       _$UserDtoCopyWithImpl<$Res, UserDto>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'Id') String id,
-      @JsonKey(name: 'Email') String email,
-      @JsonKey(name: 'FirstName') String firstName,
-      @JsonKey(name: 'LastName') String lastName,
-      @JsonKey(name: 'Role') String role,
-      @JsonKey(name: 'Department') String? department,
-      @JsonKey(name: 'JobTitle') String? jobTitle});
+      {String id,
+      String email,
+      String firstName,
+      String lastName,
+      String role,
+      String? department,
+      String? jobTitle});
 }
 
 /// @nodoc
@@ -931,13 +895,13 @@ abstract class _$$UserDtoImplCopyWith<$Res> implements $UserDtoCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'Id') String id,
-      @JsonKey(name: 'Email') String email,
-      @JsonKey(name: 'FirstName') String firstName,
-      @JsonKey(name: 'LastName') String lastName,
-      @JsonKey(name: 'Role') String role,
-      @JsonKey(name: 'Department') String? department,
-      @JsonKey(name: 'JobTitle') String? jobTitle});
+      {String id,
+      String email,
+      String firstName,
+      String lastName,
+      String role,
+      String? department,
+      String? jobTitle});
 }
 
 /// @nodoc
@@ -996,37 +960,30 @@ class __$$UserDtoImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$UserDtoImpl implements _UserDto {
   const _$UserDtoImpl(
-      {@JsonKey(name: 'Id') required this.id,
-      @JsonKey(name: 'Email') required this.email,
-      @JsonKey(name: 'FirstName') required this.firstName,
-      @JsonKey(name: 'LastName') required this.lastName,
-      @JsonKey(name: 'Role') required this.role,
-      @JsonKey(name: 'Department') this.department,
-      @JsonKey(name: 'JobTitle') this.jobTitle});
+      {required this.id,
+      required this.email,
+      required this.firstName,
+      required this.lastName,
+      required this.role,
+      this.department,
+      this.jobTitle});
 
   factory _$UserDtoImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserDtoImplFromJson(json);
 
   @override
-  @JsonKey(name: 'Id')
   final String id;
   @override
-  @JsonKey(name: 'Email')
   final String email;
   @override
-  @JsonKey(name: 'FirstName')
   final String firstName;
   @override
-  @JsonKey(name: 'LastName')
   final String lastName;
   @override
-  @JsonKey(name: 'Role')
   final String role;
   @override
-  @JsonKey(name: 'Department')
   final String? department;
   @override
-  @JsonKey(name: 'JobTitle')
   final String? jobTitle;
 
   @override
@@ -1073,36 +1030,29 @@ class _$UserDtoImpl implements _UserDto {
 
 abstract class _UserDto implements UserDto {
   const factory _UserDto(
-      {@JsonKey(name: 'Id') required final String id,
-      @JsonKey(name: 'Email') required final String email,
-      @JsonKey(name: 'FirstName') required final String firstName,
-      @JsonKey(name: 'LastName') required final String lastName,
-      @JsonKey(name: 'Role') required final String role,
-      @JsonKey(name: 'Department') final String? department,
-      @JsonKey(name: 'JobTitle') final String? jobTitle}) = _$UserDtoImpl;
+      {required final String id,
+      required final String email,
+      required final String firstName,
+      required final String lastName,
+      required final String role,
+      final String? department,
+      final String? jobTitle}) = _$UserDtoImpl;
 
   factory _UserDto.fromJson(Map<String, dynamic> json) = _$UserDtoImpl.fromJson;
 
   @override
-  @JsonKey(name: 'Id')
   String get id;
   @override
-  @JsonKey(name: 'Email')
   String get email;
   @override
-  @JsonKey(name: 'FirstName')
   String get firstName;
   @override
-  @JsonKey(name: 'LastName')
   String get lastName;
   @override
-  @JsonKey(name: 'Role')
   String get role;
   @override
-  @JsonKey(name: 'Department')
   String? get department;
   @override
-  @JsonKey(name: 'JobTitle')
   String? get jobTitle;
   @override
   @JsonKey(ignore: true)
@@ -1116,19 +1066,12 @@ ReservationDto _$ReservationDtoFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$ReservationDto {
-  @JsonKey(name: 'Id')
   String get id => throw _privateConstructorUsedError;
-  @JsonKey(name: 'ResourceType')
   String get resourceType => throw _privateConstructorUsedError;
-  @JsonKey(name: 'ResourceId')
   String get resourceId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'StartsAt')
   String get startsAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'EndsAt')
   String get endsAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'Status')
   String get status => throw _privateConstructorUsedError;
-  @JsonKey(name: 'Meta')
   Map<String, dynamic>? get meta => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -1144,13 +1087,13 @@ abstract class $ReservationDtoCopyWith<$Res> {
       _$ReservationDtoCopyWithImpl<$Res, ReservationDto>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'Id') String id,
-      @JsonKey(name: 'ResourceType') String resourceType,
-      @JsonKey(name: 'ResourceId') String resourceId,
-      @JsonKey(name: 'StartsAt') String startsAt,
-      @JsonKey(name: 'EndsAt') String endsAt,
-      @JsonKey(name: 'Status') String status,
-      @JsonKey(name: 'Meta') Map<String, dynamic>? meta});
+      {String id,
+      String resourceType,
+      String resourceId,
+      String startsAt,
+      String endsAt,
+      String status,
+      Map<String, dynamic>? meta});
 }
 
 /// @nodoc
@@ -1216,13 +1159,13 @@ abstract class _$$ReservationDtoImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'Id') String id,
-      @JsonKey(name: 'ResourceType') String resourceType,
-      @JsonKey(name: 'ResourceId') String resourceId,
-      @JsonKey(name: 'StartsAt') String startsAt,
-      @JsonKey(name: 'EndsAt') String endsAt,
-      @JsonKey(name: 'Status') String status,
-      @JsonKey(name: 'Meta') Map<String, dynamic>? meta});
+      {String id,
+      String resourceType,
+      String resourceId,
+      String startsAt,
+      String endsAt,
+      String status,
+      Map<String, dynamic>? meta});
 }
 
 /// @nodoc
@@ -1281,39 +1224,32 @@ class __$$ReservationDtoImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$ReservationDtoImpl implements _ReservationDto {
   const _$ReservationDtoImpl(
-      {@JsonKey(name: 'Id') required this.id,
-      @JsonKey(name: 'ResourceType') required this.resourceType,
-      @JsonKey(name: 'ResourceId') required this.resourceId,
-      @JsonKey(name: 'StartsAt') required this.startsAt,
-      @JsonKey(name: 'EndsAt') required this.endsAt,
-      @JsonKey(name: 'Status') required this.status,
-      @JsonKey(name: 'Meta') final Map<String, dynamic>? meta})
+      {required this.id,
+      required this.resourceType,
+      required this.resourceId,
+      required this.startsAt,
+      required this.endsAt,
+      required this.status,
+      final Map<String, dynamic>? meta})
       : _meta = meta;
 
   factory _$ReservationDtoImpl.fromJson(Map<String, dynamic> json) =>
       _$$ReservationDtoImplFromJson(json);
 
   @override
-  @JsonKey(name: 'Id')
   final String id;
   @override
-  @JsonKey(name: 'ResourceType')
   final String resourceType;
   @override
-  @JsonKey(name: 'ResourceId')
   final String resourceId;
   @override
-  @JsonKey(name: 'StartsAt')
   final String startsAt;
   @override
-  @JsonKey(name: 'EndsAt')
   final String endsAt;
   @override
-  @JsonKey(name: 'Status')
   final String status;
   final Map<String, dynamic>? _meta;
   @override
-  @JsonKey(name: 'Meta')
   Map<String, dynamic>? get meta {
     final value = _meta;
     if (value == null) return null;
@@ -1366,38 +1302,30 @@ class _$ReservationDtoImpl implements _ReservationDto {
 
 abstract class _ReservationDto implements ReservationDto {
   const factory _ReservationDto(
-          {@JsonKey(name: 'Id') required final String id,
-          @JsonKey(name: 'ResourceType') required final String resourceType,
-          @JsonKey(name: 'ResourceId') required final String resourceId,
-          @JsonKey(name: 'StartsAt') required final String startsAt,
-          @JsonKey(name: 'EndsAt') required final String endsAt,
-          @JsonKey(name: 'Status') required final String status,
-          @JsonKey(name: 'Meta') final Map<String, dynamic>? meta}) =
-      _$ReservationDtoImpl;
+      {required final String id,
+      required final String resourceType,
+      required final String resourceId,
+      required final String startsAt,
+      required final String endsAt,
+      required final String status,
+      final Map<String, dynamic>? meta}) = _$ReservationDtoImpl;
 
   factory _ReservationDto.fromJson(Map<String, dynamic> json) =
       _$ReservationDtoImpl.fromJson;
 
   @override
-  @JsonKey(name: 'Id')
   String get id;
   @override
-  @JsonKey(name: 'ResourceType')
   String get resourceType;
   @override
-  @JsonKey(name: 'ResourceId')
   String get resourceId;
   @override
-  @JsonKey(name: 'StartsAt')
   String get startsAt;
   @override
-  @JsonKey(name: 'EndsAt')
   String get endsAt;
   @override
-  @JsonKey(name: 'Status')
   String get status;
   @override
-  @JsonKey(name: 'Meta')
   Map<String, dynamic>? get meta;
   @override
   @JsonKey(ignore: true)
@@ -1412,15 +1340,10 @@ CreateReservationRequest _$CreateReservationRequestFromJson(
 
 /// @nodoc
 mixin _$CreateReservationRequest {
-  @JsonKey(name: 'ResourceType')
   String get resourceType => throw _privateConstructorUsedError;
-  @JsonKey(name: 'ResourceId')
   String get resourceId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'StartsAt')
   String get startsAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'EndsAt')
   String get endsAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'Meta')
   Map<String, dynamic>? get meta => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -1436,11 +1359,11 @@ abstract class $CreateReservationRequestCopyWith<$Res> {
       _$CreateReservationRequestCopyWithImpl<$Res, CreateReservationRequest>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'ResourceType') String resourceType,
-      @JsonKey(name: 'ResourceId') String resourceId,
-      @JsonKey(name: 'StartsAt') String startsAt,
-      @JsonKey(name: 'EndsAt') String endsAt,
-      @JsonKey(name: 'Meta') Map<String, dynamic>? meta});
+      {String resourceType,
+      String resourceId,
+      String startsAt,
+      String endsAt,
+      Map<String, dynamic>? meta});
 }
 
 /// @nodoc
@@ -1498,11 +1421,11 @@ abstract class _$$CreateReservationRequestImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'ResourceType') String resourceType,
-      @JsonKey(name: 'ResourceId') String resourceId,
-      @JsonKey(name: 'StartsAt') String startsAt,
-      @JsonKey(name: 'EndsAt') String endsAt,
-      @JsonKey(name: 'Meta') Map<String, dynamic>? meta});
+      {String resourceType,
+      String resourceId,
+      String startsAt,
+      String endsAt,
+      Map<String, dynamic>? meta});
 }
 
 /// @nodoc
@@ -1553,31 +1476,26 @@ class __$$CreateReservationRequestImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$CreateReservationRequestImpl implements _CreateReservationRequest {
   const _$CreateReservationRequestImpl(
-      {@JsonKey(name: 'ResourceType') required this.resourceType,
-      @JsonKey(name: 'ResourceId') required this.resourceId,
-      @JsonKey(name: 'StartsAt') required this.startsAt,
-      @JsonKey(name: 'EndsAt') required this.endsAt,
-      @JsonKey(name: 'Meta') final Map<String, dynamic>? meta})
+      {required this.resourceType,
+      required this.resourceId,
+      required this.startsAt,
+      required this.endsAt,
+      final Map<String, dynamic>? meta})
       : _meta = meta;
 
   factory _$CreateReservationRequestImpl.fromJson(Map<String, dynamic> json) =>
       _$$CreateReservationRequestImplFromJson(json);
 
   @override
-  @JsonKey(name: 'ResourceType')
   final String resourceType;
   @override
-  @JsonKey(name: 'ResourceId')
   final String resourceId;
   @override
-  @JsonKey(name: 'StartsAt')
   final String startsAt;
   @override
-  @JsonKey(name: 'EndsAt')
   final String endsAt;
   final Map<String, dynamic>? _meta;
   @override
-  @JsonKey(name: 'Meta')
   Map<String, dynamic>? get meta {
     final value = _meta;
     if (value == null) return null;
@@ -1628,30 +1546,24 @@ class _$CreateReservationRequestImpl implements _CreateReservationRequest {
 
 abstract class _CreateReservationRequest implements CreateReservationRequest {
   const factory _CreateReservationRequest(
-          {@JsonKey(name: 'ResourceType') required final String resourceType,
-          @JsonKey(name: 'ResourceId') required final String resourceId,
-          @JsonKey(name: 'StartsAt') required final String startsAt,
-          @JsonKey(name: 'EndsAt') required final String endsAt,
-          @JsonKey(name: 'Meta') final Map<String, dynamic>? meta}) =
-      _$CreateReservationRequestImpl;
+      {required final String resourceType,
+      required final String resourceId,
+      required final String startsAt,
+      required final String endsAt,
+      final Map<String, dynamic>? meta}) = _$CreateReservationRequestImpl;
 
   factory _CreateReservationRequest.fromJson(Map<String, dynamic> json) =
       _$CreateReservationRequestImpl.fromJson;
 
   @override
-  @JsonKey(name: 'ResourceType')
   String get resourceType;
   @override
-  @JsonKey(name: 'ResourceId')
   String get resourceId;
   @override
-  @JsonKey(name: 'StartsAt')
   String get startsAt;
   @override
-  @JsonKey(name: 'EndsAt')
   String get endsAt;
   @override
-  @JsonKey(name: 'Meta')
   Map<String, dynamic>? get meta;
   @override
   @JsonKey(ignore: true)
@@ -1666,17 +1578,11 @@ UpdateReservationRequest _$UpdateReservationRequestFromJson(
 
 /// @nodoc
 mixin _$UpdateReservationRequest {
-  @JsonKey(name: 'ResourceType')
   String? get resourceType => throw _privateConstructorUsedError;
-  @JsonKey(name: 'ResourceId')
   String? get resourceId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'StartsAt')
   String? get startsAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'EndsAt')
   String? get endsAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'Status')
   String? get status => throw _privateConstructorUsedError;
-  @JsonKey(name: 'Meta')
   Map<String, dynamic>? get meta => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -1692,12 +1598,12 @@ abstract class $UpdateReservationRequestCopyWith<$Res> {
       _$UpdateReservationRequestCopyWithImpl<$Res, UpdateReservationRequest>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'ResourceType') String? resourceType,
-      @JsonKey(name: 'ResourceId') String? resourceId,
-      @JsonKey(name: 'StartsAt') String? startsAt,
-      @JsonKey(name: 'EndsAt') String? endsAt,
-      @JsonKey(name: 'Status') String? status,
-      @JsonKey(name: 'Meta') Map<String, dynamic>? meta});
+      {String? resourceType,
+      String? resourceId,
+      String? startsAt,
+      String? endsAt,
+      String? status,
+      Map<String, dynamic>? meta});
 }
 
 /// @nodoc
@@ -1760,12 +1666,12 @@ abstract class _$$UpdateReservationRequestImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'ResourceType') String? resourceType,
-      @JsonKey(name: 'ResourceId') String? resourceId,
-      @JsonKey(name: 'StartsAt') String? startsAt,
-      @JsonKey(name: 'EndsAt') String? endsAt,
-      @JsonKey(name: 'Status') String? status,
-      @JsonKey(name: 'Meta') Map<String, dynamic>? meta});
+      {String? resourceType,
+      String? resourceId,
+      String? startsAt,
+      String? endsAt,
+      String? status,
+      Map<String, dynamic>? meta});
 }
 
 /// @nodoc
@@ -1821,35 +1727,29 @@ class __$$UpdateReservationRequestImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$UpdateReservationRequestImpl implements _UpdateReservationRequest {
   const _$UpdateReservationRequestImpl(
-      {@JsonKey(name: 'ResourceType') this.resourceType,
-      @JsonKey(name: 'ResourceId') this.resourceId,
-      @JsonKey(name: 'StartsAt') this.startsAt,
-      @JsonKey(name: 'EndsAt') this.endsAt,
-      @JsonKey(name: 'Status') this.status,
-      @JsonKey(name: 'Meta') final Map<String, dynamic>? meta})
+      {this.resourceType,
+      this.resourceId,
+      this.startsAt,
+      this.endsAt,
+      this.status,
+      final Map<String, dynamic>? meta})
       : _meta = meta;
 
   factory _$UpdateReservationRequestImpl.fromJson(Map<String, dynamic> json) =>
       _$$UpdateReservationRequestImplFromJson(json);
 
   @override
-  @JsonKey(name: 'ResourceType')
   final String? resourceType;
   @override
-  @JsonKey(name: 'ResourceId')
   final String? resourceId;
   @override
-  @JsonKey(name: 'StartsAt')
   final String? startsAt;
   @override
-  @JsonKey(name: 'EndsAt')
   final String? endsAt;
   @override
-  @JsonKey(name: 'Status')
   final String? status;
   final Map<String, dynamic>? _meta;
   @override
-  @JsonKey(name: 'Meta')
   Map<String, dynamic>? get meta {
     final value = _meta;
     if (value == null) return null;
@@ -1901,34 +1801,27 @@ class _$UpdateReservationRequestImpl implements _UpdateReservationRequest {
 
 abstract class _UpdateReservationRequest implements UpdateReservationRequest {
   const factory _UpdateReservationRequest(
-          {@JsonKey(name: 'ResourceType') final String? resourceType,
-          @JsonKey(name: 'ResourceId') final String? resourceId,
-          @JsonKey(name: 'StartsAt') final String? startsAt,
-          @JsonKey(name: 'EndsAt') final String? endsAt,
-          @JsonKey(name: 'Status') final String? status,
-          @JsonKey(name: 'Meta') final Map<String, dynamic>? meta}) =
-      _$UpdateReservationRequestImpl;
+      {final String? resourceType,
+      final String? resourceId,
+      final String? startsAt,
+      final String? endsAt,
+      final String? status,
+      final Map<String, dynamic>? meta}) = _$UpdateReservationRequestImpl;
 
   factory _UpdateReservationRequest.fromJson(Map<String, dynamic> json) =
       _$UpdateReservationRequestImpl.fromJson;
 
   @override
-  @JsonKey(name: 'ResourceType')
   String? get resourceType;
   @override
-  @JsonKey(name: 'ResourceId')
   String? get resourceId;
   @override
-  @JsonKey(name: 'StartsAt')
   String? get startsAt;
   @override
-  @JsonKey(name: 'EndsAt')
   String? get endsAt;
   @override
-  @JsonKey(name: 'Status')
   String? get status;
   @override
-  @JsonKey(name: 'Meta')
   Map<String, dynamic>? get meta;
   @override
   @JsonKey(ignore: true)
@@ -1942,11 +1835,8 @@ LocationDto _$LocationDtoFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$LocationDto {
-  @JsonKey(name: 'Id')
   String get id => throw _privateConstructorUsedError;
-  @JsonKey(name: 'Name')
   String get name => throw _privateConstructorUsedError;
-  @JsonKey(name: 'Address')
   String? get address => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -1961,10 +1851,7 @@ abstract class $LocationDtoCopyWith<$Res> {
           LocationDto value, $Res Function(LocationDto) then) =
       _$LocationDtoCopyWithImpl<$Res, LocationDto>;
   @useResult
-  $Res call(
-      {@JsonKey(name: 'Id') String id,
-      @JsonKey(name: 'Name') String name,
-      @JsonKey(name: 'Address') String? address});
+  $Res call({String id, String name, String? address});
 }
 
 /// @nodoc
@@ -2009,10 +1896,7 @@ abstract class _$$LocationDtoImplCopyWith<$Res>
       __$$LocationDtoImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {@JsonKey(name: 'Id') String id,
-      @JsonKey(name: 'Name') String name,
-      @JsonKey(name: 'Address') String? address});
+  $Res call({String id, String name, String? address});
 }
 
 /// @nodoc
@@ -2050,22 +1934,16 @@ class __$$LocationDtoImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$LocationDtoImpl implements _LocationDto {
-  const _$LocationDtoImpl(
-      {@JsonKey(name: 'Id') required this.id,
-      @JsonKey(name: 'Name') required this.name,
-      @JsonKey(name: 'Address') this.address});
+  const _$LocationDtoImpl({required this.id, required this.name, this.address});
 
   factory _$LocationDtoImpl.fromJson(Map<String, dynamic> json) =>
       _$$LocationDtoImplFromJson(json);
 
   @override
-  @JsonKey(name: 'Id')
   final String id;
   @override
-  @JsonKey(name: 'Name')
   final String name;
   @override
-  @JsonKey(name: 'Address')
   final String? address;
 
   @override
@@ -2103,21 +1981,18 @@ class _$LocationDtoImpl implements _LocationDto {
 
 abstract class _LocationDto implements LocationDto {
   const factory _LocationDto(
-      {@JsonKey(name: 'Id') required final String id,
-      @JsonKey(name: 'Name') required final String name,
-      @JsonKey(name: 'Address') final String? address}) = _$LocationDtoImpl;
+      {required final String id,
+      required final String name,
+      final String? address}) = _$LocationDtoImpl;
 
   factory _LocationDto.fromJson(Map<String, dynamic> json) =
       _$LocationDtoImpl.fromJson;
 
   @override
-  @JsonKey(name: 'Id')
   String get id;
   @override
-  @JsonKey(name: 'Name')
   String get name;
   @override
-  @JsonKey(name: 'Address')
   String? get address;
   @override
   @JsonKey(ignore: true)
@@ -2131,13 +2006,9 @@ DeskDto _$DeskDtoFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$DeskDto {
-  @JsonKey(name: 'Id')
   String get id => throw _privateConstructorUsedError;
-  @JsonKey(name: 'Name')
   String get name => throw _privateConstructorUsedError;
-  @JsonKey(name: 'ZoneId')
   String get zoneId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'Features')
   List<String>? get features => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -2150,11 +2021,7 @@ abstract class $DeskDtoCopyWith<$Res> {
   factory $DeskDtoCopyWith(DeskDto value, $Res Function(DeskDto) then) =
       _$DeskDtoCopyWithImpl<$Res, DeskDto>;
   @useResult
-  $Res call(
-      {@JsonKey(name: 'Id') String id,
-      @JsonKey(name: 'Name') String name,
-      @JsonKey(name: 'ZoneId') String zoneId,
-      @JsonKey(name: 'Features') List<String>? features});
+  $Res call({String id, String name, String zoneId, List<String>? features});
 }
 
 /// @nodoc
@@ -2203,11 +2070,7 @@ abstract class _$$DeskDtoImplCopyWith<$Res> implements $DeskDtoCopyWith<$Res> {
       __$$DeskDtoImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {@JsonKey(name: 'Id') String id,
-      @JsonKey(name: 'Name') String name,
-      @JsonKey(name: 'ZoneId') String zoneId,
-      @JsonKey(name: 'Features') List<String>? features});
+  $Res call({String id, String name, String zoneId, List<String>? features});
 }
 
 /// @nodoc
@@ -2251,27 +2114,23 @@ class __$$DeskDtoImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$DeskDtoImpl implements _DeskDto {
   const _$DeskDtoImpl(
-      {@JsonKey(name: 'Id') required this.id,
-      @JsonKey(name: 'Name') required this.name,
-      @JsonKey(name: 'ZoneId') required this.zoneId,
-      @JsonKey(name: 'Features') final List<String>? features})
+      {required this.id,
+      required this.name,
+      required this.zoneId,
+      final List<String>? features})
       : _features = features;
 
   factory _$DeskDtoImpl.fromJson(Map<String, dynamic> json) =>
       _$$DeskDtoImplFromJson(json);
 
   @override
-  @JsonKey(name: 'Id')
   final String id;
   @override
-  @JsonKey(name: 'Name')
   final String name;
   @override
-  @JsonKey(name: 'ZoneId')
   final String zoneId;
   final List<String>? _features;
   @override
-  @JsonKey(name: 'Features')
   List<String>? get features {
     final value = _features;
     if (value == null) return null;
@@ -2317,24 +2176,20 @@ class _$DeskDtoImpl implements _DeskDto {
 
 abstract class _DeskDto implements DeskDto {
   const factory _DeskDto(
-      {@JsonKey(name: 'Id') required final String id,
-      @JsonKey(name: 'Name') required final String name,
-      @JsonKey(name: 'ZoneId') required final String zoneId,
-      @JsonKey(name: 'Features') final List<String>? features}) = _$DeskDtoImpl;
+      {required final String id,
+      required final String name,
+      required final String zoneId,
+      final List<String>? features}) = _$DeskDtoImpl;
 
   factory _DeskDto.fromJson(Map<String, dynamic> json) = _$DeskDtoImpl.fromJson;
 
   @override
-  @JsonKey(name: 'Id')
   String get id;
   @override
-  @JsonKey(name: 'Name')
   String get name;
   @override
-  @JsonKey(name: 'ZoneId')
   String get zoneId;
   @override
-  @JsonKey(name: 'Features')
   List<String>? get features;
   @override
   @JsonKey(ignore: true)
@@ -2348,13 +2203,9 @@ RoomDto _$RoomDtoFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$RoomDto {
-  @JsonKey(name: 'Id')
   String get id => throw _privateConstructorUsedError;
-  @JsonKey(name: 'Name')
   String get name => throw _privateConstructorUsedError;
-  @JsonKey(name: 'LocationId')
   String get locationId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'Capacity')
   int get capacity => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -2367,11 +2218,7 @@ abstract class $RoomDtoCopyWith<$Res> {
   factory $RoomDtoCopyWith(RoomDto value, $Res Function(RoomDto) then) =
       _$RoomDtoCopyWithImpl<$Res, RoomDto>;
   @useResult
-  $Res call(
-      {@JsonKey(name: 'Id') String id,
-      @JsonKey(name: 'Name') String name,
-      @JsonKey(name: 'LocationId') String locationId,
-      @JsonKey(name: 'Capacity') int capacity});
+  $Res call({String id, String name, String locationId, int capacity});
 }
 
 /// @nodoc
@@ -2420,11 +2267,7 @@ abstract class _$$RoomDtoImplCopyWith<$Res> implements $RoomDtoCopyWith<$Res> {
       __$$RoomDtoImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {@JsonKey(name: 'Id') String id,
-      @JsonKey(name: 'Name') String name,
-      @JsonKey(name: 'LocationId') String locationId,
-      @JsonKey(name: 'Capacity') int capacity});
+  $Res call({String id, String name, String locationId, int capacity});
 }
 
 /// @nodoc
@@ -2468,25 +2311,21 @@ class __$$RoomDtoImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$RoomDtoImpl implements _RoomDto {
   const _$RoomDtoImpl(
-      {@JsonKey(name: 'Id') required this.id,
-      @JsonKey(name: 'Name') required this.name,
-      @JsonKey(name: 'LocationId') required this.locationId,
-      @JsonKey(name: 'Capacity') required this.capacity});
+      {required this.id,
+      required this.name,
+      required this.locationId,
+      required this.capacity});
 
   factory _$RoomDtoImpl.fromJson(Map<String, dynamic> json) =>
       _$$RoomDtoImplFromJson(json);
 
   @override
-  @JsonKey(name: 'Id')
   final String id;
   @override
-  @JsonKey(name: 'Name')
   final String name;
   @override
-  @JsonKey(name: 'LocationId')
   final String locationId;
   @override
-  @JsonKey(name: 'Capacity')
   final int capacity;
 
   @override
@@ -2527,24 +2366,20 @@ class _$RoomDtoImpl implements _RoomDto {
 
 abstract class _RoomDto implements RoomDto {
   const factory _RoomDto(
-      {@JsonKey(name: 'Id') required final String id,
-      @JsonKey(name: 'Name') required final String name,
-      @JsonKey(name: 'LocationId') required final String locationId,
-      @JsonKey(name: 'Capacity') required final int capacity}) = _$RoomDtoImpl;
+      {required final String id,
+      required final String name,
+      required final String locationId,
+      required final int capacity}) = _$RoomDtoImpl;
 
   factory _RoomDto.fromJson(Map<String, dynamic> json) = _$RoomDtoImpl.fromJson;
 
   @override
-  @JsonKey(name: 'Id')
   String get id;
   @override
-  @JsonKey(name: 'Name')
   String get name;
   @override
-  @JsonKey(name: 'LocationId')
   String get locationId;
   @override
-  @JsonKey(name: 'Capacity')
   int get capacity;
   @override
   @JsonKey(ignore: true)
