@@ -35,97 +35,123 @@ class ManagerDashboard extends StatelessWidget {
         const SizedBox(height: 32),
         _buildStatsGrid(),
         const SizedBox(height: 32),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: _buildPendingApprovals()),
-            const SizedBox(width: 24),
-            Expanded(child: _buildTeamActivity()),
-          ],
+        LayoutBuilder(
+          builder: (context, constraints) {
+            bool twoColumns = constraints.maxWidth > 1100;
+            
+            if (twoColumns) {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(child: _buildPendingApprovals()),
+                  const SizedBox(width: 24),
+                  Expanded(child: _buildTeamActivity()),
+                ],
+              );
+            } else {
+              return Column(
+                children: [
+                  _buildPendingApprovals(),
+                  const SizedBox(height: 24),
+                  _buildTeamActivity(),
+                ],
+              );
+            }
+          },
         ),
       ],
     );
   }
 
   Widget _buildStatsGrid() {
-    return GridView.count(
-      crossAxisCount: 4,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 24,
-      crossAxisSpacing: 24,
-      childAspectRatio: 1.5,
-      children: [
-        _buildStatCard(
-          'Ekip Rezervasyonları',
-          '12',
-          Icons.groups,
-          AppTheme.primaryIndigo,
-        ),
-        _buildStatCard(
-          'Bekleyen Onaylar',
-          '3',
-          Icons.pending_actions,
-          Colors.orange,
-        ),
-        _buildStatCard(
-          'Kaynak Kullanımı',
-          '78%',
-          Icons.bar_chart,
-          AppTheme.accentIndigo,
-        ),
-        _buildStatCard(
-          'Departman Büyüklüğü',
-          '${user.department ?? "N/A"}',
-          Icons.people,
-          Colors.green,
-        ),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Responsive grid: 4 columns on large, 2-3 on medium, 2 on small
+        int crossCount = 4;
+        if (constraints.maxWidth < 1200) crossCount = 3;
+        if (constraints.maxWidth < 900) crossCount = 2;
+        
+        return GridView.count(
+          crossAxisCount: crossCount,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          mainAxisSpacing: 20,
+          crossAxisSpacing: 20,
+          childAspectRatio: 1.3,
+          children: [
+            _buildStatCard(
+              'Ekip\nRezervasyonları',
+              '12',
+              Icons.groups,
+              AppTheme.primaryIndigo,
+            ),
+            _buildStatCard(
+              'Bekleyen\nOnaylar',
+              '3',
+              Icons.pending_actions,
+              Colors.orange,
+            ),
+            _buildStatCard(
+              'Kaynak\nKullanımı',
+              '78%',
+              Icons.bar_chart,
+              AppTheme.accentIndigo,
+            ),
+            _buildStatCard(
+              'Departman\nBüyüklüğü',
+              '${user.department ?? "N/A"}',
+              Icons.people,
+              Colors.green,
+            ),
+          ],
+        );
+      },
     );
   }
 
   Widget _buildStatCard(String title, String value, IconData icon, Color color) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppTheme.surfaceBorder),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: [AppTheme.shadowLevel2],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 48,
-            height: 48,
+            width: 38,
+            height: 38,
             decoration: BoxDecoration(
               color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(icon, color: color, size: 24),
+            child: Icon(icon, color: color, size: 20),
           ),
           const Spacer(),
           Text(
-                value.toString(),
-                style: GoogleFonts.inter(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.textPrimary,
-                ),
-              ),
-          const SizedBox(height: 4),
+            value.toString(),
+            style: GoogleFonts.inter(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: AppTheme.textPrimary,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 2),
           Text(
             title,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: GoogleFonts.inter(
-              fontSize: 14,
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
               color: AppTheme.textSecondary,
+              height: 1.1,
             ),
           ),
         ],
@@ -140,6 +166,7 @@ class ManagerDashboard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppTheme.surfaceBorder),
+        boxShadow: [AppTheme.shadowLevel3],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -235,6 +262,7 @@ class ManagerDashboard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppTheme.surfaceBorder),
+        boxShadow: [AppTheme.shadowLevel3],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

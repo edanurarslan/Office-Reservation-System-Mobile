@@ -35,103 +35,131 @@ class AdminDashboard extends StatelessWidget {
         const SizedBox(height: 32),
         _buildStatsGrid(),
         const SizedBox(height: 32),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(flex: 2, child: _buildSystemActivity()),
-            const SizedBox(width: 24),
-            Expanded(child: _buildQuickStats()),
-          ],
+        LayoutBuilder(
+          builder: (context, constraints) {
+            // Responsive layout: 2 columns on large, 1 on small
+            bool twoColumns = constraints.maxWidth > 1100;
+            
+            if (twoColumns) {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(flex: 2, child: _buildSystemActivity()),
+                  const SizedBox(width: 24),
+                  Expanded(child: _buildQuickStats()),
+                ],
+              );
+            } else {
+              return Column(
+                children: [
+                  _buildSystemActivity(),
+                  const SizedBox(height: 24),
+                  _buildQuickStats(),
+                ],
+              );
+            }
+          },
         ),
       ],
     );
   }
 
   Widget _buildStatsGrid() {
-    return GridView.count(
-      crossAxisCount: 5,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 24,
-      crossAxisSpacing: 24,
-      childAspectRatio: 1.5,
-      children: [
-        _buildStatCard(
-          'Toplam Kullanıcı',
-          '156',
-          Icons.people,
-          AppTheme.primaryIndigo,
-        ),
-        _buildStatCard(
-          'Aktif Rezervasyon',
-          '23',
-          Icons.event_available,
-          Colors.green,
-        ),
-        _buildStatCard(
-          'Toplam Oda',
-          '12',
-          Icons.meeting_room,
-          AppTheme.accentIndigo,
-        ),
-        _buildStatCard(
-          'Sistem Kullanımı',
-          '87%',
-          Icons.bar_chart,
-          Colors.orange,
-        ),
-        _buildStatCard(
-          'Bekleyen İşlem',
-          '5',
-          Icons.pending_actions,
-          Colors.red,
-        ),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Responsive grid: 5 columns on large screens, 3-4 on medium, 2 on small
+        int crossCount = 5;
+        if (constraints.maxWidth < 1400) crossCount = 4;
+        if (constraints.maxWidth < 1000) crossCount = 3;
+        if (constraints.maxWidth < 700) crossCount = 2;
+        
+        return GridView.count(
+          crossAxisCount: crossCount,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          mainAxisSpacing: 20,
+          crossAxisSpacing: 20,
+          childAspectRatio: 1.3,
+          children: [
+            _buildStatCard(
+              'Toplam\nKullanıcı',
+              '156',
+              Icons.people,
+              AppTheme.primaryIndigo,
+            ),
+            _buildStatCard(
+              'Aktif\nRezervaSyon',
+              '23',
+              Icons.event_available,
+              Colors.green,
+            ),
+            _buildStatCard(
+              'Toplam\nOda',
+              '12',
+              Icons.meeting_room,
+              AppTheme.accentIndigo,
+            ),
+            _buildStatCard(
+              'Sistem\nKullanımı',
+              '87%',
+              Icons.bar_chart,
+              Colors.orange,
+            ),
+            _buildStatCard(
+              'Bekleyen\nİşlem',
+              '5',
+              Icons.pending_actions,
+              Colors.red,
+            ),
+          ],
+        );
+      },
     );
   }
 
   Widget _buildStatCard(String title, String value, IconData icon, Color color) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppTheme.surfaceBorder),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: [AppTheme.shadowLevel2],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 48,
-            height: 48,
+            width: 38,
+            height: 38,
             decoration: BoxDecoration(
               color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(icon, color: color, size: 24),
+            child: Icon(icon, color: color, size: 20),
           ),
           const Spacer(),
           Text(
-                value.toString(),
-                style: GoogleFonts.inter(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.textPrimary,
-                ),
-              ),
-          const SizedBox(height: 4),
+            value.toString(),
+            style: GoogleFonts.inter(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: AppTheme.textPrimary,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 2),
           Text(
             title,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: GoogleFonts.inter(
-              fontSize: 14,
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
               color: AppTheme.textSecondary,
+              height: 1.1,
             ),
           ),
         ],
@@ -146,6 +174,7 @@ class AdminDashboard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppTheme.surfaceBorder),
+        boxShadow: [AppTheme.shadowLevel3],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -193,6 +222,7 @@ class AdminDashboard extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             width: 36,
@@ -211,28 +241,34 @@ class AdminDashboard extends StatelessWidget {
                 Text(
                   title,
                   style: GoogleFonts.inter(
-                    fontSize: 14,
+                    fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: AppTheme.textPrimary,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 2),
                 Text(
                   description,
                   style: GoogleFonts.inter(
-                    fontSize: 12,
+                    fontSize: 11,
                     color: AppTheme.textSecondary,
                   ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
           ),
+          const SizedBox(width: 8),
           Text(
             time,
             style: GoogleFonts.inter(
-              fontSize: 11,
+              fontSize: 10,
               color: AppTheme.textSecondary,
             ),
+            maxLines: 1,
           ),
         ],
       ),
@@ -246,6 +282,7 @@ class AdminDashboard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppTheme.surfaceBorder),
+        boxShadow: [AppTheme.shadowLevel3],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
