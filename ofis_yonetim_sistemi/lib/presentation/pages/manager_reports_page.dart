@@ -48,7 +48,7 @@ class ManagerReportsPage extends ConsumerWidget {
                   Text(
                     'Rezervasyon trendleri, en yoğun günler ve masa/oda kullanım analizleri.',
                     style: GoogleFonts.inter(
-                      fontSize: 15,
+                      fontSize: 14,
                       fontWeight: FontWeight.w500,
                       color: AppTheme.primaryIndigo,
                     ),
@@ -172,7 +172,7 @@ class ManagerReportsPage extends ConsumerWidget {
                                         Text(
                                           '${index + 1}',
                                           style: GoogleFonts.inter(
-                                            fontSize: 10,
+                                            fontSize: 12,
                                             color: AppTheme.textTertiary,
                                           ),
                                         ),

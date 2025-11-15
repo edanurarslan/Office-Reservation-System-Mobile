@@ -68,7 +68,7 @@ class _ManagerLogsPageState extends ConsumerState<ManagerLogsPage> {
                   Text(
                     'Sistem aktivitelerini ve geçmiş işlemleri görüntüleyin.',
                     style: GoogleFonts.inter(
-                      fontSize: 15,
+                      fontSize: 14,
                       fontWeight: FontWeight.w500,
                       color: AppTheme.primaryIndigo,
                     ),

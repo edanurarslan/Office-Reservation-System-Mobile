@@ -40,7 +40,7 @@ class SettingsPage extends StatelessWidget {
                           Text(
                             'Profil Ayarları',
                             style: GoogleFonts.inter(
-                              fontSize: 20,
+                              fontSize: 24,
                               fontWeight: FontWeight.w600,
                               color: AppTheme.primaryIndigo,
                             ),
@@ -77,7 +77,7 @@ class SettingsPage extends StatelessWidget {
                           Text(
                             'Bildirim Ayarları',
                             style: GoogleFonts.inter(
-                              fontSize: 20,
+                              fontSize: 24,
                               fontWeight: FontWeight.w600,
                               color: AppTheme.primaryIndigo,
                             ),
@@ -114,7 +114,7 @@ class SettingsPage extends StatelessWidget {
                           Text(
                             'Uygulama Ayarları',
                             style: GoogleFonts.inter(
-                              fontSize: 20,
+                              fontSize: 24,
                               fontWeight: FontWeight.w600,
                               color: AppTheme.primaryIndigo,
                             ),

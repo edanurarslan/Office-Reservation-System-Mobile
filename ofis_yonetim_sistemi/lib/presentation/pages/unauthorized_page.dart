@@ -142,7 +142,7 @@ class UnauthorizedPage extends StatelessWidget {
                       child: Text(
                         'Bu sayfaya erişmek için yönetici yetkisine ihtiyacınız var. Lütfen sistem yöneticinizle iletişime geçin.',
                         style: GoogleFonts.inter(
-                          fontSize: 13,
+                          fontSize: 12,
                           color: Colors.amber.shade900,
                         ),
                       ),

@@ -130,7 +130,7 @@ class _ManagerUsersPageState extends ConsumerState<ManagerUsersPage> {
                       Text(
                         'Kullanıcıları görüntüleyin, düzenleyin veya silin.',
                         style: GoogleFonts.inter(
-                          fontSize: 15,
+                          fontSize: 14,
                           fontWeight: FontWeight.w500,
                           color: AppTheme.primaryIndigo,
                         ),
@@ -310,7 +310,7 @@ class _ManagerUsersPageState extends ConsumerState<ManagerUsersPage> {
                         Text(
                           'Kullanıcıyı Düzenle',
                           style: GoogleFonts.inter(
-                            fontSize: 20,
+                            fontSize: 24,
                             fontWeight: FontWeight.w600,
                             color: AppTheme.primaryIndigo,
                           ),
@@ -367,7 +367,7 @@ class _ManagerUsersPageState extends ConsumerState<ManagerUsersPage> {
                                 child: Text(
                                   'Kaydet',
                                   style: GoogleFonts.inter(
-                                    fontSize: 15,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -387,7 +387,7 @@ class _ManagerUsersPageState extends ConsumerState<ManagerUsersPage> {
                                 child: Text(
                                   'İptal',
                                   style: GoogleFonts.inter(
-                                    fontSize: 15,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.w600,
                                     color: AppTheme.primaryIndigo,
                                   ),

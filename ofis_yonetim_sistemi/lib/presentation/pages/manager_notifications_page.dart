@@ -96,7 +96,7 @@ class _ManagerNotificationsPageState extends ConsumerState<ManagerNotificationsP
                   Text(
                     'Kullanıcılara toplu bildirim veya duyuru gönderin.',
                     style: GoogleFonts.inter(
-                      fontSize: 15,
+                      fontSize: 14,
                       fontWeight: FontWeight.w500,
                       color: AppTheme.primaryIndigo,
                     ),

@@ -201,7 +201,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   Text(
                     role,
                     style: GoogleFonts.inter(
-                      fontSize: 13,
+                      fontSize: 12,
                       fontWeight: FontWeight.w600,
                       color: AppTheme.textPrimary,
                     ),
