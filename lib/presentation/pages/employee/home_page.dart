@@ -15,12 +15,9 @@ class HomePage extends ConsumerWidget {
     return AppLayout(
       currentRoute: '/home',
       title: 'Dashboard',
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: user == null 
-            ? const Center(child: CircularProgressIndicator())
-            : _buildRoleBasedDashboard(user),
-      ),
+      child: user == null 
+          ? const Center(child: CircularProgressIndicator())
+          : _buildRoleBasedDashboard(user),
     );
   }
 

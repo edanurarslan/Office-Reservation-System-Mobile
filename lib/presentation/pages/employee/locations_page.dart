@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../widgets/common/common.dart';
 
 class LocationsPage extends ConsumerStatefulWidget {
@@ -9,395 +10,259 @@ class LocationsPage extends ConsumerStatefulWidget {
   ConsumerState<LocationsPage> createState() => _LocationsPageState();
 }
 
-class _LocationsPageState extends ConsumerState<LocationsPage> with PermissionCheckMixin {
-  List<Location> _locations = [
-    Location(id: 'l1', name: 'Ofis A', floor: '1. Kat', desk: 'A101'),
-    Location(id: 'l2', name: 'Ofis B', floor: '2. Kat', desk: 'B202'),
-    Location(id: 'l3', name: 'Ofis C', floor: '3. Kat', desk: 'C303'),
+class _LocationsPageState extends ConsumerState<LocationsPage> {
+  // States
+  bool _isLoading = false;
+  String? _error;
+  
+  // React tarafındaki veri yapısıyla aynı mock data
+  List<LocationModel> _locations = [
+    LocationModel(id: '1', name: 'Ana Ofis', address: 'Maslak, İstanbul', isActive: true),
+    LocationModel(id: '2', name: 'Ar-Ge Merkezi', address: 'Teknopark, Ankara', isActive: true),
+    LocationModel(id: '3', name: 'Depo / Lojistik', address: 'Nilüfer, Bursa', isActive: false),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final bool isMobile = screenWidth < 600;
+
     return PermissionGuardWidget(
       requiredRoute: '/locations',
       child: AppLayout(
         currentRoute: '/locations',
         title: 'Lokasyonlar',
-        child: _buildContent(),
-      ),
-    );
-  }
-
-  Widget _buildContent() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header Card
-          Card(
-            elevation: 2,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Lokasyonlar',
-                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.indigo[900],
-                              ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Ofis lokasyonlarını, kat planlarını ve kapasiteleri buradan yönetin.',
-                          style: TextStyle(color: Colors.grey[600]),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.indigo[50],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(
-                      Icons.business,
-                      color: Colors.indigo[600],
-                      size: 28,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 20),
-
-          // Add Button
-          Align(
-            alignment: Alignment.centerRight,
-            child: ElevatedButton.icon(
-              onPressed: () => _showLocationDialog(),
-              icon: const Icon(Icons.add),
-              label: const Text('Yeni Lokasyon'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.indigo,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 20),
-
-          // Locations Table
-          Card(
-            elevation: 2,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            child: Column(
-              children: [
-                // Table Header
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.indigo[50],
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(16),
-                      topRight: Radius.circular(16),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          'Lokasyon',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.indigo[700],
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          'Kat',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.indigo[700],
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          'Masa/Oda',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.indigo[700],
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          'Aksiyon',
-                          textAlign: TextAlign.right,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.indigo[700],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Table Body
-                if (_locations.isEmpty)
-                  Padding(
-                    padding: const EdgeInsets.all(40),
-                    child: Column(
-                      children: [
-                        Icon(Icons.business_outlined, size: 64, color: Colors.grey[300]),
-                        const SizedBox(height: 16),
-                        Text(
-                          'Lokasyon bulunamadı.',
-                          style: TextStyle(color: Colors.grey[500], fontSize: 16),
-                        ),
-                      ],
-                    ),
-                  )
-                else
-                  ...List.generate(_locations.length, (index) {
-                    final location = _locations[index];
-                    return Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: index == _locations.length - 1
-                                ? Colors.transparent
-                                : Colors.grey[200]!,
-                          ),
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                              location.name,
-                              style: const TextStyle(fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Text(location.floor),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Text(location.desk),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                IconButton(
-                                  icon: const Icon(Icons.edit, size: 20),
-                                  color: Colors.indigo[600],
-                                  onPressed: () => _showLocationDialog(location: location),
-                                  tooltip: 'Düzenle',
-                                ),
-                                IconButton(
-                                  icon: const Icon(Icons.delete, size: 20),
-                                  color: Colors.red[600],
-                                  onPressed: () => _deleteLocation(location),
-                                  tooltip: 'Sil',
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showLocationDialog({Location? location}) {
-    final isEdit = location != null;
-    final nameController = TextEditingController(text: location?.name ?? '');
-    final floorController = TextEditingController(text: location?.floor ?? '');
-    final deskController = TextEditingController(text: location?.desk ?? '');
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(
-          isEdit ? 'Lokasyon Düzenle' : 'Yeni Lokasyon Ekle',
-          style: TextStyle(color: Colors.indigo[700]),
-        ),
-        content: SingleChildScrollView(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(isMobile ? 16 : 32),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextField(
-                controller: nameController,
-                decoration: InputDecoration(
-                  labelText: 'Lokasyon Adı',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  prefixIcon: const Icon(Icons.business),
-                ),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: floorController,
-                decoration: InputDecoration(
-                  labelText: 'Kat',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  prefixIcon: const Icon(Icons.layers),
-                ),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: deskController,
-                decoration: InputDecoration(
-                  labelText: 'Masa/Oda',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  prefixIcon: const Icon(Icons.chair),
-                ),
-              ),
+              _buildPageHeader(isMobile),
+              const SizedBox(height: 32),
+              _buildMainContent(isMobile),
             ],
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('İptal'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              if (nameController.text.isEmpty ||
-                  floorController.text.isEmpty ||
-                  deskController.text.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Tüm alanları doldurun!')),
-                );
-                return;
-              }
-
-              setState(() {
-                if (isEdit) {
-                  final index = _locations.indexWhere((l) => l.id == location.id);
-                  _locations[index] = Location(
-                    id: location.id,
-                    name: nameController.text,
-                    floor: floorController.text,
-                    desk: deskController.text,
-                  );
-                } else {
-                  _locations.add(Location(
-                    id: 'l${_locations.length + 1}',
-                    name: nameController.text,
-                    floor: floorController.text,
-                    desk: deskController.text,
-                  ));
-                }
-              });
-
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(isEdit
-                      ? 'Lokasyon güncellendi!'
-                      : 'Yeni lokasyon eklendi!'),
-                  backgroundColor: Colors.green,
-                ),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.indigo,
-              foregroundColor: Colors.white,
-            ),
-            child: Text(isEdit ? 'Kaydet' : 'Ekle'),
-          ),
-        ],
       ),
     );
   }
 
-  void _deleteLocation(Location location) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Lokasyon Sil'),
-        content: Text('${location.name} lokasyonunu silmek istediğinizden emin misiniz?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('İptal'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                _locations.removeWhere((l) => l.id == location.id);
-              });
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Lokasyon silindi!'),
-                  backgroundColor: Colors.red,
-                ),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
+  // --- Header: Başlık, Açıklama ve Yeni Ekle Butonu ---
+  Widget _buildPageHeader(bool isMobile) {
+    return Wrap(
+      alignment: WrapAlignment.spaceBetween,
+      crossAxisAlignment: WrapCrossAlignment.end,
+      spacing: 20,
+      runSpacing: 20,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Lokasyonlar',
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 32,
+                fontWeight: FontWeight.w800,
+                color: const Color(0xFF1E293B),
+              ),
             ),
-            child: const Text('Sil'),
+            const SizedBox(height: 4),
+            Text(
+              'Tüm ofis lokasyonlarını yönetin.',
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 14,
+                color: const Color(0xFF64748B),
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+        ElevatedButton.icon(
+          onPressed: () => print('Yeni Lokasyon'),
+          icon: const Icon(Icons.add, size: 18),
+          label: const Text('Yeni Lokasyon'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF4F46E5),
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            elevation: 8,
+            shadowColor: const Color(0xFF4F46E5).withOpacity(0.4),
           ),
+        ),
+      ],
+    );
+  }
+
+  // --- Main Card: Tablo ve İçerik ---
+  Widget _buildMainContent(bool isMobile) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(isMobile ? 16 : 32),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: const Color(0xFFE2E8F0).withOpacity(0.8)),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF1F2687).withOpacity(0.07),
+            blurRadius: 32,
+            offset: const Offset(0, 8),
+          )
         ],
       ),
+      child: _isLoading 
+        ? const Center(child: Padding(padding: EdgeInsets.all(40), child: CircularProgressIndicator()))
+        : _error != null 
+          ? _buildErrorState()
+          : _locations.isEmpty 
+            ? _buildEmptyState()
+            : isMobile ? _buildMobileList() : _buildDesktopTable(),
     );
+  }
+
+  // --- Desktop: React Table Görünümü ---
+  Widget _buildDesktopTable() {
+    return DataTable(
+      horizontalMargin: 0,
+      columnSpacing: 24,
+      headingRowHeight: 56,
+      dataRowMaxHeight: 72,
+      headingTextStyle: GoogleFonts.plusJakartaSans(
+        fontWeight: FontWeight.bold,
+        color: const Color(0xFF64748B),
+        fontSize: 14,
+      ),
+      columns: const [
+        DataColumn(label: Text('Lokasyon Adı')),
+        DataColumn(label: Text('Adres')),
+        DataColumn(label: Text('Durum')),
+        DataColumn(label: Text('İşlemler')),
+      ],
+      rows: _locations.map((loc) {
+        return DataRow(cells: [
+          DataCell(Row(
+            children: [
+              const Icon(Icons.location_on_outlined, color: Color(0xFF6366F1), size: 18),
+              const SizedBox(width: 8),
+              Text(loc.name, style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF312E81))),
+            ],
+          )),
+          DataCell(Text(loc.address, style: const TextStyle(color: Color(0xFF64748B), fontSize: 13))),
+          DataCell(_buildStatusBadge(loc.isActive)),
+          DataCell(_buildActionButtons(loc)),
+        ]);
+      }).toList(),
+    );
+  }
+
+  // --- Mobil: Kart Listesi ---
+  Widget _buildMobileList() {
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: _locations.length,
+      separatorBuilder: (_, __) => const Divider(height: 32),
+      itemBuilder: (context, index) {
+        final loc = _locations[index];
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(loc.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                _buildStatusBadge(loc.isActive),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(loc.address, style: const TextStyle(color: Color(0xFF64748B))),
+            const SizedBox(height: 16),
+            _buildActionButtons(loc),
+          ],
+        );
+      },
+    );
+  }
+
+  // --- Helpers: Badge ve Butonlar ---
+  Widget _buildStatusBadge(bool isActive) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      decoration: BoxDecoration(
+        color: isActive ? const Color(0xFFDCFCE7) : const Color(0xFFFEE2E2),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        isActive ? 'Aktif' : 'Pasif',
+        style: TextStyle(
+          color: isActive ? const Color(0xFF166534) : const Color(0xFF991B1B),
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionButtons(LocationModel loc) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        OutlinedButton.icon(
+          onPressed: () => print('Edit ${loc.id}'),
+          icon: const Icon(Icons.edit, size: 14),
+          label: const Text('Düzenle'),
+          style: OutlinedButton.styleFrom(
+            foregroundColor: const Color(0xFF312E81),
+            side: const BorderSide(color: Color(0xFFE2E8F0)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+          ),
+        ),
+        const SizedBox(width: 8),
+        ElevatedButton.icon(
+          onPressed: () => setState(() => _locations.removeWhere((l) => l.id == loc.id)),
+          icon: const Icon(Icons.delete_outline, size: 14),
+          label: const Text('Sil'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFFFEF2F2),
+            foregroundColor: const Color(0xFF991B1B),
+            elevation: 0,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return const Center(
+      child: Padding(
+        padding: EdgeInsets.all(40),
+        child: Text('Lokasyon bulunamadı', style: TextStyle(color: Colors.grey)),
+      ),
+    );
+  }
+
+  Widget _buildErrorState() {
+    return Center(child: Text(_error!, style: const TextStyle(color: Colors.red)));
   }
 }
 
-// Model
-class Location {
+// Model - TSX tarafındaki yapı ile aynı
+class LocationModel {
   final String id;
   final String name;
-  final String floor;
-  final String desk;
+  final String address;
+  final bool isActive;
 
-  Location({
+  LocationModel({
     required this.id,
     required this.name,
-    required this.floor,
-    required this.desk,
+    required this.address,
+    required this.isActive,
   });
 }

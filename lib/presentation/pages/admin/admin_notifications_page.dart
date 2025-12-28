@@ -4,14 +4,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../widgets/common/common.dart';
 
-class ManagerNotificationsPage extends ConsumerStatefulWidget {
-  const ManagerNotificationsPage({super.key});
+class AdminNotificationsPage extends ConsumerStatefulWidget {
+  const AdminNotificationsPage({super.key});
 
   @override
-  ConsumerState<ManagerNotificationsPage> createState() => _ManagerNotificationsPageState();
+  ConsumerState<AdminNotificationsPage> createState() => _AdminNotificationsPageState();
 }
 
-class _ManagerNotificationsPageState extends ConsumerState<ManagerNotificationsPage> {
+class _AdminNotificationsPageState extends ConsumerState<AdminNotificationsPage> {
   // Form States
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _messageController = TextEditingController();
@@ -23,12 +23,12 @@ class _ManagerNotificationsPageState extends ConsumerState<ManagerNotificationsP
   final List<String> _selectedUsers = [];
   final List<int> _selectedRoles = [];
 
-  // Mock Data (React tarafındaki yapıyla aynı)
+  // Mock Data (Görsel ve İçerik Uyumu İçin)
   final List<Map<String, dynamic>> _typeOptions = [
-    {'value': 'info', 'label': 'Bilgi', 'icon': Icons.info_outline, 'color': Color(0xFF6366F1)},
-    {'value': 'success', 'label': 'Başarı', 'icon': Icons.check_circle_outline, 'color': Color(0xFF22C55E)},
-    {'value': 'warning', 'label': 'Uyarı', 'icon': Icons.warning_amber_rounded, 'color': Color(0xFFF59E0B)},
-    {'value': 'error', 'label': 'Hata', 'icon': Icons.error_outline, 'color': Color(0xFFEF4444)},
+    {'value': 'info', 'label': 'Bilgi', 'icon': Icons.info_outline, 'color': const Color(0xFF6366F1)},
+    {'value': 'success', 'label': 'Başarı', 'icon': Icons.check_circle_outline, 'color': const Color(0xFF22C55E)},
+    {'value': 'warning', 'label': 'Uyarı', 'icon': Icons.warning_amber_rounded, 'color': const Color(0xFFF59E0B)},
+    {'value': 'error', 'label': 'Hata', 'icon': Icons.error_outline, 'color': const Color(0xFFEF4444)},
   ];
 
   final List<Map<String, dynamic>> _roleOptions = [
@@ -99,7 +99,7 @@ class _ManagerNotificationsPageState extends ConsumerState<ManagerNotificationsP
 
     return AppLayout(
       title: 'Bildirim Yönetimi',
-      currentRoute: '/manager-notifications',
+      currentRoute: '/admin-notifications',
       child: SingleChildScrollView(
         padding: EdgeInsets.all(isMobile ? 16 : 32),
         child: Column(
@@ -130,8 +130,10 @@ class _ManagerNotificationsPageState extends ConsumerState<ManagerNotificationsP
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Bildirim Yönetimi', style: GoogleFonts.plusJakartaSans(fontSize: 28, fontWeight: FontWeight.w800, color: const Color(0xFF1E293B))),
-        Text('Kullanıcılara toplu bildirim veya duyuru gönderin.', style: GoogleFonts.plusJakartaSans(fontSize: 14, color: const Color(0xFF64748B))),
+        Text('Bildirim Yönetimi', 
+          style: GoogleFonts.plusJakartaSans(fontSize: 28, fontWeight: FontWeight.w800, color: const Color(0xFF1E293B))),
+        Text('Kullanıcılara toplu bildirim veya duyuru gönderin.', 
+          style: GoogleFonts.plusJakartaSans(fontSize: 14, color: const Color(0xFF64748B))),
       ],
     );
   }
@@ -161,9 +163,15 @@ class _ManagerNotificationsPageState extends ConsumerState<ManagerNotificationsP
             height: 54,
             child: ElevatedButton.icon(
               onPressed: _sending ? null : _handleSend,
-              icon: _sending ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)) : const Icon(Icons.send),
-              label: Text(_sending ? 'Gönderiliyor...' : 'Bildirimi Gönder', style: const TextStyle(fontWeight: FontWeight.bold)),
-              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF6366F1), foregroundColor: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+              icon: _sending 
+                  ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)) 
+                  : const Icon(Icons.send),
+              label: Text(_sending ? 'Gönderiliyor...' : 'Bildirimi Gönder', 
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF6366F1), 
+                foregroundColor: Colors.white, 
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
             ),
           ),
         ],
@@ -210,13 +218,16 @@ class _ManagerNotificationsPageState extends ConsumerState<ManagerNotificationsP
             ],
           ),
           const SizedBox(height: 4),
-          Text(n['message'], style: TextStyle(fontSize: 12, color: Colors.grey[600]), maxLines: 2, overflow: TextOverflow.ellipsis),
+          Text(n['message'], 
+              style: TextStyle(fontSize: 12, color: Colors.grey[600]), 
+              maxLines: 2, overflow: TextOverflow.ellipsis),
           const SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text('→ ${n['recipient']}', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
-              Text(DateFormat('dd.MM.yyyy').format(n['date']), style: const TextStyle(fontSize: 11, color: Colors.grey)),
+              Text(DateFormat('dd.MM.yyyy').format(n['date']), 
+                  style: const TextStyle(fontSize: 11, color: Colors.grey)),
             ],
           ),
         ],
@@ -225,7 +236,6 @@ class _ManagerNotificationsPageState extends ConsumerState<ManagerNotificationsP
   }
 
   // --- YARDIMCI BİLEŞENLER ---
-
   Widget _buildTypeSelector() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -250,7 +260,11 @@ class _ManagerNotificationsPageState extends ConsumerState<ManagerNotificationsP
                   children: [
                     Icon(type['icon'], size: 16, color: isSelected ? type['color'] : Colors.grey),
                     const SizedBox(width: 8),
-                    Text(type['label'], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: isSelected ? type['color'] : Colors.grey)),
+                    Text(type['label'], 
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, 
+                            fontSize: 12, 
+                            color: isSelected ? type['color'] : Colors.grey)),
                   ],
                 ),
               ),
@@ -356,7 +370,11 @@ class _ManagerNotificationsPageState extends ConsumerState<ManagerNotificationsP
   }
 
   Widget _sectionTitle(IconData icon, String title) {
-    return Row(children: [Icon(icon, size: 20, color: const Color(0xFF312E81)), const SizedBox(width: 10), Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF312E81)))]);
+    return Row(children: [
+      Icon(icon, size: 20, color: const Color(0xFF312E81)), 
+      const SizedBox(width: 10), 
+      Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF312E81)))
+    ]);
   }
 
   BoxDecoration _cardDecoration() {

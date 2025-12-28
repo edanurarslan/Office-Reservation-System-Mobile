@@ -4,3 +4,4 @@ export 'reports_page.dart';
 export 'backup_page.dart';
 export 'overview_page.dart';
 export 'logs_page.dart';
+export 'admin_notifications_page.dart';

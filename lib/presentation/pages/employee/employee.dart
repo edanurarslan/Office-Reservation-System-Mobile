@@ -4,3 +4,4 @@ export 'notifications_page.dart';
 export 'settings_page.dart';
 export 'qr_page.dart';
 export 'locations_page.dart';
+export 'support_page.dart';

@@ -3,339 +3,266 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../domain/entities/user.dart';
 
-class ManagerDashboard extends StatelessWidget {
+class ManagerDashboard extends StatefulWidget {
   final User user;
 
-  const ManagerDashboard({
-    super.key,
-    required this.user,
-  });
+  const ManagerDashboard({super.key, required this.user});
+
+  @override
+  State<ManagerDashboard> createState() => _ManagerDashboardState();
+}
+
+class _ManagerDashboardState extends State<ManagerDashboard> {
+  // React'taki stats state'i gibi düşünebiliriz
+  final bool _isLoading = false;
+  final int _pendingApprovals = 3;
+  final int _todayReservations = 12;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final bool isMobile = screenWidth < 600;
+
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 16 : 32,
+        vertical: 24,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildHeader(isMobile),
+          const SizedBox(height: 32),
+          
+          // --- SARI BANNER (Pending Approvals Notification) ---
+          if (_pendingApprovals > 0) ...[
+            _buildPendingBanner(isMobile),
+            const SizedBox(height: 24),
+          ],
+
+          // --- ANA İÇERİK KARTI (Beyaz Kart Yapısı) ---
+          _buildMainContentCard(isMobile, screenWidth),
+        ],
+      ),
+    );
+  }
+
+  // --- Header Bölümü ---
+  Widget _buildHeader(bool isMobile) {
+    return Wrap(
+      alignment: WrapAlignment.spaceBetween,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      spacing: 20,
+      runSpacing: 20,
       children: [
-        Text(
-          'Hoş Geldiniz, ${user.firstName}!',
-          style: GoogleFonts.inter(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-            color: AppTheme.textPrimary,
-          ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Yönetici Paneli',
+              style: GoogleFonts.inter(
+                fontSize: isMobile ? 24 : 32,
+                fontWeight: FontWeight.w800,
+                color: const Color(0xFF1E293B),
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Rezervasyonlar, raporlar ve onay bekleyen işlemler.',
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                color: const Color(0xFF64748B),
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: 8),
-        Text(
-          'Ekip yönetimi ve raporlama yetkilerine sahipsiniz',
-          style: GoogleFonts.inter(
-            fontSize: 16,
-            color: AppTheme.textSecondary,
+        ElevatedButton.icon(
+          onPressed: () {},
+          icon: const Icon(Icons.add, size: 18),
+          label: const Text('Yeni Rezervasyon'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF4338CA),
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            elevation: 4,
+            shadowColor: const Color(0xFF4338CA).withOpacity(0.3),
           ),
-        ),
-        const SizedBox(height: 32),
-        _buildStatsGrid(),
-        const SizedBox(height: 32),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            bool twoColumns = constraints.maxWidth > 1100;
-            
-            if (twoColumns) {
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(child: _buildPendingApprovals()),
-                  const SizedBox(width: 24),
-                  Expanded(child: _buildTeamActivity()),
-                ],
-              );
-            } else {
-              return Column(
-                children: [
-                  _buildPendingApprovals(),
-                  const SizedBox(height: 24),
-                  _buildTeamActivity(),
-                ],
-              );
-            }
-          },
         ),
       ],
     );
   }
 
-  Widget _buildStatsGrid() {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        // Responsive grid: 4 columns on large, 2-3 on medium, 2 on small
-        int crossCount = 4;
-        if (constraints.maxWidth < 1200) crossCount = 3;
-        if (constraints.maxWidth < 900) crossCount = 2;
-        
-        return GridView.count(
-          crossAxisCount: crossCount,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 20,
-          crossAxisSpacing: 20,
-          childAspectRatio: 1.3,
-          children: [
-            _buildStatCard(
-              'Ekip\nRezervasyonları',
-              '12',
-              Icons.groups,
-              AppTheme.primaryIndigo,
-            ),
-            _buildStatCard(
-              'Bekleyen\nOnaylar',
-              '3',
-              Icons.pending_actions,
-              Colors.orange,
-            ),
-            _buildStatCard(
-              'Kaynak\nKullanımı',
-              '78%',
-              Icons.bar_chart,
-              AppTheme.accentIndigo,
-            ),
-            _buildStatCard(
-              'Departman\nBüyüklüğü',
-              '${user.department ?? "N/A"}',
-              Icons.people,
-              Colors.green,
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.surfaceBorder),
-        boxShadow: [AppTheme.shadowLevel2],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 38,
-            height: 38,
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(icon, color: color, size: 20),
-          ),
-          const Spacer(),
-          Text(
-            value.toString(),
-            style: GoogleFonts.inter(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: AppTheme.textPrimary,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 2),
-          Text(
-            title,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.inter(
-              fontSize: 11,
-              fontWeight: FontWeight.w500,
-              color: AppTheme.textSecondary,
-              height: 1.1,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPendingApprovals() {
+  // --- Onay Bekleyenler Banner (React'teki Sarı Gradient Yapı) ---
+  Widget _buildPendingBanner(bool isMobile) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        gradient: const LinearGradient(
+          colors: [Color(0xFFFEF3C7), Color(0xFFFCD34D)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.surfaceBorder),
-        boxShadow: [AppTheme.shadowLevel3],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Colors.orange.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(Icons.pending_actions, color: Colors.orange, size: 20),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                'Bekleyen Onaylar',
-                style: GoogleFonts.inter(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: AppTheme.textPrimary,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          _buildApprovalItem('Toplantı Odası A', 'Ahmet Yılmaz', '14:00 - 15:00'),
-          const SizedBox(height: 12),
-          _buildApprovalItem('Konferans Salonu', 'Ayşe Demir', '10:00 - 12:00'),
-          const SizedBox(height: 12),
-          _buildApprovalItem('Proje Odası 2', 'Mehmet Kaya', 'Yarın 09:00'),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFFFBBF24).withOpacity(0.2),
+            blurRadius: 15,
+            offset: const Offset(0, 4),
+          )
         ],
-      ),
-    );
-  }
-
-  Widget _buildApprovalItem(String room, String requester, String time) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppTheme.surfaceLight,
-        borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         children: [
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: const Color(0xFFFBBF24),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(Icons.access_time_filled, color: Color(0xFF92400E), size: 28),
+          ),
+          const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  room,
+                  '$_pendingApprovals Onay Bekleyen İşlem',
                   style: GoogleFonts.inter(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: AppTheme.textPrimary,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF92400E),
+                    fontSize: 17,
                   ),
                 ),
-                const SizedBox(height: 4),
                 Text(
-                  '$requester • $time',
+                  'İncelemeniz gereken bekleyen rezervasyon talepleri mevcut.',
                   style: GoogleFonts.inter(
-                    fontSize: 12,
-                    color: AppTheme.textSecondary,
+                    color: const Color(0xFFB45309),
+                    fontSize: 13,
                   ),
                 ),
               ],
             ),
           ),
-          Row(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.check_circle, color: Colors.green, size: 20),
-                onPressed: () {},
-                tooltip: 'Onayla',
-              ),
-              IconButton(
-                icon: const Icon(Icons.cancel, color: Colors.red, size: 20),
-                onPressed: () {},
-                tooltip: 'Reddet',
-              ),
-            ],
-          ),
         ],
       ),
     );
   }
 
-  Widget _buildTeamActivity() {
+  // --- Ana Beyaz Kart ve İçindekiler ---
+  Widget _buildMainContentCard(bool isMobile, double screenWidth) {
+    return Container(
+      padding: EdgeInsets.all(isMobile ? 20 : 40),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: const Color(0xFFE2E8F0).withOpacity(0.8)),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF1F2687).withOpacity(0.07),
+            blurRadius: 32,
+            offset: const Offset(0, 8),
+          )
+        ],
+      ),
+      child: Column(
+        children: [
+          // İstatistikler: Mobilde alt alta, Geniş ekranda yan yana
+          if (screenWidth < 700) ...[
+            _buildStatItem('Bugünkü Rezervasyonlar', '$_todayReservations', Icons.calendar_today, const Color(0xFF4338CA), const Color(0xFFE0E7FF)),
+            const SizedBox(height: 16),
+            _buildStatItem('Bekleyen Onaylar', '$_pendingApprovals', Icons.access_time, const Color(0xFFD97706), const Color(0xFFFEF3C7)),
+          ] else
+            Row(
+              children: [
+                Expanded(child: _buildStatItem('Bugünkü Rezervasyonlar', '$_todayReservations', Icons.calendar_today, const Color(0xFF4338CA), const Color(0xFFE0E7FF))),
+                const SizedBox(width: 24),
+                Expanded(child: _buildStatItem('Bekleyen Onaylar', '$_pendingApprovals', Icons.access_time, const Color(0xFFD97706), const Color(0xFFFEF3C7))),
+              ],
+            ),
+          
+          const SizedBox(height: 40),
+
+          // Ortadaki Bilgi Alanı (Dashed Border Alanı)
+          _buildOperationalOverview(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatItem(String label, String value, IconData icon, Color iconColor, Color bgColor) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.surfaceBorder),
-        boxShadow: [AppTheme.shadowLevel3],
+        color: const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          Row(
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(color: bgColor, borderRadius: BorderRadius.circular(16)),
+            child: Icon(icon, color: iconColor, size: 24),
+          ),
+          const SizedBox(width: 16),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: AppTheme.accentIndigo.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(Icons.trending_up, color: AppTheme.accentIndigo, size: 20),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                'Ekip Aktivitesi',
-                style: GoogleFonts.inter(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: AppTheme.textPrimary,
-                ),
-              ),
+              Text(label, style: GoogleFonts.inter(fontSize: 13, color: const Color(0xFF64748B), fontWeight: FontWeight.w500)),
+              Text(value, style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w700, color: const Color(0xFF1E293B))),
             ],
           ),
-          const SizedBox(height: 20),
-          _buildActivityItem('Bu Hafta', '24 Rezervasyon', Icons.calendar_today, AppTheme.primaryIndigo),
-          const SizedBox(height: 12),
-          _buildActivityItem('Bu Ay', '89 Rezervasyon', Icons.calendar_month, AppTheme.accentIndigo),
-          const SizedBox(height: 12),
-          _buildActivityItem('Ortalama Kullanım', '4.2 saat/gün', Icons.access_time, Colors.green),
         ],
       ),
     );
   }
 
-  Widget _buildActivityItem(String label, String value, IconData icon, Color color) {
-    return Row(
-      children: [
-        Container(
-          width: 32,
-          height: 32,
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Icon(icon, color: color, size: 16),
+  Widget _buildOperationalOverview() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 48, horizontal: 24),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFFF5F7FF), Colors.white],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  color: AppTheme.textSecondary,
-                ),
-              ),
-              Text(
-                value,
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: AppTheme.textPrimary,
-                ),
-              ),
-            ],
+        borderRadius: BorderRadius.circular(20),
+        // Custom Painter ile dashed border yapılabilir ama Container ile basitçe:
+        border: Border.all(color: const Color(0xFFE2E8F0), width: 2, style: BorderStyle.solid), 
+      ),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, 4))],
+            ),
+            child: const Icon(Icons.dashboard_outlined, color: Color(0xFF6366F1), size: 32),
           ),
-        ),
-      ],
+          const SizedBox(height: 16),
+          Text(
+            _isLoading ? 'Veriler Hazırlanıyor...' : 'Operasyonel Genel Bakış',
+            style: GoogleFonts.inter(color: const Color(0xFF312E81), fontWeight: FontWeight.w600, fontSize: 18),
+          ),
+          const SizedBox(height: 8),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 400),
+            child: Text(
+              'Sistem üzerindeki tüm rezervasyon trafiğini, doluluk oranlarını ve ekip bazlı raporları buradan takip edebilirsiniz.',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.inter(color: const Color(0xFF6B7280), fontSize: 15, height: 1.6),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

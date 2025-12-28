@@ -1,397 +1,334 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../core/theme/app_theme.dart';
+import 'package:intl/intl.dart';
 import '../../../domain/entities/user.dart';
 
-class AdminDashboard extends StatelessWidget {
+class AdminDashboard extends StatefulWidget {
   final User user;
+  const AdminDashboard({super.key, required this.user});
 
-  const AdminDashboard({
-    super.key,
-    required this.user,
-  });
+  @override
+  State<AdminDashboard> createState() => _AdminDashboardState();
+}
+
+class _AdminDashboardState extends State<AdminDashboard> {
+  late Timer _timer;
+  DateTime _currentTime = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (mounted) setState(() => _currentTime = DateTime.now());
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Hoş Geldiniz, ${user.firstName}!',
-          style: GoogleFonts.inter(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-            color: AppTheme.textPrimary,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Sistem yöneticisi - Tüm yetkilere sahipsiniz',
-          style: GoogleFonts.inter(
-            fontSize: 16,
-            color: AppTheme.textSecondary,
-          ),
-        ),
-        const SizedBox(height: 32),
-        _buildStatsGrid(),
-        const SizedBox(height: 32),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            // Responsive layout: 2 columns on large, 1 on small
-            bool twoColumns = constraints.maxWidth > 1100;
-            
-            if (twoColumns) {
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(flex: 2, child: _buildSystemActivity()),
-                  const SizedBox(width: 24),
-                  Expanded(child: _buildQuickStats()),
-                ],
-              );
-            } else {
-              return Column(
-                children: [
-                  _buildSystemActivity(),
-                  const SizedBox(height: 24),
-                  _buildQuickStats(),
-                ],
-              );
-            }
-          },
-        ),
-      ],
-    );
-  }
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final bool isMobile = screenWidth < 600;
 
-  Widget _buildStatsGrid() {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        // Responsive grid: 5 columns on large screens, 3-4 on medium, 2 on small
-        int crossCount = 5;
-        if (constraints.maxWidth < 1400) crossCount = 4;
-        if (constraints.maxWidth < 1000) crossCount = 3;
-        if (constraints.maxWidth < 700) crossCount = 2;
-        
-        return GridView.count(
-          crossAxisCount: crossCount,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 20,
-          crossAxisSpacing: 20,
-          childAspectRatio: 1.3,
-          children: [
-            _buildStatCard(
-              'Toplam\nKullanıcı',
-              '156',
-              Icons.people,
-              AppTheme.primaryIndigo,
-            ),
-            _buildStatCard(
-              'Aktif\nRezervaSyon',
-              '23',
-              Icons.event_available,
-              Colors.green,
-            ),
-            _buildStatCard(
-              'Toplam\nOda',
-              '12',
-              Icons.meeting_room,
-              AppTheme.accentIndigo,
-            ),
-            _buildStatCard(
-              'Sistem\nKullanımı',
-              '87%',
-              Icons.bar_chart,
-              Colors.orange,
-            ),
-            _buildStatCard(
-              'Bekleyen\nİşlem',
-              '5',
-              Icons.pending_actions,
-              Colors.red,
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.surfaceBorder),
-        boxShadow: [AppTheme.shadowLevel2],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 38,
-            height: 38,
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(icon, color: color, size: 20),
-          ),
-          const Spacer(),
-          Text(
-            value.toString(),
-            style: GoogleFonts.inter(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: AppTheme.textPrimary,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 2),
-          Text(
-            title,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.inter(
-              fontSize: 11,
-              fontWeight: FontWeight.w500,
-              color: AppTheme.textSecondary,
-              height: 1.1,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSystemActivity() {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.surfaceBorder),
-        boxShadow: [AppTheme.shadowLevel3],
-      ),
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      padding: EdgeInsets.all(isMobile ? 20 : 32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: AppTheme.primaryIndigo.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(Icons.analytics, color: AppTheme.primaryIndigo, size: 20),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                'Sistem Aktivitesi',
-                style: GoogleFonts.inter(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: AppTheme.textPrimary,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          _buildActivityLog('Yeni kullanıcı kaydı', 'Mehmet Kaya sisteme eklendi', '5 dakika önce', Icons.person_add, Colors.green),
-          const SizedBox(height: 12),
-          _buildActivityLog('Rezervasyon onayı', 'Toplantı Odası A rezerve edildi', '15 dakika önce', Icons.check_circle, AppTheme.accentIndigo),
-          const SizedBox(height: 12),
-          _buildActivityLog('Oda güncelleme', 'Konferans Salonu kapasitesi değişti', '1 saat önce', Icons.edit, Colors.orange),
-          const SizedBox(height: 12),
-          _buildActivityLog('Sistem yedekleme', 'Otomatik yedekleme tamamlandı', '2 saat önce', Icons.backup, Colors.purple),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildActivityLog(String title, String description, String time, IconData icon, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppTheme.surfaceLight,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(icon, color: color, size: 18),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
+          _buildHeader(isMobile),
+          const SizedBox(height: 32),
+          _buildStatsGrid(screenWidth),
+          const SizedBox(height: 32),
+          if (isMobile) ...[
+            _buildQuickActions(screenWidth),
+            const SizedBox(height: 24),
+            _buildSystemStatus(),
+          ] else
+            Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: GoogleFonts.inter(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: AppTheme.textPrimary,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  description,
-                  style: GoogleFonts.inter(
-                    fontSize: 11,
-                    color: AppTheme.textSecondary,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                Expanded(flex: 3, child: _buildQuickActions(screenWidth)),
+                const SizedBox(width: 24),
+                Expanded(flex: 2, child: _buildSystemStatus()),
               ],
             ),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            time,
-            style: GoogleFonts.inter(
-              fontSize: 10,
-              color: AppTheme.textSecondary,
-            ),
-            maxLines: 1,
-          ),
+          const SizedBox(height: 32),
+          _buildActivityTimeline(),
         ],
       ),
     );
   }
 
-  Widget _buildQuickStats() {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.surfaceBorder),
-        boxShadow: [AppTheme.shadowLevel3],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Colors.green.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(Icons.trending_up, color: Colors.green, size: 20),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                'Hızlı İstatistikler',
-                style: GoogleFonts.inter(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: AppTheme.textPrimary,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          _buildQuickStatItem('Bugünkü Rezervasyon', '18', Icons.today, AppTheme.primaryIndigo),
-          const SizedBox(height: 16),
-          _buildQuickStatItem('Haftalık Büyüme', '+12%', Icons.arrow_upward, Colors.green),
-          const SizedBox(height: 16),
-          _buildQuickStatItem('Aylık Gelir', '₺45,200', Icons.payments, AppTheme.accentIndigo),
-          const SizedBox(height: 16),
-          _buildQuickStatItem('Kullanıcı Memnuniyeti', '4.8/5', Icons.star, Colors.amber),
-          const SizedBox(height: 24),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [AppTheme.primaryIndigo, AppTheme.accentIndigo],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              children: [
-                Icon(Icons.admin_panel_settings, color: Colors.white, size: 32),
-                const SizedBox(height: 8),
-                Text(
-                  'Admin Panel',
-                  style: GoogleFonts.inter(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Tüm yetkilere erişim',
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
-                    color: Colors.white.withOpacity(0.9),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildQuickStatItem(String label, String value, IconData icon, Color color) {
+  Widget _buildHeader(bool isMobile) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Container(
-          width: 32,
-          height: 32,
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Icon(icon, color: color, size: 16),
-        ),
-        const SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                label,
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  color: AppTheme.textSecondary,
+                'Hoş Geldiniz, Admin 👋',
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: isMobile ? 24 : 32,
+                  fontWeight: FontWeight.w800,
+                  color: const Color(0xFF1E293B),
                 ),
               ),
+              const SizedBox(height: 4),
               Text(
-                value,
-                style: GoogleFonts.inter(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: AppTheme.textPrimary,
+                DateFormat('EEEE, d MMMM yyyy', 'tr_TR').format(_currentTime),
+                style: GoogleFonts.plusJakartaSans(
+                  color: const Color(0xFF64748B),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ],
           ),
         ),
+        if (!isMobile) _buildLiveClock(),
+      ],
+    );
+  }
+
+  Widget _buildLiveClock() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10)
+        ],
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.timer_outlined, color: Color(0xFF6366F1), size: 20),
+          const SizedBox(width: 10),
+          Text(
+            DateFormat('HH:mm:ss').format(_currentTime),
+            style: GoogleFonts.jetBrainsMono(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+              color: const Color(0xFF1E293B),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatsGrid(double width) {
+    final stats = [
+      {'t': 'Toplam Kullanıcı', 'v': '1,284', 'i': Icons.people_outline, 'c': Colors.blue},
+      {'t': 'Aktif Oturum', 'v': '432', 'i': Icons.bolt, 'c': Colors.amber},
+      {'t': 'Onay Bekleyen', 'v': '12', 'i': Icons.pending_outlined, 'c': Colors.pink},
+      {'t': 'Sistem Sağlığı', 'v': '%99.8', 'i': Icons.shutter_speed, 'c': Colors.green},
+    ];
+
+    int crossCount = width < 600 ? 2 : (width < 1200 ? 2 : 4);
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: crossCount,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+        mainAxisExtent: 100,
+      ),
+      itemCount: stats.length,
+      itemBuilder: (context, index) {
+        final s = stats[index];
+        return _buildModernStatCard(
+            s['t'] as String, s['v'] as String, s['i'] as IconData, s['c'] as Color);
+      },
+    );
+  }
+
+  Widget _buildModernStatCard(String title, String value, IconData icon, Color color) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: _cardDecoration(),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: color, size: 24),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(title, style: GoogleFonts.plusJakartaSans(fontSize: 11, color: const Color(0xFF64748B), fontWeight: FontWeight.w600)),
+                Text(value, style: GoogleFonts.plusJakartaSans(fontSize: 20, fontWeight: FontWeight.w800, color: const Color(0xFF1E293B))),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuickActions(double width) {
+    final actions = [
+      {'n': 'Kullanıcılar', 'i': Icons.group_add_outlined, 'c': Color(0xFF4F46E5)},
+      {'n': 'Ayarlar', 'i': Icons.settings_outlined, 'c': Color(0xFF0EA5E9)},
+      {'n': 'Raporlar', 'i': Icons.bar_chart_outlined, 'c': Color(0xFF8B5CF6)},
+      {'n': 'Güvenlik', 'i': Icons.shield_outlined, 'c': Color(0xFFF43F5E)},
+    ];
+
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: _cardDecoration(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader('Hızlı İşlemler', Icons.auto_awesome_outlined),
+          const SizedBox(height: 24),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              mainAxisExtent: 80,
+            ),
+            itemCount: actions.length,
+            itemBuilder: (context, index) {
+              final a = actions[index];
+              return InkWell(
+                onTap: () {},
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: (a['c'] as Color).withOpacity(0.03),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: (a['c'] as Color).withOpacity(0.1)),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(a['i'] as IconData, color: a['c'] as Color, size: 22),
+                      const SizedBox(width: 12),
+                      Text(a['n'] as String, style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700, fontSize: 13)),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSystemStatus() {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: _cardDecoration(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader('Sistem Durumu', Icons.dns_outlined),
+          const SizedBox(height: 20),
+          _statusRow('Sunucu Yükü', '%24', 0.24, Colors.blue),
+          const SizedBox(height: 16),
+          _statusRow('Hafıza Kullanımı', '%68', 0.68, Colors.orange),
+        ],
+      ),
+    );
+  }
+
+  Widget _statusRow(String label, String value, double progress, Color color) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(label, style: GoogleFonts.plusJakartaSans(fontSize: 13, fontWeight: FontWeight.w600)),
+            Text(value, style: GoogleFonts.jetBrainsMono(fontSize: 13, fontWeight: FontWeight.w700, color: color)),
+          ],
+        ),
+        const SizedBox(height: 8),
+        LinearProgressIndicator(
+          value: progress,
+          backgroundColor: color.withOpacity(0.1),
+          color: color,
+          borderRadius: BorderRadius.circular(10),
+          minHeight: 6,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActivityTimeline() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(24),
+      decoration: _cardDecoration(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader('Son Aktiviteler', Icons.history_toggle_off),
+          const SizedBox(height: 20),
+          ...List.generate(3, (i) => _buildActivityItem(i)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActivityItem(int index) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Row(
+        children: [
+          const CircleAvatar(radius: 4, backgroundColor: Color(0xFF6366F1)),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Text(
+              'Admin tarafından yeni bir konum eklendi: Maslak Ofis',
+              style: GoogleFonts.plusJakartaSans(fontSize: 13, color: const Color(0xFF334155)),
+            ),
+          ),
+          Text('12:4$index', style: GoogleFonts.plusJakartaSans(fontSize: 12, color: const Color(0xFF94A3B8))),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title, IconData icon) {
+    return Row(
+      children: [
+        Icon(icon, size: 20, color: const Color(0xFF1E293B)),
+        const SizedBox(width: 10),
+        Text(title, style: GoogleFonts.plusJakartaSans(fontSize: 16, fontWeight: FontWeight.w800, color: const Color(0xFF1E293B))),
+      ],
+    );
+  }
+
+  BoxDecoration _cardDecoration() {
+    return BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(20),
+      border: Border.all(color: const Color(0xFFE2E8F0)),
+      boxShadow: [
+        BoxShadow(color: const Color(0xFF0F172A).withOpacity(0.04), blurRadius: 16, offset: const Offset(0, 8)),
       ],
     );
   }

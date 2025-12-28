@@ -38,6 +38,7 @@ class AppRoutes {
   static const String resources = '/resources';
   static const String rooms = '/rooms';
   static const String apiTest = '/api-test';
+  static const String adminNotifications = '/admin-notifications';
 }
 
 // Router provider with authentication and role-based guards
@@ -113,7 +114,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       // Employee routes
       GoRoute(
-        path: AppRoutes.locations,
+        path: '/locations',
         name: 'locations',
         builder: (context, state) => const LocationsPage(),
       ),
@@ -122,6 +123,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: 'notifications',
         builder: (context, state) => const NotificationsPage(),
       ),
+      GoRoute(
+        path: '/support',
+        name: 'support',
+        builder: (context, state) => const SupportPage(),
+      ),
       // Manager routes
       GoRoute(
         path: AppRoutes.approval,
@@ -129,7 +135,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const ApprovalPage(),
       ),
       GoRoute(
-        path: AppRoutes.managerLogs,
+        path: '/manager-logs',
         name: 'manager-logs',
         builder: (context, state) => const ManagerLogsPage(),
       ),
@@ -137,6 +143,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.managerNotifications,
         name: 'manager-notifications',
         builder: (context, state) => const ManagerNotificationsPage(),
+      ),
+      GoRoute(
+        path: '/admin-notifications',
+        name: 'admin-notifications',
+        builder: (context, state) => const AdminNotificationsPage(),
       ),
       GoRoute(
         path: AppRoutes.managerReports,

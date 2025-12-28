@@ -13,12 +13,12 @@ class RouteGuard {
       case '/reservations':
       case '/qr':
       case '/settings':
+      case '/locations':
+      case '/notifications':
+      case '/reports':
         return true;
 
       // Manager and Admin only
-      case '/reports':
-      case '/locations':
-      case '/notifications':
       case '/approval':
       case '/rules':
       case '/logs':

@@ -15,6 +15,50 @@ class AppSidebar extends ConsumerWidget {
     final authState = ref.watch(authProvider);
     final user = authState.user;
     
+    // Menü içeriklerini .NET ile eşleştir
+    final employeeMenu = [
+      {'icon': Icons.dashboard_outlined, 'activeIcon': Icons.dashboard, 'label': 'Dashboard', 'route': '/home'},
+      {'icon': Icons.event_note_outlined, 'activeIcon': Icons.event_note, 'label': 'Rezervasyonlar', 'route': '/reservations'},
+      {'icon': Icons.qr_code_scanner_outlined, 'activeIcon': Icons.qr_code_scanner, 'label': 'QR Kod', 'route': '/qr'},
+      {'icon': Icons.business_outlined, 'activeIcon': Icons.business, 'label': 'Konumlar', 'route': '/locations'},
+      {'icon': Icons.notifications_outlined, 'activeIcon': Icons.notifications, 'label': 'Bildirimler', 'route': '/notifications'},
+      {'icon': Icons.bar_chart_outlined, 'activeIcon': Icons.bar_chart, 'label': 'Raporlar', 'route': '/reports'},
+      {'icon': Icons.book_outlined, 'activeIcon': Icons.book, 'label': 'Destek', 'route': '/support'},
+      {'icon': Icons.settings_outlined, 'activeIcon': Icons.settings, 'label': 'Ayarlar', 'route': '/settings'},
+    ];
+
+    final managerMenu = [
+  {'icon': Icons.dashboard_outlined, 'activeIcon': Icons.dashboard, 'label': 'Dashboard', 'route': '/home'},
+  {'icon': Icons.people_outline, 'activeIcon': Icons.people, 'label': 'Kullanıcılar', 'route': '/manager-users'},
+  {'icon': Icons.event_note_outlined, 'activeIcon': Icons.event_note, 'label': 'Rezervasyonlar', 'route': '/reservations'},
+  {'icon': Icons.bar_chart_outlined, 'activeIcon': Icons.bar_chart, 'label': 'Raporlar', 'route': '/manager-reports'},
+  {'icon': Icons.notifications_outlined, 'activeIcon': Icons.notifications, 'label': 'Bildirimler', 'route': '/manager-notifications'},
+  {'icon': Icons.history_outlined, 'activeIcon': Icons.history, 'label': 'Loglar', 'route': '/manager-logs'},
+  {'icon': Icons.qr_code_scanner_outlined, 'activeIcon': Icons.qr_code_scanner, 'label': 'QR Kod', 'route': '/qr'},
+    ];
+
+    final adminMenu = [
+  {'icon': Icons.dashboard_outlined, 'activeIcon': Icons.dashboard, 'label': 'Genel Bakış', 'route': '/overview'},
+  {'icon': Icons.business_outlined, 'activeIcon': Icons.business, 'label': 'Konumlar', 'route': '/locations'},
+  {'icon': Icons.shield_outlined, 'activeIcon': Icons.shield, 'label': 'Kat Planı', 'route': '/floorplan'},
+  {'icon': Icons.book_outlined, 'activeIcon': Icons.book, 'label': 'Kurallar', 'route': '/rules'},
+  {'icon': Icons.notifications_outlined, 'activeIcon': Icons.notifications, 'label': 'Bildirimler', 'route': '/admin-notifications'},
+  {'icon': Icons.check_box_outlined, 'activeIcon': Icons.check_box, 'label': 'Onaylar', 'route': '/approval'},
+  {'icon': Icons.history_outlined, 'activeIcon': Icons.history, 'label': 'Loglar', 'route': '/logs'},
+  {'icon': Icons.backup_outlined, 'activeIcon': Icons.backup, 'label': 'Yedekleme', 'route': '/backup'},
+  {'icon': Icons.people_outline, 'activeIcon': Icons.people, 'label': 'Kullanıcılar', 'route': '/users'},
+  {'icon': Icons.qr_code_scanner_outlined, 'activeIcon': Icons.qr_code_scanner, 'label': 'QR Kod', 'route': '/qr'},
+    ];
+
+    List<Map<String, dynamic>> menuItems;
+    if (user?.isAdmin == true) {
+      menuItems = adminMenu;
+    } else if (user?.isManager == true) {
+      menuItems = managerMenu;
+    } else {
+      menuItems = employeeMenu;
+    }
+
     return Container(
       width: 260,
       decoration: BoxDecoration(
@@ -60,222 +104,19 @@ class AppSidebar extends ConsumerWidget {
             ),
           ),
           const Divider(height: 1),
-          
           // Navigation Items
           Expanded(
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               children: [
-                // Common items for all users
-                _buildNavItem(
-                  context,
-                  icon: Icons.dashboard_outlined,
-                  activeIcon: Icons.dashboard,
-                  label: 'Dashboard',
-                  route: '/home',
-                ),
-                _buildNavItem(
-                  context,
-                  icon: Icons.event_note_outlined,
-                  activeIcon: Icons.event_note,
-                  label: 'Rezervasyonlar',
-                  route: '/reservations',
-                ),
-                _buildNavItem(
-                  context,
-                  icon: Icons.qr_code_scanner_outlined,
-                  activeIcon: Icons.qr_code_scanner,
-                  label: 'QR Kod',
-                  route: '/qr',
-                ),
-                
-                // Manager and Admin only
-                if (user?.canManageResources == true) ...[
-                  const SizedBox(height: 8),
-                  const Divider(),
-                  const SizedBox(height: 8),
+                for (final item in menuItems)
                   _buildNavItem(
                     context,
-                    icon: Icons.meeting_room_outlined,
-                    activeIcon: Icons.meeting_room,
-                    label: 'Odalar',
-                    route: '/rooms',
+                    icon: item['icon'],
+                    activeIcon: item['activeIcon'],
+                    label: item['label'],
+                    route: item['route'],
                   ),
-                  _buildNavItem(
-                    context,
-                    icon: Icons.inventory_2_outlined,
-                    activeIcon: Icons.inventory_2,
-                    label: 'Kaynaklar',
-                    route: '/resources',
-                  ),
-                ],
-                
-                // Manager and Admin only
-                if (user?.canViewReports == true) ...[
-                  const SizedBox(height: 8),
-                  const Divider(),
-                  const SizedBox(height: 8),
-                  _buildNavItem(
-                    context,
-                    icon: Icons.dashboard_outlined,
-                    activeIcon: Icons.dashboard,
-                    label: 'Genel Bakış',
-                    route: '/overview',
-                  ),
-                  _buildNavItem(
-                    context,
-                    icon: Icons.analytics_outlined,
-                    activeIcon: Icons.analytics,
-                    label: 'Raporlar',
-                    route: '/reports',
-                  ),
-                  _buildNavItem(
-                    context,
-                    icon: Icons.business_outlined,
-                    activeIcon: Icons.business,
-                    label: 'Lokasyonlar',
-                    route: '/locations',
-                  ),
-                  _buildNavItem(
-                    context,
-                    icon: Icons.map_outlined,
-                    activeIcon: Icons.map,
-                    label: 'Kat Planı',
-                    route: '/floorplan',
-                  ),
-                  _buildNavItem(
-                    context,
-                    icon: Icons.notifications_outlined,
-                    activeIcon: Icons.notifications,
-                    label: 'Bildirimler',
-                    route: '/notifications',
-                  ),
-                  _buildNavItem(
-                    context,
-                    icon: Icons.approval_outlined,
-                    activeIcon: Icons.approval,
-                    label: 'Onay Bekleyenler',
-                    route: '/approval',
-                  ),
-                  _buildNavItem(
-                    context,
-                    icon: Icons.gavel_outlined,
-                    activeIcon: Icons.gavel,
-                    label: 'Kurallar',
-                    route: '/rules',
-                  ),
-                  _buildNavItem(
-                    context,
-                    icon: Icons.history_outlined,
-                    activeIcon: Icons.history,
-                    label: 'İşlem Geçmişi',
-                    route: '/logs',
-                  ),
-                  _buildNavItem(
-                    context,
-                    icon: Icons.backup_outlined,
-                    activeIcon: Icons.backup,
-                    label: 'Yedekleme',
-                    route: '/backup',
-                  ),
-                  
-                  // Manager-specific pages
-                  const SizedBox(height: 8),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    child: Text(
-                      'MANAGER TOOLS',
-                      style: GoogleFonts.inter(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        color: AppTheme.textTertiary,
-                        letterSpacing: 1.2,
-                      ),
-                    ),
-                  ),
-                  _buildNavItem(
-                    context,
-                    icon: Icons.history_edu_outlined,
-                    activeIcon: Icons.history_edu,
-                    label: 'Manager Logları',
-                    route: '/manager-logs',
-                  ),
-                  _buildNavItem(
-                    context,
-                    icon: Icons.campaign_outlined,
-                    activeIcon: Icons.campaign,
-                    label: 'Manager Bildirimleri',
-                    route: '/manager-notifications',
-                  ),
-                  _buildNavItem(
-                    context,
-                    icon: Icons.assessment_outlined,
-                    activeIcon: Icons.assessment,
-                    label: 'Manager Raporları',
-                    route: '/manager-reports',
-                  ),
-                  _buildNavItem(
-                    context,
-                    icon: Icons.people_alt_outlined,
-                    activeIcon: Icons.people_alt,
-                    label: 'Manager Kullanıcıları',
-                    route: '/manager-users',
-                  ),
-                ],
-                
-                // Admin only
-                if (user?.canManageUsers == true) ...[
-                  _buildNavItem(
-                    context,
-                    icon: Icons.people_outline,
-                    activeIcon: Icons.people,
-                    label: 'Kullanıcılar',
-                    route: '/users',
-                  ),
-                  _buildNavItem(
-                    context,
-                    icon: Icons.person_add_outlined,
-                    activeIcon: Icons.person_add,
-                    label: 'Kayıt',
-                    route: '/register',
-                  ),
-                ],
-                
-                // All users
-                const SizedBox(height: 8),
-                const Divider(),
-                const SizedBox(height: 8),
-                _buildNavItem(
-                  context,
-                  icon: Icons.settings_outlined,
-                  activeIcon: Icons.settings,
-                  label: 'Ayarlar',
-                  route: '/settings',
-                ),
-                
-                // Developer Tools (Admin only)
-                if (user?.isAdmin == true) ...[
-                  const SizedBox(height: 8),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    child: Text(
-                      'DEVELOPER',
-                      style: GoogleFonts.inter(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        color: AppTheme.textTertiary,
-                        letterSpacing: 1.2,
-                      ),
-                    ),
-                  ),
-                  _buildNavItem(
-                    context,
-                    icon: Icons.bug_report_outlined,
-                    activeIcon: Icons.bug_report,
-                    label: 'API Test',
-                    route: '/api-test',
-                  ),
-                ],
               ],
             ),
           ),
