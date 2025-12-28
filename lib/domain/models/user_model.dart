@@ -6,23 +6,34 @@ part 'user_model.g.dart';
 // User Role enum - .NET UserRole karşılığı
 enum UserRole {
   @JsonValue(1)
-  employee('Employee'),
+  employee('Employee', 1),
   @JsonValue(2)
-  manager('Manager'),
+  manager('Manager', 2),
   @JsonValue(3)
-  admin('Admin');
+  admin('Admin', 3);
 
   final String value;
-  const UserRole(this.value);
+  final int intValue;
+  const UserRole(this.value, this.intValue);
 
-  factory UserRole.fromString(String value) {
-    return UserRole.values.firstWhere(
-      (e) => e.value == value,
-      orElse: () => UserRole.employee,
-    );
+  /// Robust factory: accepts int (1,2,3) or string ("Admin", "admin", etc)
+  factory UserRole.fromJson(dynamic json) {
+    if (json is int) {
+      return UserRole.values.firstWhere(
+        (e) => e.intValue == json,
+        orElse: () => UserRole.employee,
+      );
+    } else if (json is String) {
+      final lower = json.toLowerCase();
+      return UserRole.values.firstWhere(
+        (e) => e.value.toLowerCase() == lower || e.name.toLowerCase() == lower,
+        orElse: () => UserRole.employee,
+      );
+    }
+    return UserRole.employee;
   }
 
-  String toJson() => value;
+  dynamic toJson() => intValue;
 }
 
 /// User DTO - Login ve API responses için
@@ -41,8 +52,20 @@ class UserDto with _$UserDto {
     String? managerId,
   }) = _UserDto;
 
-  factory UserDto.fromJson(Map<String, dynamic> json) =>
-      _$UserDtoFromJson(json);
+  factory UserDto.fromJson(Map<String, dynamic> json) {
+    return UserDto(
+      id: json['id'] as String,
+      email: json['email'] as String,
+      firstName: json['firstName'] as String,
+      lastName: json['lastName'] as String,
+      role: UserRole.fromJson(json['role']),
+      department: json['department'] as String?,
+      jobTitle: json['jobTitle'] as String?,
+      phoneNumber: json['phoneNumber'] as String?,
+      isActive: json['isActive'] as bool?,
+      managerId: json['managerId'] as String?,
+    );
+  }
 }
 
 /// Login Response - .NET AuthController.Login() response structure

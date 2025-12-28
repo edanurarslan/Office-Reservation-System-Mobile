@@ -38,10 +38,35 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
     
-    // Auto redirect when authenticated
+    // Auto redirect when authenticated, role-based
     ref.listen(authProvider, (previous, next) {
-      if (next.status == AuthStatus.authenticated) {
-        context.go(AppRoutes.home);
+      if (next.status == AuthStatus.authenticated && next.user != null) {
+        final user = next.user!;
+        int roleValue = 1;
+        if (user.roles.isNotEmpty) {
+          final roleRaw = user.roles.first;
+          if (roleRaw is int) {
+            roleValue = roleRaw as int;
+          } else {
+            // Try to parse as int, else fallback to string checks
+            final parsed = int.tryParse(roleRaw.toString());
+            if (parsed != null) {
+              roleValue = parsed;
+            } else {
+              final roleStr = roleRaw.toString().toLowerCase();
+              if (roleStr == 'admin') roleValue = 3;
+              else if (roleStr == 'manager') roleValue = 2;
+              else roleValue = 1;
+            }
+          }
+        }
+        if (roleValue == 3) {
+          context.go(AppRoutes.overview); // Admin dashboard
+        } else if (roleValue == 2) {
+          context.go('/manager-dashboard'); // Manager dashboard (gerekirse route'u güncelle)
+        } else {
+          context.go(AppRoutes.home); // Employee dashboard
+        }
       }
     });
 
@@ -139,7 +164,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       child: Column(
                         children: [
                           Text(
-                            'Development Mode - Seed Kullanıcılar',
+                            'KULLANICILAR',
                             style: GoogleFonts.inter(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
@@ -147,11 +172,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             ),
                           ),
                           const SizedBox(height: 12),
-                          _buildRoleExample('Admin', 'admin@ofis.com', 'Tüm yetkilere sahip', 'Admin123!'),
+                          _buildRoleExample('Admin', 'admin@example.com', 'Tüm yetkilere sahip', 'eda12'),
                           const SizedBox(height: 8),
-                          _buildRoleExample('Manager', 'manager@ofis.com', 'Yönetici yetkiler', 'ofis123'),
+                          _buildRoleExample('Manager', 'manager@example.com', 'Yönetici yetkiler', 'eda12'),
                           const SizedBox(height: 8),
-                          _buildRoleExample('Employee', 'employee@ofis.com', 'Temel kullanıcı', 'employee123'),
+                          _buildRoleExample('Employee', 'employee@example.com', 'Temel kullanıcı', 'eda12'),
                         ],
                       ),
                     ),

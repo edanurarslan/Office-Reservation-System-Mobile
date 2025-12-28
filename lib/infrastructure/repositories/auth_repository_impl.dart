@@ -10,7 +10,7 @@ class AuthRepositoryImpl implements AuthRepository {
   
   // GEÇICI: Seed veriler ile çalışma modu
   // TODO: API'ye bağlantı kurulduktan sonra useRealApi = true yapın
-  static const bool useRealApi = false;
+  static const bool useRealApi = true;
   
   AuthRepositoryImpl({
     required this.secureStorage,
@@ -99,8 +99,18 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<void> logout() async {
+    // Token'ı oku
+    final token = await getStoredToken();
+    if (useRealApi && token != null && token.isNotEmpty) {
+      try {
+        await apiService.logout(token);
+      } catch (e) {
+        print('Logout API error: $e');
+      }
+    }
     await removeToken();
     await secureStorage.delete(key: 'user_data');
+    apiService.clearAuthToken();
   }
 
   @override

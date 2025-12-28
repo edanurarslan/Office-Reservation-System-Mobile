@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../application/providers/auth_provider.dart';
 import 'app_sidebar.dart';
 
 class AppLayout extends StatefulWidget {
@@ -91,51 +93,54 @@ class _AppLayoutState extends State<AppLayout> {
                       ),
                       const SizedBox(width: 8),
                       // User Menu
-                      PopupMenuButton<String>(
-                        child: CircleAvatar(
-                          backgroundColor: AppTheme.primaryIndigo,
-                          child: Text(
-                            'U',
-                            style: GoogleFonts.inter(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
+                      Consumer(
+                        builder: (context, ref, _) => PopupMenuButton<String>(
+                          child: CircleAvatar(
+                            backgroundColor: AppTheme.primaryIndigo,
+                            child: Text(
+                              'U',
+                              style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
+                          itemBuilder: (context) => <PopupMenuEntry<String>>[
+                            PopupMenuItem<String>(
+                              value: 'profile',
+                              child: ListTile(
+                                leading: const Icon(Icons.person),
+                                title: Text('Profil', style: GoogleFonts.inter()),
+                              ),
+                            ),
+                            PopupMenuItem<String>(
+                              value: 'settings',
+                              child: ListTile(
+                                leading: const Icon(Icons.settings),
+                                title: Text('Ayarlar', style: GoogleFonts.inter()),
+                              ),
+                            ),
+                            const PopupMenuDivider(),
+                            PopupMenuItem<String>(
+                              value: 'logout',
+                              child: ListTile(
+                                leading: const Icon(Icons.logout),
+                                title: Text('Çıkış Yap', style: GoogleFonts.inter()),
+                              ),
+                            ),
+                          ],
+                          onSelected: (value) async {
+                            switch (value) {
+                              case 'settings':
+                                Navigator.pushReplacementNamed(context, '/settings');
+                                break;
+                              case 'logout':
+                                await ref.read(authProvider.notifier).logout();
+                                Navigator.pushReplacementNamed(context, '/login');
+                                break;
+                            }
+                          },
                         ),
-                        itemBuilder: (context) => <PopupMenuEntry<String>>[
-                          PopupMenuItem<String>(
-                            value: 'profile',
-                            child: ListTile(
-                              leading: const Icon(Icons.person),
-                              title: Text('Profil', style: GoogleFonts.inter()),
-                            ),
-                          ),
-                          PopupMenuItem<String>(
-                            value: 'settings',
-                            child: ListTile(
-                              leading: const Icon(Icons.settings),
-                              title: Text('Ayarlar', style: GoogleFonts.inter()),
-                            ),
-                          ),
-                          const PopupMenuDivider(),
-                          PopupMenuItem<String>(
-                            value: 'logout',
-                            child: ListTile(
-                              leading: const Icon(Icons.logout),
-                              title: Text('Çıkış Yap', style: GoogleFonts.inter()),
-                            ),
-                          ),
-                        ],
-                        onSelected: (value) {
-                          switch (value) {
-                            case 'settings':
-                              Navigator.pushReplacementNamed(context, '/settings');
-                              break;
-                            case 'logout':
-                              Navigator.pushReplacementNamed(context, '/login');
-                              break;
-                          }
-                        },
                       ),
                     ],
                   ),

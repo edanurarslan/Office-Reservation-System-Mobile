@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../widgets/common/common.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../application/providers/auth_provider.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -129,26 +131,27 @@ class SettingsPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 32),
-                
                 // Logout Button
-                SizedBox(
-                  width: double.infinity,
-                  height: 48,
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/login');
-                    },
-                    icon: const Icon(Icons.logout),
-                    label: Text(
-                      'Çıkış Yap',
-                      style: GoogleFonts.inter(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                Consumer(
+                  builder: (context, ref, _) => SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: OutlinedButton.icon(
+                      onPressed: () async {
+                        await ref.read(authProvider.notifier).logout();
+                        Navigator.pushReplacementNamed(context, '/login');
+                      },
+                      icon: const Icon(Icons.logout),
+                      label: Text(
+                        'Çıkış Yap',
+                        style: GoogleFonts.inter(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.red,
-                      side: const BorderSide(color: Colors.red),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.red,
+                      ),
                     ),
                   ),
                 ),
@@ -165,6 +168,8 @@ class SettingsPage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
         children: [
+          Icon(icon, size: 20, color: AppTheme.textSecondary),
+          const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

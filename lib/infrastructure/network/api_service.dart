@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:io' show Platform;
 import '../../domain/models/user_model.dart';
 import '../../domain/models/reservation_model.dart';
 import '../../domain/models/location_model.dart';
@@ -11,9 +13,34 @@ import 'dio_client.dart';
 /// Endpoints: /api/v1/*
 
 class ApiService {
+  /// POST /auth/logout
+  Future<void> logout(String token) async {
+    try {
+      await _dio.post(
+        '/auth/logout',
+        options: Options(
+          headers: {'Authorization': 'Bearer $token'},
+        ),
+      );
+    } catch (e) {
+      throw _handleError(e);
+    }
+  }
   final Dio _dio;
 
-  static const String _baseUrl = 'http://localhost:5088/api/v1';
+  static String get _baseUrl {
+    if (kIsWeb) {
+      return 'http://localhost:5088/api/v1';
+    }
+    try {
+      if (Platform.isAndroid) {
+        // Android emülatörü için
+        return 'http://10.0.2.2:5088/api/v1';
+      }
+    } catch (_) {}
+    // Diğer platformlar (iOS, macOS, Windows, Linux)
+    return 'http://localhost:5088/api/v1';
+  }
 
   ApiService(this._dio) {
     _dio.options.baseUrl = _baseUrl;
