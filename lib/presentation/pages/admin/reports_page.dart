@@ -49,6 +49,9 @@ class ReportsPage extends ConsumerWidget with PermissionCheckMixin {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final int crossAxisCount = screenWidth < 500 ? 2 : (screenWidth < 800 ? 3 : 4);
+    
     return PermissionGuardWidget(
       requiredRoute: '/reports',
       child: AppLayout(
@@ -61,6 +64,7 @@ class ReportsPage extends ConsumerWidget with PermissionCheckMixin {
             children: [
               // Header
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
                     width: 56,
@@ -98,17 +102,17 @@ class ReportsPage extends ConsumerWidget with PermissionCheckMixin {
               GridView.count(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: 3,
+                crossAxisCount: crossAxisCount,
                 mainAxisSpacing: 16,
                 crossAxisSpacing: 16,
-                childAspectRatio: 1.2,
+                childAspectRatio: screenWidth < 500 ? 0.9 : 1.1,
                 children: [
-                  _buildClickableReportCard(context, 'Rezervasyon Raporu', Icons.event_note, AppTheme.primaryIndigo, 'Toplam Rezervasyon: 120'),
-                  _buildClickableReportCard(context, 'Kullanım Analizi', Icons.bar_chart, Colors.green, 'Ortalama Doluluk: %78'),
-                  _buildClickableReportCard(context, 'Kullanıcı Aktivitesi', Icons.people, Colors.orange, 'Aktif Kullanıcı: 34'),
-                  _buildClickableReportCard(context, 'Oda Doluluk Oranı', Icons.meeting_room, Colors.purple, 'En yoğun oda: A-101'),
-                  _buildClickableReportCard(context, 'Kaynak Kullanımı', Icons.inventory_2, AppTheme.accentIndigo, 'En çok kullanılan: Projeksiyon'),
-                  _buildClickableReportCard(context, 'Finansal Rapor', Icons.attach_money, Colors.teal, 'Toplam Gelir: ₺12.500'),
+                  _buildClickableReportCard(context, 'Rezervasyon', Icons.event_note, AppTheme.primaryIndigo, '120'),
+                  _buildClickableReportCard(context, 'Kullanım', Icons.bar_chart, Colors.green, '%78'),
+                  _buildClickableReportCard(context, 'Kullanıcı', Icons.people, Colors.orange, '34'),
+                  _buildClickableReportCard(context, 'Oda Doluluk', Icons.meeting_room, Colors.purple, 'A-101'),
+                  _buildClickableReportCard(context, 'Kaynak', Icons.inventory_2, AppTheme.accentIndigo, 'Projeksiyon'),
+                  _buildClickableReportCard(context, 'Finansal', Icons.attach_money, Colors.teal, '₺12.500'),
                 ],
               ),
               const SizedBox(height: 32),
@@ -124,13 +128,30 @@ class ReportsPage extends ConsumerWidget with PermissionCheckMixin {
                     children: [
                       Text('Özet İstatistikler', style: _infoPanelTitleStyle().copyWith(fontSize: 18)),
                       const SizedBox(height: 12),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _buildStatItem('Toplam Rezervasyon', '120'),
-                          _buildStatItem('Ortalama Doluluk', '%78'),
-                          _buildStatItem('Aktif Kullanıcı', '34'),
-                        ],
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          if (constraints.maxWidth > 400) {
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                _buildStatItem('Toplam Rezervasyon', '120'),
+                                _buildStatItem('Ortalama Doluluk', '%78'),
+                                _buildStatItem('Aktif Kullanıcı', '34'),
+                              ],
+                            );
+                          } else {
+                            return Wrap(
+                              spacing: 24,
+                              runSpacing: 16,
+                              alignment: WrapAlignment.spaceAround,
+                              children: [
+                                _buildStatItem('Toplam Rezervasyon', '120'),
+                                _buildStatItem('Ortalama Doluluk', '%78'),
+                                _buildStatItem('Aktif Kullanıcı', '34'),
+                              ],
+                            );
+                          }
+                        },
                       ),
                     ],
                   ),
@@ -215,18 +236,30 @@ class ReportsPage extends ConsumerWidget with PermissionCheckMixin {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 64,
-              height: 64,
+              width: 48,
+              height: 48,
               decoration: BoxDecoration(
                 color: color.withOpacity(0.12),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(icon, color: color, size: 32),
+              child: Icon(icon, color: color, size: 24),
             ),
-            const SizedBox(height: 12),
-            Text(title, style: _reportCardTitleStyle(), textAlign: TextAlign.center),
             const SizedBox(height: 8),
-            Text(stat, style: _subtitleStyle().copyWith(color: color, fontWeight: FontWeight.w600), textAlign: TextAlign.center),
+            Text(
+              title, 
+              style: _reportCardTitleStyle().copyWith(fontSize: 13), 
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              stat, 
+              style: _subtitleStyle().copyWith(color: color, fontWeight: FontWeight.w600, fontSize: 12), 
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ],
         ),
       ),

@@ -83,7 +83,7 @@ class _BackupPageState extends ConsumerState<BackupPage> {
       requiredRoute: '/backup',
       child: AppLayout(
         currentRoute: '/backup',
-        title: 'Yedekleme ve Dışa Aktarma',
+        title: 'Yedekleme',
         child: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(32),

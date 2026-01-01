@@ -88,15 +88,18 @@ class _AppLayoutState extends State<AppLayout> {
                             ? 'Menüyü Aç'
                             : (sidebarOpen ? 'Menüyü Kapat' : 'Menüyü Aç'),
                       ),
-                      Text(
-                        widget.title,
-                        style: GoogleFonts.inter(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
-                          color: AppTheme.textPrimary,
+                      Expanded(
+                        child: Text(
+                          widget.title,
+                          style: GoogleFonts.inter(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w700,
+                            color: AppTheme.textPrimary,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
                         ),
                       ),
-                      const Spacer(),
                       IconButton(
                         icon: const Icon(Icons.notifications_outlined),
                         onPressed: () {},

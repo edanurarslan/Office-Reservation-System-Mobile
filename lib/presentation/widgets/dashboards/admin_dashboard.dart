@@ -1,20 +1,23 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../../domain/entities/user.dart';
+import '../../../application/providers/auth_provider.dart';
 
-class AdminDashboard extends StatefulWidget {
-  final User user;
-  const AdminDashboard({super.key, required this.user});
+class AdminDashboard extends ConsumerStatefulWidget {
+  const AdminDashboard({super.key});
 
   @override
-  State<AdminDashboard> createState() => _AdminDashboardState();
+  ConsumerState<AdminDashboard> createState() => _AdminDashboardState();
 }
 
-class _AdminDashboardState extends State<AdminDashboard> {
+class _AdminDashboardState extends ConsumerState<AdminDashboard> {
   late Timer _timer;
   DateTime _currentTime = DateTime.now();
+
+  User? get user => ref.watch(authProvider).user;
 
   @override
   void initState() {

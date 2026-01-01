@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ofis_yonetim_sistemi/presentation/widgets/dashboards/admin_dashboard.dart';
 import '../../application/providers/auth_provider.dart';
 import '../../presentation/pages/auth/auth.dart';
 import '../../presentation/pages/employee/employee.dart';
@@ -39,6 +40,7 @@ class AppRoutes {
   static const String rooms = '/rooms';
   static const String apiTest = '/api-test';
   static const String adminNotifications = '/admin-notifications';
+  static const String adminDashboard = '/admin-dashboard';
 }
 
 // Router provider with authentication and role-based guards
@@ -75,6 +77,15 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.splash,
         name: 'splash',
         builder: (context, state) => const SplashScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.adminDashboard,
+        name: 'admin-dashboard',
+        builder: (context, state) => const AppLayout(
+          currentRoute: '/admin-dashboard',
+          title: 'Admin Dashboard',
+          child: AdminDashboard(),
+        ),
       ),
       GoRoute(
         path: AppRoutes.login,

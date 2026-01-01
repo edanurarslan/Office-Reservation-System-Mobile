@@ -24,7 +24,7 @@ class HomePage extends ConsumerWidget {
   Widget _buildRoleBasedDashboard(user) {
     // Admin dashboard
     if (user.isAdmin) {
-      return AdminDashboard(user: user);
+      return const AdminDashboard();
     }
     
     // Manager dashboard

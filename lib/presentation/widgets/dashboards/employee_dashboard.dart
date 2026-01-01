@@ -157,18 +157,22 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(color: const Color(0xFFFEE2E2), borderRadius: BorderRadius.circular(8)),
-                    child: const Icon(Icons.restaurant, color: Color(0xFFF43F5E), size: 20),
-                  ),
-                  const SizedBox(width: 12),
-                  Text('Haftalık Yemek Menüsü', style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold)),
-                ],
+              Expanded(
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(color: const Color(0xFFFEE2E2), borderRadius: BorderRadius.circular(8)),
+                      child: const Icon(Icons.restaurant, color: Color(0xFFF43F5E), size: 20),
+                    ),
+                    const SizedBox(width: 12),
+                    Flexible(
+                      child: Text('Haftalık Yemek Menüsü', style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis),
+                    ),
+                  ],
+                ),
               ),
-              TextButton(onPressed: () {}, child: const Text('PDF İndir', style: TextStyle(fontWeight: FontWeight.bold))),
+              TextButton(onPressed: () {}, child: const Text('PDF', style: TextStyle(fontWeight: FontWeight.bold))),
             ],
           ),
           const SizedBox(height: 20),

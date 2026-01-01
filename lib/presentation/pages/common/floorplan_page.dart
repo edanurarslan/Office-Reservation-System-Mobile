@@ -18,15 +18,25 @@ class _FloorplanPageState extends ConsumerState<FloorplanPage> {
   Map<String, dynamic>? _selectedDesk;
   bool _hasChanges = false;
 
-  // Mock Data
-  final List<Map<String, dynamic>> _desks = List.generate(12, (index) => {
-    'id': 'd$index',
-    'name': 'Masa ${index + 1}',
-    'x': 50.0 + (index % 4) * 100.0,
-    'y': 50.0 + (index ~/ 4) * 100.0,
-    'zone': index < 6 ? 'A Bölgesi' : 'B Bölgesi',
-    'hasMonitor': index % 2 == 0,
-  });
+  // Mock Data - Varsayılan 2 masa
+  final List<Map<String, dynamic>> _desks = [
+    {
+      'id': 'd0',
+      'name': 'Masa 1',
+      'x': 100.0,
+      'y': 100.0,
+      'zone': 'A Bölgesi',
+      'hasMonitor': true,
+    },
+    {
+      'id': 'd1',
+      'name': 'Masa 2',
+      'x': 250.0,
+      'y': 100.0,
+      'zone': 'B Bölgesi',
+      'hasMonitor': false,
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +124,10 @@ class _FloorplanPageState extends ConsumerState<FloorplanPage> {
   }
 
   // --- Kat Planı Alanı (Canvas) ---
+  double _canvasWidth = 700;
+  static const double _canvasHeight = 600;
+  static const double _deskSize = 50;
+
   Widget _buildCanvas(double screenWidth) {
     // Responsive genişlik: min 300, max 700, parent'a göre ayarlanır
     double canvasWidth = screenWidth;
@@ -125,6 +139,7 @@ class _FloorplanPageState extends ConsumerState<FloorplanPage> {
       canvasWidth = screenWidth - 32; // padding
     }
     canvasWidth = canvasWidth.clamp(300.0, 700.0);
+    _canvasWidth = canvasWidth;
     return Center(
       child: Container(
         width: canvasWidth,
@@ -156,15 +171,23 @@ class _FloorplanPageState extends ConsumerState<FloorplanPage> {
       child: GestureDetector(
         onPanUpdate: (details) {
           setState(() {
-            desk['x'] += details.delta.dx;
-            desk['y'] += details.delta.dy;
+            // Yeni pozisyonu hesapla
+            double newX = desk['x'] + details.delta.dx;
+            double newY = desk['y'] + details.delta.dy;
+            
+            // Sınırlar içinde tut (0 ile canvas boyutu - masa boyutu arasında)
+            newX = newX.clamp(0.0, _canvasWidth - _deskSize);
+            newY = newY.clamp(0.0, _canvasHeight - _deskSize);
+            
+            desk['x'] = newX;
+            desk['y'] = newY;
             _hasChanges = true;
           });
         },
         onTap: () => setState(() => _selectedDesk = desk),
         child: Container(
-          width: 50,
-          height: 50,
+          width: _deskSize,
+          height: _deskSize,
           decoration: BoxDecoration(
             color: desk['zone'] == 'A Bölgesi' ? const Color(0xFF6366F1) : const Color(0xFFF59E0B),
             borderRadius: BorderRadius.circular(10),
@@ -195,6 +218,10 @@ class _FloorplanPageState extends ConsumerState<FloorplanPage> {
   }
 
   Widget _buildZoneLegend() {
+    // Bölgelere göre masa sayısını hesapla
+    int aCount = _desks.where((d) => d['zone'] == 'A Bölgesi').length;
+    int bCount = _desks.where((d) => d['zone'] == 'B Bölgesi').length;
+    
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: _sidebarDeco(),
@@ -203,8 +230,8 @@ class _FloorplanPageState extends ConsumerState<FloorplanPage> {
         children: [
           const Text('Bölgeler', style: TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 16),
-          _legendItem('A Bölgesi', const Color(0xFF6366F1), 6),
-          _legendItem('B Bölgesi', const Color(0xFFF59E0B), 6),
+          _legendItem('A Bölgesi', const Color(0xFF6366F1), aCount),
+          _legendItem('B Bölgesi', const Color(0xFFF59E0B), bCount),
         ],
       ),
     );

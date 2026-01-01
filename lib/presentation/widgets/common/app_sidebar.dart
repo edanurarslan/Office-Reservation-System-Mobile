@@ -38,7 +38,7 @@ class AppSidebar extends ConsumerWidget {
     ];
 
     final adminMenu = [
-  {'icon': Icons.dashboard_outlined, 'activeIcon': Icons.dashboard, 'label': 'Genel Bakış', 'route': '/overview'},
+  {'icon': Icons.dashboard_outlined, 'activeIcon': Icons.dashboard, 'label': 'Dashboard', 'route': '/admin-dashboard'},
   {'icon': Icons.business_outlined, 'activeIcon': Icons.business, 'label': 'Konumlar', 'route': '/locations'},
   {'icon': Icons.shield_outlined, 'activeIcon': Icons.shield, 'label': 'Kat Planı', 'route': '/floorplan'},
   {'icon': Icons.book_outlined, 'activeIcon': Icons.book, 'label': 'Kurallar', 'route': '/rules'},

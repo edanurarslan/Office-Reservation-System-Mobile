@@ -347,19 +347,40 @@ class _UsersPageState extends ConsumerState<UsersPage> {
                 const SizedBox(height: 16),
                 _buildModalField('E-posta', _emailController, keyboardType: TextInputType.emailAddress),
                 const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: DropdownButtonFormField<String>(
-                        value: _selectedRole,
-                        decoration: _modalInputDeco('Rol'),
-                        items: ['admin', 'manager', 'user', 'guest'].map((r) => DropdownMenuItem(value: r, child: Text(r.toUpperCase()))).toList(),
-                        onChanged: (val) => _selectedRole = val!,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(child: _buildModalField('Telefon', _phoneController, keyboardType: TextInputType.phone)),
-                  ],
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    if (constraints.maxWidth > 300) {
+                      return Row(
+                        children: [
+                          Expanded(
+                            child: DropdownButtonFormField<String>(
+                              value: _selectedRole,
+                              decoration: _modalInputDeco('Rol'),
+                              isExpanded: true,
+                              items: ['admin', 'manager', 'user', 'guest'].map((r) => DropdownMenuItem(value: r, child: Text(r.toUpperCase()))).toList(),
+                              onChanged: (val) => _selectedRole = val!,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(child: _buildModalField('Telefon', _phoneController, keyboardType: TextInputType.phone)),
+                        ],
+                      );
+                    } else {
+                      return Column(
+                        children: [
+                          DropdownButtonFormField<String>(
+                            value: _selectedRole,
+                            decoration: _modalInputDeco('Rol'),
+                            isExpanded: true,
+                            items: ['admin', 'manager', 'user', 'guest'].map((r) => DropdownMenuItem(value: r, child: Text(r.toUpperCase()))).toList(),
+                            onChanged: (val) => _selectedRole = val!,
+                          ),
+                          const SizedBox(height: 12),
+                          _buildModalField('Telefon', _phoneController, keyboardType: TextInputType.phone),
+                        ],
+                      );
+                    }
+                  },
                 ),
                 const SizedBox(height: 16),
                 Container(
