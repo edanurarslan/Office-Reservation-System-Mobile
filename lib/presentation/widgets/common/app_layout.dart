@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../application/providers/auth_provider.dart';
 import 'app_sidebar.dart';
@@ -144,12 +145,17 @@ class _AppLayoutState extends State<AppLayout> {
                           ],
                           onSelected: (value) async {
                             switch (value) {
+                              case 'profile':
+                                // Tüm kullanıcılar için profil sayfasına git
+                                context.push('/settings');
+                                break;
                               case 'settings':
-                                Navigator.pushReplacementNamed(context, '/settings');
+                                // Tüm kullanıcılar için ayarlar sayfasına git
+                                context.push('/settings');
                                 break;
                               case 'logout':
                                 await ref.read(authProvider.notifier).logout();
-                                Navigator.pushReplacementNamed(context, '/login');
+                                context.go('/login');
                                 break;
                             }
                           },
