@@ -2,9 +2,9 @@
 export 'employee/home_page.dart';
 export 'employee/locations_page.dart';
 export 'employee/notifications_page.dart';
-export 'employee/qr_page.dart';
+export 'common/qr_page.dart';
 export 'employee/settings_page.dart';
-export 'employee/employee.dart';
+export 'employee/employee.dart' hide QrPage;
 export 'employee/reservations_page.dart';
 
 // Admin Pages

@@ -34,7 +34,7 @@ class AppSidebar extends ConsumerWidget {
   {'icon': Icons.bar_chart_outlined, 'activeIcon': Icons.bar_chart, 'label': 'Raporlar', 'route': '/manager-reports'},
   {'icon': Icons.notifications_outlined, 'activeIcon': Icons.notifications, 'label': 'Bildirimler', 'route': '/manager-notifications'},
   {'icon': Icons.history_outlined, 'activeIcon': Icons.history, 'label': 'Loglar', 'route': '/manager-logs'},
-  {'icon': Icons.qr_code_scanner_outlined, 'activeIcon': Icons.qr_code_scanner, 'label': 'QR Kod', 'route': '/qr'},
+  {'icon': Icons.qr_code_scanner_outlined, 'activeIcon': Icons.qr_code_scanner, 'label': 'QR Kod', 'route': '/qr'}, // route aynı, sayfa artık common/qr_page.dart
     ];
 
     final adminMenu = [

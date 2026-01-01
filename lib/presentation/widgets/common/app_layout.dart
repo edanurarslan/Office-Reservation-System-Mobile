@@ -23,29 +23,35 @@ class AppLayout extends StatefulWidget {
 
 class _AppLayoutState extends State<AppLayout> {
   bool sidebarOpen = true;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
-    // Küçük ekranda sidebar kapalı başlasın
-    if (screenWidth < 900 && sidebarOpen) sidebarOpen = false;
+    final bool isMobile = screenWidth < 900;
+    if (isMobile && sidebarOpen) sidebarOpen = false;
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: isMobile
+          ? Drawer(
+              child: SafeArea(child: AppSidebar(currentRoute: widget.currentRoute)),
+            )
+          : null,
       body: Stack(
         children: [
-          // Sidebar (açık ise göster)
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 250),
-            left: sidebarOpen ? 0 : -260,
-            top: 0,
-            bottom: 0,
-            width: 260,
-            child: AppSidebar(currentRoute: widget.currentRoute),
-          ),
-          // Main Content
+          if (!isMobile)
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 250),
+              left: sidebarOpen ? 0 : -260,
+              top: 0,
+              bottom: 0,
+              width: 260,
+              child: AppSidebar(currentRoute: widget.currentRoute),
+            ),
           AnimatedContainer(
             duration: const Duration(milliseconds: 250),
             curve: Curves.ease,
-            margin: EdgeInsets.only(left: sidebarOpen ? 260 : 0),
+            margin: EdgeInsets.only(left: (!isMobile && sidebarOpen) ? 260 : 0),
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
@@ -55,7 +61,6 @@ class _AppLayoutState extends State<AppLayout> {
             ),
             child: Column(
               children: [
-                // Top Navbar
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                   decoration: BoxDecoration(
@@ -66,15 +71,22 @@ class _AppLayoutState extends State<AppLayout> {
                   ),
                   child: Row(
                     children: [
-                      // Hamburger butonu (her zaman görünür)
                       IconButton(
-                        icon: Icon(sidebarOpen ? Icons.menu_open : Icons.menu),
+                        icon: Icon(isMobile
+                            ? Icons.menu
+                            : (sidebarOpen ? Icons.menu_open : Icons.menu)),
                         onPressed: () {
-                          setState(() {
-                            sidebarOpen = !sidebarOpen;
-                          });
+                          if (isMobile) {
+                            _scaffoldKey.currentState?.openDrawer();
+                          } else {
+                            setState(() {
+                              sidebarOpen = !sidebarOpen;
+                            });
+                          }
                         },
-                        tooltip: sidebarOpen ? 'Menüyü Kapat' : 'Menüyü Aç',
+                        tooltip: isMobile
+                            ? 'Menüyü Aç'
+                            : (sidebarOpen ? 'Menüyü Kapat' : 'Menüyü Aç'),
                       ),
                       Text(
                         widget.title,
@@ -85,14 +97,12 @@ class _AppLayoutState extends State<AppLayout> {
                         ),
                       ),
                       const Spacer(),
-                      // Notifications
                       IconButton(
                         icon: const Icon(Icons.notifications_outlined),
                         onPressed: () {},
                         tooltip: 'Bildirimler',
                       ),
                       const SizedBox(width: 8),
-                      // User Menu
                       Consumer(
                         builder: (context, ref, _) => PopupMenuButton<String>(
                           child: CircleAvatar(
@@ -145,7 +155,6 @@ class _AppLayoutState extends State<AppLayout> {
                     ],
                   ),
                 ),
-                // Content
                 Expanded(child: widget.child),
               ],
             ),

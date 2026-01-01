@@ -79,20 +79,33 @@ class OverviewPage extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Stats Cards
-          GridView.count(
-            crossAxisCount: 4,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: 16,
-            crossAxisSpacing: 16,
-            childAspectRatio: 1.5,
-            children: [
-              _buildStatCard('Toplam Rezervasyon', '247', Icons.event, Colors.blue),
-              _buildStatCard('Aktif Kullanıcı', '42', Icons.people, Colors.green),
-              _buildStatCard('Lokasyonlar', '8', Icons.business, Colors.orange),
-              _buildStatCard('Bugünkü Rezervasyon', '15', Icons.today, Colors.purple),
-            ],
+          // Responsive Stats Cards
+          LayoutBuilder(
+            builder: (context, constraints) {
+              int crossAxisCount = 4;
+              if (constraints.maxWidth < 900) crossAxisCount = 2;
+              if (constraints.maxWidth < 600) crossAxisCount = 1;
+              final stats = [
+                {'title': 'Toplam Rezervasyon', 'value': '247', 'icon': Icons.event, 'color': Colors.blue},
+                {'title': 'Aktif Kullanıcı', 'value': '42', 'icon': Icons.people, 'color': Colors.green},
+                {'title': 'Lokasyonlar', 'value': '8', 'icon': Icons.business, 'color': Colors.orange},
+                {'title': 'Bugünkü Rezervasyon', 'value': '15', 'icon': Icons.today, 'color': Colors.purple},
+              ];
+              return GridView.count(
+                crossAxisCount: crossAxisCount,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
+                childAspectRatio: 1.5,
+                children: stats.map((s) => _buildStatCard(
+                  s['title'] as String,
+                  s['value'] as String,
+                  s['icon'] as IconData,
+                  s['color'] as Color,
+                )).toList(),
+              );
+            },
           ),
           const SizedBox(height: 32),
 

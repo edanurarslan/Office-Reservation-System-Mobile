@@ -40,218 +40,263 @@ class _ApprovalPageState extends ConsumerState<ApprovalPage>
     );
   }
 
-  Widget _buildContent() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 900),
-          child: Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Title
-                  Text(
-                    'Rezervasyon Onay/İptal',
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.indigo[900],
-                        ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Bekleyen rezervasyonları onaylayın veya reddedin.',
-                    style: TextStyle(
-                      color: Colors.indigo[600],
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
+Widget _buildContent() {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Ekran genişliği 800'den küçükse tablo 800px olsun (kaydırma açılır).
+        // Ekran 800'den büyükse, tablo ekran genişliğine yayılsın (Expanded çalışır).
+        final double minTableWidth = 800.0;
+        final double contentWidth = constraints.maxWidth < minTableWidth
+            ? minTableWidth
+            : constraints.maxWidth;
 
-                  // Approvals Table
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.grey[200]!),
-                    ),
-                    child: Column(
-                      children: [
-                        // Table Header
-                        Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Colors.indigo[50],
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(16),
-                              topRight: Radius.circular(16),
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          // DİKEY KAYDIRMA (Tüm sayfa için)
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 1000),
+              child: Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // --- Başlık Kısmı ---
+                      Text(
+                        'Rezervasyon Onay/İptal',
+                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.indigo[900],
                             ),
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                  'Kullanıcı',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.indigo[700],
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                  'Masa/Oda',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.indigo[700],
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                  'Tarih',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.indigo[700],
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                  'Durum',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.indigo[700],
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 3,
-                                child: Text(
-                                  'Aksiyon',
-                                  textAlign: TextAlign.right,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.indigo[700],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Bekleyen rezervasyonları onaylayın veya reddedin.',
+                        style: TextStyle(
+                          color: Colors.indigo[600],
+                          fontWeight: FontWeight.w500,
                         ),
+                      ),
+                      const SizedBox(height: 24),
 
-                        // Table Body
-                        if (_approvals.isEmpty)
-                          Padding(
-                            padding: const EdgeInsets.all(40),
+                      // --- Tablo Alanı ---
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: Colors.grey[200]!),
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal, // YATAY KAYDIRMA
+                          physics: const ClampingScrollPhysics(), 
+                          child: SizedBox(
+                            // KRİTİK DÜZELTME: Tabloya kesin bir genişlik veriyoruz.
+                            // Böylece Expanded widget'ları ne kadar yer kaplayacağını biliyor.
+                            width: contentWidth, 
                             child: Column(
                               children: [
-                                Icon(Icons.check_circle_outline,
-                                    size: 64, color: Colors.grey[300]),
-                                const SizedBox(height: 16),
-                                Text(
-                                  'Bekleyen rezervasyon yok.',
-                                  style:
-                                      TextStyle(color: Colors.grey[500], fontSize: 16),
-                                ),
-                              ],
-                            ),
-                          )
-                        else
-                          ...List.generate(_approvals.length, (index) {
-                            final approval = _approvals[index];
-                            return Container(
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  bottom: BorderSide(
-                                    color: index == _approvals.length - 1
-                                        ? Colors.transparent
-                                        : Colors.grey[200]!,
+                                // --- Tablo Başlığı ---
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 12),
+                                  color: Colors.indigo[50],
+                                  child: Row(
+                                    children: [
+                                      _buildHeaderCell('Kullanıcı', flex: 3),
+                                      _buildHeaderCell('Masa/Oda', flex: 2),
+                                      _buildHeaderCell('Tarih', flex: 2),
+                                      _buildHeaderCell('Durum', flex: 2),
+                                      _buildHeaderCell('Aksiyon',
+                                          flex: 4, align: TextAlign.right),
+                                    ],
                                   ),
                                 ),
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 2,
-                                    child: Text(
-                                      approval.user,
-                                      style:
-                                          const TextStyle(fontWeight: FontWeight.w500),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: Text(approval.desk),
-                                  ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: Text(approval.date),
-                                  ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: _buildStatusChip(approval.status),
-                                  ),
-                                  Expanded(
-                                    flex: 3,
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
+
+                                // --- Tablo İçeriği ---
+                                if (_approvals.isEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.all(40),
+                                    child: Column(
                                       children: [
-                                        if (approval.status ==
-                                            ApprovalStatus.pending) ...[
-                                          ElevatedButton.icon(
-                                            onPressed: () => _approve(approval),
-                                            icon: const Icon(Icons.check, size: 16),
-                                            label: const Text('Onayla'),
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.green,
-                                              foregroundColor: Colors.white,
-                                              padding: const EdgeInsets.symmetric(
-                                                  horizontal: 12, vertical: 8),
+                                        Icon(Icons.check_circle_outline,
+                                            size: 64, color: Colors.grey[300]),
+                                        const SizedBox(height: 16),
+                                        Text(
+                                          'Bekleyen rezervasyon yok.',
+                                          style: TextStyle(
+                                              color: Colors.grey[500],
+                                              fontSize: 16),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                else
+                                  ...List.generate(_approvals.length, (index) {
+                                    final approval = _approvals[index];
+                                    return Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 12),
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(
+                                            color:
+                                                index == _approvals.length - 1
+                                                    ? Colors.transparent
+                                                    : Colors.grey[200]!,
+                                          ),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            flex: 3,
+                                            child: Text(
+                                              approval.user,
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.black87),
                                             ),
                                           ),
-                                          const SizedBox(width: 8),
-                                          ElevatedButton.icon(
-                                            onPressed: () => _reject(approval),
-                                            icon: const Icon(Icons.close, size: 16),
-                                            label: const Text('Reddet'),
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.red,
-                                              foregroundColor: Colors.white,
-                                              padding: const EdgeInsets.symmetric(
-                                                  horizontal: 12, vertical: 8),
+                                          Expanded(
+                                            flex: 2,
+                                            child: Text(approval.desk,
+                                                style: const TextStyle(
+                                                    color: Colors.black54)),
+                                          ),
+                                          Expanded(
+                                            flex: 2,
+                                            child: Text(approval.date,
+                                                style: const TextStyle(
+                                                    color: Colors.black54)),
+                                          ),
+                                          Expanded(
+                                            flex: 2,
+                                            child: Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: _buildStatusChip(
+                                                    approval.status)),
+                                          ),
+                                          Expanded(
+                                            flex: 4,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                if (approval.status ==
+                                                    ApprovalStatus.pending) ...[
+                                                  ElevatedButton.icon(
+                                                    onPressed: () =>
+                                                        _approve(approval),
+                                                    icon: const Icon(
+                                                        Icons.check,
+                                                        size: 14),
+                                                    label: const Text('Onayla'),
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      backgroundColor:
+                                                          Colors.green.shade600,
+                                                      foregroundColor:
+                                                          Colors.white,
+                                                      elevation: 0,
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal: 12,
+                                                          vertical: 8),
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          8)),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  ElevatedButton.icon(
+                                                    onPressed: () =>
+                                                        _reject(approval),
+                                                    icon: const Icon(
+                                                        Icons.close,
+                                                        size: 14),
+                                                    label: const Text('Reddet'),
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      backgroundColor:
+                                                          Colors.red.shade50,
+                                                      foregroundColor:
+                                                          Colors.red.shade700,
+                                                      elevation: 0,
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal: 12,
+                                                          vertical: 8),
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          8)),
+                                                    ),
+                                                  ),
+                                                ] else ...[
+                                                  Text(
+                                                    approval.status ==
+                                                            ApprovalStatus
+                                                                .approved
+                                                        ? "Tamamlandı"
+                                                        : "İptal Edildi",
+                                                    style: TextStyle(
+                                                        color: Colors
+                                                            .grey.shade400,
+                                                        fontStyle:
+                                                            FontStyle.italic,
+                                                        fontSize: 12),
+                                                  )
+                                                ],
+                                              ],
                                             ),
                                           ),
                                         ],
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          }),
-                      ],
-                    ),
+                                      ),
+                                    );
+                                  }),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
+        );
+      },
+    );
+  }
+
+  // Yardımcı Widget
+  Widget _buildHeaderCell(String text,
+      {required int flex, TextAlign align = TextAlign.left}) {
+    return Expanded(
+      flex: flex,
+      child: Text(
+        text,
+        textAlign: align,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Colors.indigo[900],
+          fontSize: 13,
         ),
       ),
     );
   }
-
+  
   Widget _buildStatusChip(ApprovalStatus status) {
     Color color;
     String label;

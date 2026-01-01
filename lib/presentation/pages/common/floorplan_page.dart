@@ -115,23 +115,34 @@ class _FloorplanPageState extends ConsumerState<FloorplanPage> {
 
   // --- Kat Planı Alanı (Canvas) ---
   Widget _buildCanvas(double screenWidth) {
-    return Container(
-      height: 600,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20)],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
-        child: Stack(
-          children: [
-            // Arka Plan Grid
-            _buildGridBackground(),
-            // Masalar
-            ..._desks.map((desk) => _buildDraggableDesk(desk)),
-          ],
+    // Responsive genişlik: min 300, max 700, parent'a göre ayarlanır
+    double canvasWidth = screenWidth;
+    if (screenWidth > 1100) {
+      canvasWidth = 700;
+    } else if (screenWidth > 600) {
+      canvasWidth = screenWidth * 0.6;
+    } else {
+      canvasWidth = screenWidth - 32; // padding
+    }
+    canvasWidth = canvasWidth.clamp(300.0, 700.0);
+    return Center(
+      child: Container(
+        width: canvasWidth,
+        height: 600,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: const Color(0xFFE2E8F0)),
+          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20)],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(24),
+          child: Stack(
+            children: [
+              _buildGridBackground(),
+              ..._desks.map((desk) => _buildDraggableDesk(desk)),
+            ],
+          ),
         ),
       ),
     );
