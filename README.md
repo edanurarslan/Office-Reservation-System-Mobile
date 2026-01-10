@@ -11,32 +11,9 @@ flutter run -d chrome
 ```
 
 ### Login Kredileri
-- Admin: `admin@ofis.com` / `admin123`
-- Manager: `manager@ofis.com` / `manager123`
-- Employee: `employee@ofis.com` / `employee123`
-
----
-
-## Son Guncellemeler (17 Kasim 2025)
-
-### Yapilmis Isler
-1. **Rezervasyon Formu Entegrasyonu** - Duzenle
-   - Form basariyla aciliyor
-   - Resource secimi calisciyor
-   - Tarih/saat secimi yapiliyor
-
-2. **Seed Resources Sistemi** - Duzenle
-   - 5 kaynak hazir (odalar, masalar, parking)
-   - Dropdown aninda doldurulur
-
-3. **Sidebar Navigasyonu** - Duzenle
-   - 17 route dogru sayfalara gidiyor
-   - Sidebar tum sayfalarda gorulur
-   - Aktif sayfa vurgulu
-
-4. **AppRouter Mimarisi** - Duzenle
-   - MainNavigationWrapper'dan ayrildi
-   - Dogrudan sayfa instantiasyonu
+- Admin: `admin@example.com`
+- Manager: `manager@example.com`
+- Employee: `employee@example.com`
 
 ---
 
@@ -129,16 +106,6 @@ lib/
 
 ---
 
-## Aciliyor Sorunlar (Known Issues)
-
-| Sorun | Durum | Notu |
-|-------|-------|------|
-| API baglanmamis | Bilinen | useRealApi = false, test modu |
-| Register sayfasi eksik | Minor | AppRoutes'da ama sayfa yok |
-| Rezervasyonlar listede gozukmuyor | Planned | Sonraki update'de |
-
----
-
 ## Test Senaryolari
 
 ### Senaryo 1: Navigasyon Testi
@@ -165,25 +132,6 @@ lib/
 2. "Odalar" butonu tikla -> RoomsPage acilmali
 3. Her iki sayfada sidebar goruntu olmali
 ```
-
----
-
-## Surada Neler Gelecek
-
-### Kisa Vade (Bu hafta)
-- [ ] Olusan rezervasyonlar listelenecek
-- [ ] Edit/Iptal butonlari eklenecek
-- [ ] Form validasyonu iyilestrilecek
-
-### Orta Vade (Bu ayda)
-- [ ] API entegrasyonu etkinlestirilecek
-- [ ] Token refresh mekanizmasi
-- [ ] Hive local database
-
-### Uzun Vade (Gelecek aylar)
-- [ ] Off-line senkronizasyon
-- [ ] Push notification'lar
-- [ ] Ileri raporlama
 
 ---
 
@@ -233,12 +181,6 @@ lib/
 ```
 
 ---
-
-**Proje Durumu:** Etkin Gelistirme  
-**Son Guncelleme:** 17 Kasim 2025  
-**Ekip:** Mobile Development Team
-
----
 # ENG
 # OFFICE MANAGEMENT SYSTEM – FLUTTER DEVELOPMENT
 
@@ -254,37 +196,9 @@ flutter run -d chrome
 
 ### Login Credentials
 
-* Admin: `admin@ofis.com` / `admin123`
-* Manager: `manager@ofis.com` / `manager123`
-* Employee: `employee@ofis.com` / `employee123`
-
----
-
-## Latest Updates (17 November 2025)
-
-### Completed Features
-
-1. **Reservation Form Integration** – Updated
-
-   * Form opens successfully
-   * Resource selection works
-   * Date/time selection enabled
-
-2. **Seed Resources System** – Updated
-
-   * 5 resources prepared (rooms, desks, parking)
-   * Dropdown gets populated instantly
-
-3. **Sidebar Navigation** – Updated
-
-   * 17 routes navigate to correct pages
-   * Sidebar visible on all pages
-   * Active page is highlighted
-
-4. **AppRouter Architecture** – Updated
-
-   * Separated from MainNavigationWrapper
-   * Direct page instantiation
+* Admin: `admin@ofis.com`
+* Manager: `manager@ofis.com`
+* Employee: `employee@ofis.com`
 
 ---
 
@@ -378,16 +292,6 @@ lib/
 
 ---
 
-## Known Issues
-
-| Issue                              | Status  | Note                                         |
-| ---------------------------------- | ------- | -------------------------------------------- |
-| API not connected                  | Known   | `useRealApi = false`, running in test mode   |
-| Register page missing              | Minor   | Exists in AppRoutes but page not implemented |
-| Reservations not displayed in list | Planned | Will be added in next update                 |
-
----
-
 ## Test Scenarios
 
 ### Scenario 1: Navigation Test
@@ -417,28 +321,6 @@ lib/
 2. Click “Rooms” → RoomsPage should open
 3. Sidebar must remain visible on both pages
 ```
-
----
-
-## Upcoming Features
-
-### Short Term (This Week)
-
-* [ ] Display created reservations
-* [ ] Add Edit/Cancel actions
-* [ ] Improve form validation
-
-### Mid Term (This Month)
-
-* [ ] Enable full API integration
-* [ ] Token refresh mechanism
-* [ ] Hive local database
-
-### Long Term (Upcoming Months)
-
-* [ ] Offline synchronization
-* [ ] Push notifications
-* [ ] Advanced reporting
 
 ---
 
@@ -491,7 +373,3 @@ lib/
 ```
 
 ---
-
-**Project Status:** Active Development
-**Last Updated:** 17 November 2025
-**Team:** Mobile Development Team
