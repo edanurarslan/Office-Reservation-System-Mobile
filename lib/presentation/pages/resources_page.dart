@@ -12,22 +12,19 @@ class ResourcesPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final resources = ref.watch(resourceProvider);
 
-    return AppLayout(
-      currentRoute: '/resources',
-      title: 'Kaynaklar',
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Center(
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 1200),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header
-                Text(
-                  'Mevcut Kaynaklar',
-                  style: GoogleFonts.inter(
-                    fontSize: 28,
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Text(
+                'Mevcut Kaynaklar',
+                style: GoogleFonts.inter(
+                  fontSize: 28,
                     fontWeight: FontWeight.bold,
                     color: AppTheme.textPrimary,
                   ),
@@ -174,8 +171,7 @@ class ResourcesPage extends ConsumerWidget {
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 
   IconData _getResourceIcon(String type) {

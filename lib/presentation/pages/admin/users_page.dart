@@ -1,32 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../application/providers/users_provider.dart';
+import '../../../domain/models/user_model.dart';
 import '../../widgets/common/common.dart';
-
-// User Model to match React interface UserData
-class UserData {
-  final String id;
-  final String firstName;
-  final String lastName;
-  final String email;
-  final String role;
-  final String status;
-  final String? department;
-  final String? phoneNumber;
-
-  UserData({
-    required this.id,
-    required this.firstName,
-    required this.lastName,
-    required this.email,
-    required this.role,
-    required this.status,
-    this.department,
-    this.phoneNumber,
-  });
-
-  String get fullName => '$firstName $lastName';
-}
 
 class UsersPage extends ConsumerStatefulWidget {
   const UsersPage({super.key});
@@ -37,7 +14,6 @@ class UsersPage extends ConsumerStatefulWidget {
 
 class _UsersPageState extends ConsumerState<UsersPage> {
   // States matching React file
-  bool _loading = false;
   String _searchTerm = '';
   String _roleFilter = '';
   String _statusFilter = '';
@@ -47,21 +23,19 @@ class _UsersPageState extends ConsumerState<UsersPage> {
   final _lastNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
+  final _departmentController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  String _selectedRole = 'user';
+  String _selectedRole = 'Employee';
 
-  // Stats matching React stats state
-  int totalUsers = 156;
-  int activeUsers = 142;
-  int admins = 12;
-
-  // Mock List
-  final List<UserData> _users = [
-    UserData(id: '1', firstName: 'admin', lastName: 'deneme', email: 'admin@example.com', role: 'admin', status: 'active', department: 'Yazılım'),
-    UserData(id: '2', firstName: 'manager', lastName: 'deneme', email: 'manager@example.com', role: 'manager', status: 'active', department: 'İK'),
-    UserData(id: '3', firstName: 'employee', lastName: 'deneme', email: 'employee@example.com', role: 'user', status: 'inactive', department: 'Pazarlama'),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    // İlk yüklemede kullanıcıları çek
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(usersProvider.notifier).loadUsers();
+    });
+  }
 
   @override
   void dispose() {
@@ -69,6 +43,7 @@ class _UsersPageState extends ConsumerState<UsersPage> {
     _lastNameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
+    _departmentController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
@@ -81,47 +56,157 @@ class _UsersPageState extends ConsumerState<UsersPage> {
     _lastNameController.clear();
     _emailController.clear();
     _phoneController.clear();
+    _departmentController.clear();
     _passwordController.clear();
     _confirmPasswordController.clear();
-    _selectedRole = 'user';
+    _selectedRole = 'Employee';
   }
 
-  void _handleCreateUser() {
+  Future<void> _handleCreateUser() async {
     // Form logic: firstName, lastName and email are mandatory
     if (_firstNameController.text.isEmpty || _lastNameController.text.isEmpty || _emailController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Ad, soyad ve e-posta zorunludur')));
       return;
     }
-    // Success logic placeholder
-    Navigator.pop(context);
-    _resetForm();
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Kullanıcı başarıyla oluşturuldu'), backgroundColor: Colors.green));
+    
+    if (_passwordController.text != _confirmPasswordController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Şifreler eşleşmiyor'), backgroundColor: Colors.red));
+      return;
+    }
+    
+    final success = await ref.read(usersProvider.notifier).createUser(
+      firstName: _firstNameController.text,
+      lastName: _lastNameController.text,
+      email: _emailController.text,
+      role: _selectedRole.toLowerCase(),
+      phoneNumber: _phoneController.text.isNotEmpty ? _phoneController.text : null,
+      department: _departmentController.text.isNotEmpty ? _departmentController.text : null,
+      password: _passwordController.text.isNotEmpty ? _passwordController.text : null,
+    );
+    
+    if (mounted) {
+      Navigator.pop(context);
+      _resetForm();
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Kullanıcı başarıyla oluşturuldu'), backgroundColor: Colors.green));
+      } else {
+        final error = ref.read(usersProvider).error;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error ?? 'Hata oluştu'), backgroundColor: Colors.red));
+      }
+    }
+  }
+
+  Future<void> _handleUpdateUser(String userId) async {
+    if (_firstNameController.text.isEmpty || _lastNameController.text.isEmpty || _emailController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Ad, soyad ve e-posta zorunludur')));
+      return;
+    }
+    
+    // Add password only if provided
+    String? password;
+    if (_passwordController.text.isNotEmpty) {
+      if (_passwordController.text != _confirmPasswordController.text) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Şifreler eşleşmiyor'), backgroundColor: Colors.red));
+        return;
+      }
+      password = _passwordController.text;
+    }
+    
+    final success = await ref.read(usersProvider.notifier).updateUser(
+      id: userId,
+      firstName: _firstNameController.text,
+      lastName: _lastNameController.text,
+      email: _emailController.text,
+      role: _selectedRole.toLowerCase(),
+      phoneNumber: _phoneController.text.isNotEmpty ? _phoneController.text : null,
+      department: _departmentController.text.isNotEmpty ? _departmentController.text : null,
+      password: password,
+    );
+    
+    if (mounted) {
+      Navigator.pop(context);
+      _resetForm();
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Kullanıcı başarıyla güncellendi'), backgroundColor: Colors.green));
+      } else {
+        final error = ref.read(usersProvider).error;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error ?? 'Hata oluştu'), backgroundColor: Colors.red));
+      }
+    }
+  }
+
+  Future<void> _handleDeleteUser(String userId) async {
+    final success = await ref.read(usersProvider.notifier).deleteUser(userId);
+    
+    if (mounted) {
+      Navigator.pop(context);
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Kullanıcı başarıyla silindi'), backgroundColor: Colors.green));
+      } else {
+        final error = ref.read(usersProvider).error;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error ?? 'Hata oluştu'), backgroundColor: Colors.red));
+      }
+    }
+  }
+
+  String _getRoleString(UserRole role) {
+    switch (role) {
+      case UserRole.admin: return 'Admin';
+      case UserRole.manager: return 'Manager';
+      default: return 'Employee';
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final bool isMobile = screenWidth < 700;
+    
+    // Watch users state from provider
+    final usersState = ref.watch(usersProvider);
+    final users = usersState.users;
+    final isLoading = usersState.isLoading;
+    
+    // Stats from state
+    final totalUsers = usersState.totalCount;
+    final activeUsers = usersState.activeUsers;
+    final admins = usersState.adminCount;
+    final error = usersState.error;
 
-    return AppLayout(
-      title: 'Kullanıcı Yönetimi',
-      currentRoute: '/users',
-      child: PermissionGuardWidget(
-        requiredRoute: '/users',
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(isMobile ? 16 : 32),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildPageHeader(isMobile),
-              const SizedBox(height: 32),
-              _buildStatsGrid(isMobile),
-              const SizedBox(height: 32),
-              _buildMainCard(isMobile),
-            ],
-          ),
-        ),
-      ),
+    return PermissionGuardWidget(
+      requiredRoute: '/users',
+      child: isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : error != null
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, size: 64, color: Colors.red),
+                  const SizedBox(height: 16),
+                  Text('Hata: $error', style: const TextStyle(color: Colors.red)),
+                  const SizedBox(height: 16),
+                  ElevatedButton.icon(
+                    onPressed: () => ref.read(usersProvider.notifier).loadUsers(),
+                    icon: const Icon(Icons.refresh),
+                    label: const Text('Tekrar Dene'),
+                  ),
+                ],
+              ),
+            )
+          : SingleChildScrollView(
+              padding: EdgeInsets.all(isMobile ? 16 : 32),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildPageHeader(isMobile),
+                  const SizedBox(height: 32),
+                  _buildStatsGrid(isMobile, totalUsers, activeUsers, admins),
+                  const SizedBox(height: 32),
+                  _buildMainCard(isMobile, users),
+                ],
+              ),
+            ),
     );
   }
 
@@ -160,7 +245,7 @@ class _UsersPageState extends ConsumerState<UsersPage> {
     );
   }
 
-  Widget _buildStatsGrid(bool isMobile) {
+  Widget _buildStatsGrid(bool isMobile, int totalUsers, int activeUsers, int admins) {
     return GridView.count(
       crossAxisCount: isMobile ? 1 : 3,
       shrinkWrap: true,
@@ -201,14 +286,14 @@ class _UsersPageState extends ConsumerState<UsersPage> {
     );
   }
 
-  Widget _buildMainCard(bool isMobile) {
+  Widget _buildMainCard(bool isMobile, List<UserDto> users) {
     return Container(
       decoration: _cardDecoration(),
       child: Column(
         children: [
           _buildFilterBar(isMobile),
           const Divider(height: 1),
-          _buildUserTable(isMobile),
+          _buildUserTable(isMobile, users),
         ],
       ),
     );
@@ -241,7 +326,7 @@ class _UsersPageState extends ConsumerState<UsersPage> {
               _buildDropdown(['Tüm Roller', 'Admin', 'Yönetici', 'Kullanıcı'], _roleFilter.isEmpty ? 'Tüm Roller' : _roleFilter, (val) => setState(() => _roleFilter = val == 'Tüm Roller' ? '' : val!)),
               _buildDropdown(['Tüm Durumlar', 'Aktif', 'Pasif'], _statusFilter.isEmpty ? 'Tüm Durumlar' : _statusFilter, (val) => setState(() => _statusFilter = val == 'Tüm Durumlar' ? '' : val!)),
               IconButton.filledTonal(
-                onPressed: () {},
+                onPressed: () => ref.read(usersProvider.notifier).loadUsers(),
                 icon: const Icon(Icons.refresh, size: 20),
                 style: IconButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
               ),
@@ -252,14 +337,69 @@ class _UsersPageState extends ConsumerState<UsersPage> {
     );
   }
 
-  Widget _buildUserTable(bool isMobile) {
+  /// Filter users locally based on search term, role, and status
+  List<UserDto> _filterUsers(List<UserDto> users) {
+    return users.where((user) {
+      // Search filter
+      if (_searchTerm.isNotEmpty) {
+        final term = _searchTerm.toLowerCase();
+        final matchesSearch = user.firstName.toLowerCase().contains(term) ||
+            user.lastName.toLowerCase().contains(term) ||
+            user.email.toLowerCase().contains(term);
+        if (!matchesSearch) return false;
+      }
+      
+      // Role filter
+      if (_roleFilter.isNotEmpty) {
+        final roleMatch = switch (_roleFilter) {
+          'Admin' => user.role == UserRole.admin,
+          'Yönetici' => user.role == UserRole.manager,
+          'Kullanıcı' => user.role == UserRole.employee,
+          _ => true,
+        };
+        if (!roleMatch) return false;
+      }
+      
+      // Status filter
+      if (_statusFilter.isNotEmpty) {
+        final statusMatch = switch (_statusFilter) {
+          'Aktif' => user.status == 'active',
+          'Pasif' => user.status != 'active',
+          _ => true,
+        };
+        if (!statusMatch) return false;
+      }
+      
+      return true;
+    }).toList();
+  }
+
+  Widget _buildUserTable(bool isMobile, List<UserDto> users) {
+    final filteredUsers = _filterUsers(users);
+    
+    if (filteredUsers.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.all(40),
+        child: Center(
+          child: Column(
+            children: [
+              Icon(Icons.people_outline, size: 48, color: Colors.grey),
+              SizedBox(height: 16),
+              Text('Kullanıcı bulunamadı', style: TextStyle(color: Colors.grey, fontSize: 16)),
+            ],
+          ),
+        ),
+      );
+    }
+    
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: _users.length,
+      itemCount: filteredUsers.length,
       separatorBuilder: (context, index) => const Divider(height: 1, indent: 20, endIndent: 20),
       itemBuilder: (context, index) {
-        final user = _users[index];
+        final user = filteredUsers[index];
+        final roleStr = _getRoleString(user.role);
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           child: Row(
@@ -279,7 +419,7 @@ class _UsersPageState extends ConsumerState<UsersPage> {
                             children: [
                               const Icon(Icons.mail_outline, size: 12, color: Colors.grey),
                               const SizedBox(width: 4),
-                              Text(user.email, style: GoogleFonts.plusJakartaSans(fontSize: 12, color: const Color(0xFF64748B))),
+                              Flexible(child: Text(user.email, style: GoogleFonts.plusJakartaSans(fontSize: 12, color: const Color(0xFF64748B)), overflow: TextOverflow.ellipsis)),
                             ],
                           ),
                         ],
@@ -291,7 +431,7 @@ class _UsersPageState extends ConsumerState<UsersPage> {
               if (!isMobile)
                 Expanded(
                   flex: 2,
-                  child: _buildBadge(user.role.toUpperCase(), _getRoleColor(user.role)),
+                  child: _buildBadge(roleStr.toUpperCase(), _getRoleBadgeColor(user.role)),
                 ),
               if (!isMobile)
                 Expanded(
@@ -318,103 +458,96 @@ class _UsersPageState extends ConsumerState<UsersPage> {
   }
 
   // --- Modal Form: Matching React Modal Logic ---
-  void _showUserFormModal(BuildContext context, {required bool isEdit, UserData? user}) {
+  void _showUserFormModal(BuildContext context, {required bool isEdit, UserDto? user}) {
     if (isEdit && user != null) {
       _firstNameController.text = user.firstName;
       _lastNameController.text = user.lastName;
       _emailController.text = user.email;
-      _selectedRole = user.role;
+      _phoneController.text = user.phoneNumber ?? '';
+      _departmentController.text = user.department ?? '';
+      _selectedRole = _getRoleString(user.role);
     }
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: Text(isEdit ? 'Kullanıcı Bilgilerini Güncelle' : 'Yeni Kullanıcı Ekle', style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w800)),
-        content: SizedBox(
-          width: 500,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  children: [
-                    Expanded(child: _buildModalField('Ad', _firstNameController)),
-                    const SizedBox(width: 12),
-                    Expanded(child: _buildModalField('Soyad', _lastNameController)),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                _buildModalField('E-posta', _emailController, keyboardType: TextInputType.emailAddress),
-                const SizedBox(height: 16),
-                LayoutBuilder(
-                  builder: (context, constraints) {
-                    if (constraints.maxWidth > 300) {
-                      return Row(
-                        children: [
-                          Expanded(
-                            child: DropdownButtonFormField<String>(
-                              value: _selectedRole,
-                              decoration: _modalInputDeco('Rol'),
-                              isExpanded: true,
-                              items: ['admin', 'manager', 'user', 'guest'].map((r) => DropdownMenuItem(value: r, child: Text(r.toUpperCase()))).toList(),
-                              onChanged: (val) => _selectedRole = val!,
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(child: _buildModalField('Telefon', _phoneController, keyboardType: TextInputType.phone)),
-                        ],
-                      );
-                    } else {
-                      return Column(
-                        children: [
-                          DropdownButtonFormField<String>(
-                            value: _selectedRole,
-                            decoration: _modalInputDeco('Rol'),
-                            isExpanded: true,
-                            items: ['admin', 'manager', 'user', 'guest'].map((r) => DropdownMenuItem(value: r, child: Text(r.toUpperCase()))).toList(),
-                            onChanged: (val) => _selectedRole = val!,
-                          ),
-                          const SizedBox(height: 12),
-                          _buildModalField('Telefon', _phoneController, keyboardType: TextInputType.phone),
-                        ],
-                      );
-                    }
-                  },
-                ),
-                const SizedBox(height: 16),
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[50],
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.grey[200]!),
-                  ),
-                  child: Column(
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          title: Text(isEdit ? 'Kullanıcı Bilgilerini Güncelle' : 'Yeni Kullanıcı Ekle', style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w800)),
+          content: SizedBox(
+            width: 500,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
                     children: [
-                      _buildModalField('Şifre', _passwordController, isPassword: true),
-                      const SizedBox(height: 12),
-                      _buildModalField('Şifre Onay', _confirmPasswordController, isPassword: true),
+                      Expanded(child: _buildModalField('Ad', _firstNameController)),
+                      const SizedBox(width: 12),
+                      Expanded(child: _buildModalField('Soyad', _lastNameController)),
                     ],
                   ),
-                ),
-              ],
+                  const SizedBox(height: 16),
+                  _buildModalField('E-posta', _emailController, keyboardType: TextInputType.emailAddress),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(child: _buildModalField('Departman', _departmentController)),
+                      const SizedBox(width: 12),
+                      Expanded(child: _buildModalField('Telefon', _phoneController, keyboardType: TextInputType.phone)),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<String>(
+                    value: _selectedRole,
+                    decoration: _modalInputDeco('Rol'),
+                    isExpanded: true,
+                    items: ['Admin', 'Manager', 'Employee'].map((r) => DropdownMenuItem(value: r, child: Text(r))).toList(),
+                    onChanged: (val) => setDialogState(() => _selectedRole = val!),
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[50],
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.grey[200]!),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(isEdit ? 'Şifre Değiştir (Opsiyonel)' : 'Şifre', style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey[600])),
+                        const SizedBox(height: 12),
+                        _buildModalField('Şifre', _passwordController, isPassword: true),
+                        const SizedBox(height: 12),
+                        _buildModalField('Şifre Onay', _confirmPasswordController, isPassword: true),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context), child: const Text('Vazgeç')),
+            ElevatedButton(
+              onPressed: () {
+                if (isEdit && user != null) {
+                  _handleUpdateUser(user.id);
+                } else {
+                  _handleCreateUser();
+                }
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF4F46E5), foregroundColor: Colors.white),
+              child: Text(isEdit ? 'Güncelle' : 'Kullanıcıyı Kaydet'),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Vazgeç')),
-          ElevatedButton(
-            onPressed: _handleCreateUser,
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF4F46E5), foregroundColor: Colors.white),
-            child: Text(isEdit ? 'Güncelle' : 'Kullanıcıyı Kaydet'),
-          ),
-        ],
       ),
     );
   }
 
-  void _showDeleteConfirm(BuildContext context, UserData user) {
+  void _showDeleteConfirm(BuildContext context, UserDto user) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -422,7 +555,11 @@ class _UsersPageState extends ConsumerState<UsersPage> {
         content: Text('${user.fullName} kullanıcısını silmek istediğinizden emin misiniz?'),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context), child: const Text('İptal')),
-          ElevatedButton(onPressed: () => Navigator.pop(context), style: ElevatedButton.styleFrom(backgroundColor: Colors.red), child: const Text('Evet, Sil')),
+          ElevatedButton(
+            onPressed: () => _handleDeleteUser(user.id), 
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white), 
+            child: const Text('Evet, Sil'),
+          ),
         ],
       ),
     );
@@ -430,12 +567,15 @@ class _UsersPageState extends ConsumerState<UsersPage> {
 
   // --- Helpers ---
   Widget _buildAvatar(String f, String l) {
+    // Handle empty strings safely
+    final firstInitial = f.isNotEmpty ? f[0].toUpperCase() : '?';
+    final lastInitial = l.isNotEmpty ? l[0].toUpperCase() : '';
     return Container(
       width: 40,
       height: 40,
       decoration: const BoxDecoration(shape: BoxShape.circle, gradient: LinearGradient(colors: [Color(0xFF6366F1), Color(0xFF2563EB)])),
       alignment: Alignment.center,
-      child: Text('${f[0]}${l[0]}', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
+      child: Text('$firstInitial$lastInitial', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
     );
   }
 
@@ -450,10 +590,12 @@ class _UsersPageState extends ConsumerState<UsersPage> {
     );
   }
 
-  Color _getRoleColor(String role) {
-    if (role == 'admin') return Colors.purple;
-    if (role == 'manager') return Colors.blue;
-    return Colors.teal;
+  Color _getRoleBadgeColor(UserRole role) {
+    switch (role) {
+      case UserRole.admin: return Colors.purple;
+      case UserRole.manager: return Colors.blue;
+      default: return Colors.teal;
+    }
   }
 
   Widget _buildDropdown(List<String> items, String value, Function(String?) onChanged) {

@@ -12,13 +12,9 @@ class HomePage extends ConsumerWidget {
     final authState = ref.watch(authProvider);
     final user = authState.user;
 
-    return AppLayout(
-      currentRoute: '/home',
-      title: 'Dashboard',
-      child: user == null 
-          ? const Center(child: CircularProgressIndicator())
-          : _buildRoleBasedDashboard(user),
-    );
+    return user == null 
+        ? const Center(child: CircularProgressIndicator())
+        : _buildRoleBasedDashboard(user);
   }
 
   Widget _buildRoleBasedDashboard(user) {

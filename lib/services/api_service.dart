@@ -126,4 +126,104 @@ class ApiService {
       throw Exception('Failed to cleanup old logs');
     }
   }
+
+  // --- RULES ---
+  Future<List<Map<String, dynamic>>> getRules({String? token}) async {
+    final uri = Uri.parse(ApiConstants.baseUrl + ApiConstants.rules);
+    final response = await http.get(
+      uri,
+      headers: {
+        ApiConstants.headerContentType: ApiConstants.contentTypeJson,
+        if (token != null) ApiConstants.headerAuthorization: '${ApiConstants.bearerPrefix} $token',
+      },
+    );
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.cast<Map<String, dynamic>>();
+    } else {
+      throw Exception('Failed to fetch rules');
+    }
+  }
+
+  Future<Map<String, dynamic>> createRule({
+    required String name,
+    required String description,
+    required String ruleType,
+    required int priority,
+    bool isActive = true,
+    String? configuration,
+    String? token,
+  }) async {
+    final uri = Uri.parse(ApiConstants.baseUrl + ApiConstants.rules);
+    final response = await http.post(
+      uri,
+      headers: {
+        ApiConstants.headerContentType: ApiConstants.contentTypeJson,
+        if (token != null) ApiConstants.headerAuthorization: '${ApiConstants.bearerPrefix} $token',
+      },
+      body: jsonEncode({
+        'name': name,
+        'description': description,
+        'type': ruleType,
+        'priority': priority,
+        'isActive': isActive,
+        'configuration': configuration ?? '',
+      }),
+    );
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to create rule');
+    }
+  }
+
+  Future<Map<String, dynamic>> updateRule({
+    required String id,
+    String? name,
+    String? description,
+    int? priority,
+    bool? isActive,
+    String? configuration,
+    String? token,
+  }) async {
+    final uri = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.rules}/$id');
+    final body = <String, dynamic>{};
+    if (name != null) body['name'] = name;
+    if (description != null) body['description'] = description;
+    if (priority != null) body['priority'] = priority;
+    if (isActive != null) body['isActive'] = isActive;
+    if (configuration != null) body['configuration'] = configuration;
+    
+    final response = await http.put(
+      uri,
+      headers: {
+        ApiConstants.headerContentType: ApiConstants.contentTypeJson,
+        if (token != null) ApiConstants.headerAuthorization: '${ApiConstants.bearerPrefix} $token',
+      },
+      body: jsonEncode(body),
+    );
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to update rule');
+    }
+  }
+
+  Future<void> deleteRule({required String id, String? token}) async {
+    final uri = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.rules}/$id');
+    final response = await http.delete(
+      uri,
+      headers: {
+        ApiConstants.headerContentType: ApiConstants.contentTypeJson,
+        if (token != null) ApiConstants.headerAuthorization: '${ApiConstants.bearerPrefix} $token',
+      },
+    );
+    if (response.statusCode != 200 && response.statusCode != 204) {
+      throw Exception('Failed to delete rule');
+    }
+  }
+
+  Future<void> toggleRuleStatus({required String id, required bool isActive, String? token}) async {
+    await updateRule(id: id, isActive: isActive, token: token);
+  }
 }

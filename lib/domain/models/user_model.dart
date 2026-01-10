@@ -52,18 +52,69 @@ class UserDto with _$UserDto {
     String? managerId,
   }) = _UserDto;
 
-  factory UserDto.fromJson(Map<String, dynamic> json) {
-    return UserDto(
-      id: json['id'] as String,
-      email: json['email'] as String,
-      firstName: json['firstName'] as String,
-      lastName: json['lastName'] as String,
-      role: UserRole.fromJson(json['role']),
-      department: json['department'] as String?,
-      jobTitle: json['jobTitle'] as String?,
-      phoneNumber: json['phoneNumber'] as String?,
-      isActive: json['isActive'] as bool?,
-      managerId: json['managerId'] as String?,
+  factory UserDto.fromJson(Map<String, dynamic> json) =>
+      _$UserDtoFromJson(json);
+}
+
+/// Extension for UserDto to get status string
+extension UserDtoExtension on UserDto {
+  String get status => (isActive ?? true) ? 'active' : 'inactive';
+  String get fullName => '$firstName $lastName';
+}
+
+/// Helper to parse User from API with flexible status handling
+UserDto parseUserFromApi(Map<String, dynamic> json) {
+  // Handle status field from API
+  bool isActive = true;
+  if (json.containsKey('status')) {
+    final status = json['status'];
+    if (status is bool) {
+      isActive = status;
+    } else if (status is String) {
+      isActive = status.toLowerCase() == 'active';
+    }
+  } else if (json.containsKey('isActive')) {
+    isActive = json['isActive'] as bool? ?? true;
+  }
+  
+  return UserDto(
+    id: json['id'] as String,
+    email: json['email'] as String,
+    firstName: json['firstName'] as String,
+    lastName: json['lastName'] as String,
+    role: UserRole.fromJson(json['role']),
+    department: json['department'] as String?,
+    jobTitle: json['jobTitle'] as String?,
+    phoneNumber: json['phoneNumber'] as String?,
+    isActive: isActive,
+    managerId: json['managerId'] as String?,
+  );
+}
+
+/// Users List Response - Paginated user list from API
+class UsersListResponse {
+  final List<UserDto> users;
+  final int totalCount;
+  final int page;
+  final int pageSize;
+  final int totalPages;
+
+  UsersListResponse({
+    required this.users,
+    required this.totalCount,
+    required this.page,
+    required this.pageSize,
+    required this.totalPages,
+  });
+
+  factory UsersListResponse.fromJson(Map<String, dynamic> json) {
+    final dataList = json['data'] as List? ?? [];
+    return UsersListResponse(
+      users: dataList.map((e) => parseUserFromApi(e as Map<String, dynamic>)).toList(),
+      totalCount: json['totalCount'] as int? ?? 0,
+      page: json['page'] as int? ?? 1,
+      pageSize: json['pageSize'] as int? ?? 10,
+      totalPages: json['totalPages'] as int? ?? 1,
     );
   }
 }

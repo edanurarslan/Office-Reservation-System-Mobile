@@ -37,25 +37,21 @@ class _ManagerReportsPageState extends ConsumerState<ManagerReportsPage> {
     final double screenWidth = MediaQuery.of(context).size.width;
     final bool isMobile = screenWidth < 700;
 
-    return AppLayout(
-      title: 'Raporlar',
-      currentRoute: '/reports',
-      child: SingleChildScrollView(
-        padding: EdgeInsets.all(isMobile ? 16 : 32),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildPageHeader(isMobile),
-            const SizedBox(height: 32),
-            _buildDateRangeFilters(isMobile),
-            const SizedBox(height: 32),
-            _buildStatsGrid(isMobile),
-            const SizedBox(height: 32),
-            _buildMonthlyTrendsCard(isMobile),
-            const SizedBox(height: 32),
-            _buildDownloadActions(isMobile),
-          ],
-        ),
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(isMobile ? 16 : 32),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildPageHeader(isMobile),
+          const SizedBox(height: 32),
+          _buildDateRangeFilters(isMobile),
+          const SizedBox(height: 32),
+          _buildStatsGrid(isMobile),
+          const SizedBox(height: 32),
+          _buildMonthlyTrendsCard(isMobile),
+          const SizedBox(height: 32),
+          _buildDownloadActions(isMobile),
+        ],
       ),
     );
   }

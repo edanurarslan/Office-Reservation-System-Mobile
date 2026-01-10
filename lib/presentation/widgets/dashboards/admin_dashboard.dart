@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../../domain/entities/user.dart';
 import '../../../application/providers/auth_provider.dart';
+import '../../../core/routing/app_router.dart' as app_routes;
 
 class AdminDashboard extends ConsumerStatefulWidget {
   const AdminDashboard({super.key});
@@ -131,9 +133,9 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
 
   Widget _buildStatsGrid(double width) {
     final stats = [
-      {'t': 'Toplam Kullanıcı', 'v': '1,284', 'i': Icons.people_outline, 'c': Colors.blue},
-      {'t': 'Aktif Oturum', 'v': '432', 'i': Icons.bolt, 'c': Colors.amber},
-      {'t': 'Onay Bekleyen', 'v': '12', 'i': Icons.pending_outlined, 'c': Colors.pink},
+      {'t': 'Toplam Kullanıcı', 'v': '5', 'i': Icons.people_outline, 'c': Colors.blue},
+      {'t': 'Aktif Oturum', 'v': '4', 'i': Icons.bolt, 'c': Colors.amber},
+      {'t': 'Onay Bekleyen', 'v': '3', 'i': Icons.pending_outlined, 'c': Colors.pink},
       {'t': 'Sistem Sağlığı', 'v': '%99.8', 'i': Icons.shutter_speed, 'c': Colors.green},
     ];
 
@@ -189,10 +191,30 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
 
   Widget _buildQuickActions(double width) {
     final actions = [
-      {'n': 'Kullanıcılar', 'i': Icons.group_add_outlined, 'c': Color(0xFF4F46E5)},
-      {'n': 'Ayarlar', 'i': Icons.settings_outlined, 'c': Color(0xFF0EA5E9)},
-      {'n': 'Raporlar', 'i': Icons.bar_chart_outlined, 'c': Color(0xFF8B5CF6)},
-      {'n': 'Güvenlik', 'i': Icons.shield_outlined, 'c': Color(0xFFF43F5E)},
+      {
+        'n': 'Kullanıcılar', 
+        'i': Icons.group_add_outlined, 
+        'c': const Color(0xFF4F46E5), 
+        'route': app_routes.AppRoutes.users
+      },
+      {
+        'n': 'Ayarlar', 
+        'i': Icons.settings_outlined, 
+        'c': const Color(0xFF0EA5E9), 
+        'route': app_routes.AppRoutes.settings
+      },
+      {
+        'n': 'Raporlar', 
+        'i': Icons.bar_chart_outlined, 
+        'c': const Color(0xFF8B5CF6), 
+        'route': app_routes.AppRoutes.reports
+      },
+      {
+        'n': 'Güvenlik', 
+        'i': Icons.shield_outlined, 
+        'c': const Color(0xFFF43F5E), 
+        'route': app_routes.AppRoutes.logs
+      },
     ];
 
     return Container(
@@ -216,7 +238,7 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
             itemBuilder: (context, index) {
               final a = actions[index];
               return InkWell(
-                onTap: () {},
+                onTap: () => context.go(a['route'] as String),
                 borderRadius: BorderRadius.circular(12),
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -250,9 +272,9 @@ class _AdminDashboardState extends ConsumerState<AdminDashboard> {
         children: [
           _buildSectionHeader('Sistem Durumu', Icons.dns_outlined),
           const SizedBox(height: 20),
-          _statusRow('Sunucu Yükü', '%24', 0.24, Colors.blue),
+          _statusRow('Sunucu Yükü', '%10', 0.10, Colors.blue),
           const SizedBox(height: 16),
-          _statusRow('Hafıza Kullanımı', '%68', 0.68, Colors.orange),
+          _statusRow('Hafıza Kullanımı', '%30', 0.30, Colors.orange),
         ],
       ),
     );

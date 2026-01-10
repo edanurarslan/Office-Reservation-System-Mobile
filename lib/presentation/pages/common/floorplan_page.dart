@@ -43,26 +43,23 @@ class _FloorplanPageState extends ConsumerState<FloorplanPage> {
     final double screenWidth = MediaQuery.of(context).size.width;
     final bool isMobile = screenWidth < 1100;
 
-    return AppLayout(
-      currentRoute: '/floorplan',
-      title: 'Kat Planı Yönetimi',
-      child: SingleChildScrollView(
-        padding: EdgeInsets.all(isMobile ? 16 : 32),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildPageHeader(isMobile),
+    return SingleChildScrollView (
+      padding: EdgeInsets.all(isMobile ? 16 : 32),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildPageHeader(isMobile),
+          const SizedBox(height: 24),
+          _buildControls(isMobile),
+          const SizedBox(height: 24),
+          if (isMobile) ...[
+            _buildCanvas(screenWidth),
             const SizedBox(height: 24),
-            _buildControls(isMobile),
-            const SizedBox(height: 24),
-            if (isMobile) ...[
-              _buildCanvas(screenWidth),
-              const SizedBox(height: 24),
-              _buildSidebar(),
-            ] else
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+            _buildSidebar(),
+          ] else
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                   Expanded(child: _buildCanvas(screenWidth)),
                   const SizedBox(width: 24),
                   _buildSidebar(),
@@ -70,7 +67,6 @@ class _FloorplanPageState extends ConsumerState<FloorplanPage> {
               ),
           ],
         ),
-      ),
     );
   }
 

@@ -54,153 +54,149 @@ class ReportsPage extends ConsumerWidget with PermissionCheckMixin {
     
     return PermissionGuardWidget(
       requiredRoute: '/reports',
-      child: AppLayout(
-        currentRoute: '/reports',
-        title: 'Raporlar',
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 56,
-                    height: 56,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [AppTheme.primaryIndigo, AppTheme.accentIndigo],
-                      ),
-                      borderRadius: BorderRadius.circular(16),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [AppTheme.primaryIndigo, AppTheme.accentIndigo],
                     ),
-                    child: const Icon(Icons.analytics, color: Colors.white, size: 28),
+                    borderRadius: BorderRadius.circular(16),
                   ),
+                  child: const Icon(Icons.analytics, color: Colors.white, size: 28),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Raporlar ve Analitik',
+                        style: _headingStyle(),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Kullanım, rezervasyon ve kaynak analizlerini kolayca görüntüleyin. Raporlara tıklayarak detaylara ulaşabilirsiniz.',
+                        style: _subtitleStyle(),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 32),
+
+            // Report Types (Clickable)
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: crossAxisCount,
+              mainAxisSpacing: 16,
+              crossAxisSpacing: 16,
+              childAspectRatio: screenWidth < 500 ? 0.9 : 1.1,
+              children: [
+                _buildClickableReportCard(context, 'Rezervasyon', Icons.event_note, AppTheme.primaryIndigo, '120'),
+                _buildClickableReportCard(context, 'Kullanım', Icons.bar_chart, Colors.green, '%78'),
+                _buildClickableReportCard(context, 'Kullanıcı', Icons.people, Colors.orange, '34'),
+                _buildClickableReportCard(context, 'Oda Doluluk', Icons.meeting_room, Colors.purple, 'A-101'),
+                _buildClickableReportCard(context, 'Kaynak', Icons.inventory_2, AppTheme.accentIndigo, 'Projeksiyon'),
+                _buildClickableReportCard(context, 'Finansal', Icons.attach_money, Colors.teal, '₺12.500'),
+              ],
+            ),
+            const SizedBox(height: 32),
+
+            // Example Statistics Panel
+            Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Özet İstatistikler', style: _infoPanelTitleStyle().copyWith(fontSize: 18)),
+                    const SizedBox(height: 12),
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        if (constraints.maxWidth > 400) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              _buildStatItem('Toplam Rezervasyon', '120'),
+                              _buildStatItem('Ortalama Doluluk', '%78'),
+                              _buildStatItem('Aktif Kullanıcı', '34'),
+                            ],
+                          );
+                        } else {
+                          return Wrap(
+                            spacing: 24,
+                            runSpacing: 16,
+                            alignment: WrapAlignment.spaceAround,
+                            children: [
+                              _buildStatItem('Toplam Rezervasyon', '120'),
+                              _buildStatItem('Ortalama Doluluk', '%78'),
+                              _buildStatItem('Aktif Kullanıcı', '34'),
+                            ],
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 32),
+
+            // Info
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.blue.shade50,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: Colors.blue.shade200,
+                  width: 1.2,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.04),
+                    blurRadius: 8,
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.info_outline, color: Colors.blue.shade700, size: 32),
                   const SizedBox(width: 16),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Raporlar ve Analitik',
-                          style: _headingStyle(),
+                          'Rapor Erişimi',
+                          style: _infoPanelTitleStyle().copyWith(color: Colors.blue.shade900),
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'Kullanım, rezervasyon ve kaynak analizlerini kolayca görüntüleyin. Raporlara tıklayarak detaylara ulaşabilirsiniz.',
-                          style: _subtitleStyle(),
+                          'Bu sayfa tüm roller tarafından görüntülenebilir. Raporlara tıklayarak detaylara ulaşabilirsiniz.',
+                          style: _infoPanelDescriptionStyle().copyWith(color: Colors.blue.shade800),
                         ),
                       ],
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 32),
-
-              // Report Types (Clickable)
-              GridView.count(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: crossAxisCount,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-                childAspectRatio: screenWidth < 500 ? 0.9 : 1.1,
-                children: [
-                  _buildClickableReportCard(context, 'Rezervasyon', Icons.event_note, AppTheme.primaryIndigo, '120'),
-                  _buildClickableReportCard(context, 'Kullanım', Icons.bar_chart, Colors.green, '%78'),
-                  _buildClickableReportCard(context, 'Kullanıcı', Icons.people, Colors.orange, '34'),
-                  _buildClickableReportCard(context, 'Oda Doluluk', Icons.meeting_room, Colors.purple, 'A-101'),
-                  _buildClickableReportCard(context, 'Kaynak', Icons.inventory_2, AppTheme.accentIndigo, 'Projeksiyon'),
-                  _buildClickableReportCard(context, 'Finansal', Icons.attach_money, Colors.teal, '₺12.500'),
-                ],
-              ),
-              const SizedBox(height: 32),
-
-              // Example Statistics Panel
-              Card(
-                elevation: 2,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Özet İstatistikler', style: _infoPanelTitleStyle().copyWith(fontSize: 18)),
-                      const SizedBox(height: 12),
-                      LayoutBuilder(
-                        builder: (context, constraints) {
-                          if (constraints.maxWidth > 400) {
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                _buildStatItem('Toplam Rezervasyon', '120'),
-                                _buildStatItem('Ortalama Doluluk', '%78'),
-                                _buildStatItem('Aktif Kullanıcı', '34'),
-                              ],
-                            );
-                          } else {
-                            return Wrap(
-                              spacing: 24,
-                              runSpacing: 16,
-                              alignment: WrapAlignment.spaceAround,
-                              children: [
-                                _buildStatItem('Toplam Rezervasyon', '120'),
-                                _buildStatItem('Ortalama Doluluk', '%78'),
-                                _buildStatItem('Aktif Kullanıcı', '34'),
-                              ],
-                            );
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 32),
-
-              // Info
-              Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: Colors.blue.shade50,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: Colors.blue.shade200,
-                    width: 1.2,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
-                      blurRadius: 8,
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.info_outline, color: Colors.blue.shade700, size: 32),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Rapor Erişimi',
-                            style: _infoPanelTitleStyle().copyWith(color: Colors.blue.shade900),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Bu sayfa tüm roller tarafından görüntülenebilir. Raporlara tıklayarak detaylara ulaşabilirsiniz.',
-                            style: _infoPanelDescriptionStyle().copyWith(color: Colors.blue.shade800),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

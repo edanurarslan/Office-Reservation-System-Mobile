@@ -75,29 +75,26 @@ class QrPageState extends State<QrPage> {
 
   @override
   Widget build(BuildContext context) {
-    return AppLayout(
-      currentRoute: '/qr',
-      title: 'QR Kod', // AppLayout constructor'ına göre burayı düzenleyebilirsiniz
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: SingleChildScrollView( // Klavye açıldığında taşma olmaması için eklendi
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (_showScanner)
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: 32),
-                    const Text(
-                      "QR Kodunu Tara", 
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
-                    ),
-                    const SizedBox(height: 16),
-                    LayoutBuilder(
-                      builder: (context, constraints) {
-                        final double boxSize = (constraints.maxWidth * 0.9).clamp(200.0, 400.0);
-                        return SizedBox(
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: SingleChildScrollView( // Klavye açıldığında taşma olmaması için eklendi
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (_showScanner)
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 32),
+                  const Text(
+                    "QR Kodunu Tara", 
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
+                  ),
+                  const SizedBox(height: 16),
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final double boxSize = (constraints.maxWidth * 0.9).clamp(200.0, 400.0);
+                      return SizedBox(
                           width: boxSize,
                           height: boxSize,
                           child: ClipRRect(
@@ -210,7 +207,6 @@ class QrPageState extends State<QrPage> {
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 }

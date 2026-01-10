@@ -1,6 +1,6 @@
-import '../../pages/common/qr_page.dart';
 import 'package:flutter/material.dart';
 import '../../pages/employee/employee.dart';
+import '../../pages/employee/qr_page.dart';
 import '../../pages/admin/admin.dart';
 import '../../pages/resources_page.dart';
 import '../../pages/rooms_page.dart';
@@ -46,7 +46,7 @@ class _MainNavigationWrapperState extends State<MainNavigationWrapper>
       case 1:
         return const ReservationsPage();
       case 2:
-        return QrPage(); // Artık common/qr_page.dart'tan geliyor
+        return const QrPage();
       case 3:
         return const SettingsPage();
       case 4:

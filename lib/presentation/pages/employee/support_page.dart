@@ -7,27 +7,24 @@ class SupportPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return AppLayout(
-      currentRoute: '/support',
-      title: 'Destek',
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.support_agent, color: Colors.indigo, size: 48),
-                  const SizedBox(height: 16),
-                  Text('Destek ve Yardım', style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8),
-                  Text('Herhangi bir sorunla karşılaşırsanız veya yardım almak isterseniz aşağıdaki iletişim kanallarını kullanabilirsiniz.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.indigo[700], fontWeight: FontWeight.w500),
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Card(
+          elevation: 4,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.support_agent, color: Colors.indigo, size: 48),
+                const SizedBox(height: 16),
+                Text('Destek ve Yardım', style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+                const SizedBox(height: 8),
+                Text('Herhangi bir sorunla karşılaşırsanız veya yardım almak isterseniz aşağıdaki iletişim kanallarını kullanabilirsiniz.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.indigo[700], fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(height: 24),
                   ListTile(
@@ -50,7 +47,6 @@ class SupportPage extends ConsumerWidget {
             ),
           ),
         ),
-      ),
     );
   }
 }

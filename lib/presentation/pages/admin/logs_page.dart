@@ -22,10 +22,10 @@ class _LogsPageState extends ConsumerState<LogsPage> {
 
   // Mock Stats (React TSX ile Birebir)
   final Map<String, dynamic> _stats = {
-    'totalLogs': 12540,
-    'todayLogs': 432,
-    'weekLogs': 2850,
-    'errorLogs': 24,
+    'totalLogs': 355,
+    'todayLogs': 22,
+    'weekLogs': 128,
+    'errorLogs': 22,
   };
 
   // Mock Logs Data
@@ -70,25 +70,21 @@ class _LogsPageState extends ConsumerState<LogsPage> {
     final double screenWidth = MediaQuery.of(context).size.width;
     final bool isMobile = screenWidth < 700;
 
-    return AppLayout(
-      title: 'Sistem Günlükleri',
-      currentRoute: '/manager-logs',
-      child: SingleChildScrollView(
-        padding: EdgeInsets.all(isMobile ? 16 : 32),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildPageHeader(isMobile),
-            const SizedBox(height: 32),
-            _buildStatsGrid(isMobile),
-            const SizedBox(height: 32),
-            _buildFilterCard(isMobile),
-            const SizedBox(height: 24),
-            _buildLogsContainer(isMobile),
-            const SizedBox(height: 32),
-            _buildPagination(),
-          ],
-        ),
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(isMobile ? 16 : 32),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildPageHeader(isMobile),
+          const SizedBox(height: 32),
+          _buildStatsGrid(isMobile),
+          const SizedBox(height: 32),
+          _buildFilterCard(isMobile),
+          const SizedBox(height: 24),
+          _buildLogsContainer(isMobile),
+          const SizedBox(height: 32),
+          _buildPagination(),
+        ],
       ),
     );
   }

@@ -97,31 +97,27 @@ class _AdminNotificationsPageState extends ConsumerState<AdminNotificationsPage>
     final double screenWidth = MediaQuery.of(context).size.width;
     final bool isMobile = screenWidth < 900;
 
-    return AppLayout(
-      title: 'Bildirim Yönetimi',
-      currentRoute: '/admin-notifications',
-      child: SingleChildScrollView(
-        padding: EdgeInsets.all(isMobile ? 16 : 32),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildPageHeader(),
-            const SizedBox(height: 32),
-            if (isMobile) ...[
-              _buildFormCard(),
-              const SizedBox(height: 24),
-              _buildRecentNotificationsCard(),
-            ] else
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(flex: 3, child: _buildFormCard()),
-                  const SizedBox(width: 24),
-                  Expanded(flex: 2, child: _buildRecentNotificationsCard()),
-                ],
-              ),
-          ],
-        ),
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(isMobile ? 16 : 32),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildPageHeader(),
+          const SizedBox(height: 32),
+          if (isMobile) ...[
+            _buildFormCard(),
+            const SizedBox(height: 24),
+            _buildRecentNotificationsCard(),
+          ] else
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(flex: 3, child: _buildFormCard()),
+                const SizedBox(width: 24),
+                Expanded(flex: 2, child: _buildRecentNotificationsCard()),
+              ],
+            ),
+        ],
       ),
     );
   }

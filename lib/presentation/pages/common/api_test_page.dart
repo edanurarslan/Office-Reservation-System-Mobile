@@ -149,30 +149,27 @@ class _ApiTestPageState extends ConsumerState<ApiTestPage> {
   Widget build(BuildContext context) {
     final endpoint = _endpoints[_selectedEndpoint]!;
     
-    return AppLayout(
-      currentRoute: '/api-test',
-      title: 'API Test Console',
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header
-            Row(
-              children: [
-                Container(
-                  width: 56,
-                  height: 56,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Colors.purple.shade600, Colors.purple.shade800],
-                    ),
-                    borderRadius: BorderRadius.circular(16),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Row(
+            children: [
+              Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.purple.shade600, Colors.purple.shade800],
                   ),
-                  child: const Icon(Icons.bug_report, color: Colors.white, size: 28),
+                  borderRadius: BorderRadius.circular(16),
                 ),
-                const SizedBox(width: 16),
-                Expanded(
+                child: const Icon(Icons.bug_report, color: Colors.white, size: 28),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -489,7 +486,6 @@ class _ApiTestPageState extends ConsumerState<ApiTestPage> {
             ),
           ],
         ),
-      ),
     );
   }
 

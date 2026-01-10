@@ -69,25 +69,21 @@ class _ManagerLogsPageState extends ConsumerState<ManagerLogsPage> {
     final double screenWidth = MediaQuery.of(context).size.width;
     final bool isMobile = screenWidth < 700;
 
-    return AppLayout(
-      title: 'Sistem Günlükleri',
-      currentRoute: '/manager-logs',
-      child: SingleChildScrollView(
-        padding: EdgeInsets.all(isMobile ? 16 : 32),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildPageHeader(isMobile),
-            const SizedBox(height: 32),
-            _buildStatsGrid(isMobile),
-            const SizedBox(height: 32),
-            _buildFilterCard(isMobile),
-            const SizedBox(height: 24),
-            _buildLogsContainer(isMobile),
-            const SizedBox(height: 32),
-            _buildPagination(),
-          ],
-        ),
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(isMobile ? 16 : 32),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildPageHeader(isMobile),
+          const SizedBox(height: 32),
+          _buildStatsGrid(isMobile),
+          const SizedBox(height: 32),
+          _buildFilterCard(isMobile),
+          const SizedBox(height: 24),
+          _buildLogsContainer(isMobile),
+          const SizedBox(height: 32),
+          _buildPagination(),
+        ],
       ),
     );
   }

@@ -83,7 +83,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: 'admin-dashboard',
         builder: (context, state) => const AppLayout(
           currentRoute: '/admin-dashboard',
-          title: 'Admin Dashboard',
           child: AdminDashboard(),
         ),
       ),
@@ -95,22 +94,34 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.home,
         name: 'home',
-        builder: (context, state) => const MainNavigationWrapper(),
+        builder: (context, state) => const AppLayout(
+          currentRoute: '/home',
+          child: HomePage(),
+        ),
       ),
       GoRoute(
         path: AppRoutes.reservations,
         name: 'reservations',
-        builder: (context, state) => const MainNavigationWrapper(initialIndex: 1),
+        builder: (context, state) => const AppLayout(
+          currentRoute: '/reservations',
+          child: ReservationsPage(),
+        ),
       ),
       GoRoute(
         path: AppRoutes.qr,
         name: 'qr',
-        builder: (context, state) => const MainNavigationWrapper(initialIndex: 2),
+        builder: (context, state) => const AppLayout(
+          currentRoute: '/qr',
+          child: QrPage(),
+        ),
       ),
       GoRoute(
         path: AppRoutes.settings,
         name: 'settings',
-        builder: (context, state) => const MainNavigationWrapper(initialIndex: 3),
+        builder: (context, state) => const AppLayout(
+          currentRoute: '/settings',
+          child: SettingsPage(),
+        ),
       ),
       // Admin-only routes
       GoRoute(
@@ -121,102 +132,159 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.users,
         name: 'users',
-        builder: (context, state) => const UsersPage(),
+        builder: (context, state) => const AppLayout(
+          currentRoute: '/users',
+          child: UsersPage(),
+        ),
       ),
       // Employee routes
       GoRoute(
         path: '/locations',
         name: 'locations',
-        builder: (context, state) => const LocationsPage(),
+        builder: (context, state) => const AppLayout(
+          currentRoute: '/locations',
+          child: LocationsPage(),
+        ),
       ),
       GoRoute(
         path: AppRoutes.notifications,
         name: 'notifications',
-        builder: (context, state) => const NotificationsPage(),
+        builder: (context, state) => const AppLayout(
+          currentRoute: '/notifications',
+          child: NotificationsPage(),
+        ),
       ),
       GoRoute(
         path: '/support',
         name: 'support',
-        builder: (context, state) => const SupportPage(),
+        builder: (context, state) => const AppLayout(
+          currentRoute: '/support',
+          child: SupportPage(),
+        ),
       ),
       // Manager routes
       GoRoute(
         path: AppRoutes.approval,
         name: 'approval',
-        builder: (context, state) => const ApprovalPage(),
+        builder: (context, state) => const AppLayout(
+          currentRoute: '/approval',
+          child: ApprovalPage(),
+        ),
       ),
       GoRoute(
         path: '/manager-logs',
         name: 'manager-logs',
-        builder: (context, state) => const ManagerLogsPage(),
+        builder: (context, state) => const AppLayout(
+          currentRoute: '/manager-logs',
+          child: ManagerLogsPage(),
+        ),
       ),
       GoRoute(
         path: AppRoutes.managerNotifications,
         name: 'manager-notifications',
-        builder: (context, state) => const ManagerNotificationsPage(),
+        builder: (context, state) => const AppLayout(
+          currentRoute: '/manager-notifications',
+          child: ManagerNotificationsPage(),
+        ),
       ),
       GoRoute(
         path: '/admin-notifications',
         name: 'admin-notifications',
-        builder: (context, state) => const AdminNotificationsPage(),
+        builder: (context, state) => const AppLayout(
+          currentRoute: '/admin-notifications',
+          child: AdminNotificationsPage(),
+        ),
       ),
       GoRoute(
         path: AppRoutes.managerReports,
         name: 'manager-reports',
-        builder: (context, state) => const ManagerReportsPage(),
+        builder: (context, state) => const AppLayout(
+          currentRoute: '/manager-reports',
+          child: ManagerReportsPage(),
+        ),
       ),
       GoRoute(
         path: AppRoutes.managerUsers,
         name: 'manager-users',
-        builder: (context, state) => const ManagerUsersPage(),
+        builder: (context, state) => const AppLayout(
+          currentRoute: '/manager-users',
+          child: ManagerUsersPage(),
+        ),
       ),
       // Admin routes
       GoRoute(
         path: AppRoutes.reports,
         name: 'reports',
-        builder: (context, state) => const ReportsPage(),
+        builder: (context, state) => const AppLayout(
+          currentRoute: '/reports',
+          child: ReportsPage(),
+        ),
       ),
       GoRoute(
         path: AppRoutes.logs,
         name: 'logs',
-        builder: (context, state) => const LogsPage(),
+        builder: (context, state) => const AppLayout(
+          currentRoute: '/logs',
+          child: LogsPage(),
+        ),
       ),
       GoRoute(
         path: AppRoutes.overview,
         name: 'overview',
-        builder: (context, state) => const OverviewPage(),
+        builder: (context, state) => const AppLayout(
+          currentRoute: '/overview',
+          child: OverviewPage(),
+        ),
       ),
       GoRoute(
         path: AppRoutes.backup,
         name: 'backup',
-        builder: (context, state) => const BackupPage(),
+        builder: (context, state) => const AppLayout(
+          currentRoute: '/backup',
+          child: BackupPage(),
+        ),
       ),
       GoRoute(
         path: AppRoutes.rules,
         name: 'rules',
-        builder: (context, state) => const RulesPage(),
+        builder: (context, state) => const AppLayout(
+          currentRoute: '/rules',
+          child: RulesPage(),
+        ),
       ),
       GoRoute(
         path: AppRoutes.floorplan,
         name: 'floorplan',
-        builder: (context, state) => const FloorplanPage(),
+        builder: (context, state) => const AppLayout(
+          currentRoute: '/floorplan',
+          child: FloorplanPage(),
+        ),
       ),
       // Resources and Rooms routes
       GoRoute(
         path: AppRoutes.resources,
         name: 'resources',
-        builder: (context, state) => const ResourcesPage(),
+        builder: (context, state) => const AppLayout(
+          currentRoute: '/resources',
+          child: ResourcesPage(),
+        ),
       ),
       GoRoute(
         path: AppRoutes.rooms,
         name: 'rooms',
-        builder: (context, state) => const RoomsPage(),
+        builder: (context, state) => const AppLayout(
+          currentRoute: '/rooms',
+          child: RoomsPage(),
+        ),
       ),
       // Developer tools (Admin only)
       GoRoute(
         path: AppRoutes.apiTest,
         name: 'api-test',
-        builder: (context, state) => const ApiTestPage(),
+        builder: (context, state) => const AppLayout(
+          currentRoute: '/api-test',
+          child: ApiTestPage(),
+        ),
       ),
     ],
   );

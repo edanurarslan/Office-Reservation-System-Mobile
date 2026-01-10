@@ -230,14 +230,86 @@ class ApiService {
   // USERS ENDPOINTS
   // ============================================================================
 
+  /// GET /users with filters and pagination
+  /// Get all users with filtering options (admin only)
+  Future<UsersListResponse> getUsersWithFilters({
+    String? search,
+    String? role,
+    String? status,
+    int page = 1,
+    int pageSize = 10,
+  }) async {
+    try {
+      final response = await _dio.get(
+        '/users',
+        queryParameters: {
+          if (search != null && search.isNotEmpty) 'search': search,
+          if (role != null && role.isNotEmpty) 'role': role,
+          if (status != null && status.isNotEmpty) 'status': status,
+          'page': page,
+          'pageSize': pageSize,
+        },
+      );
+      return UsersListResponse.fromJson(response.data);
+    } catch (e) {
+      throw _handleError(e);
+    }
+  }
+
   /// GET /users
   /// Get all users (admin only)
   Future<List<UserDto>> getUsers() async {
     try {
       final response = await _dio.get('/users');
-      return (response.data as List)
-          .map((e) => UserDto.fromJson(e))
-          .toList();
+      final data = response.data;
+      if (data is Map && data.containsKey('data')) {
+        return (data['data'] as List).map((e) => UserDto.fromJson(e)).toList();
+      }
+      return (data as List).map((e) => UserDto.fromJson(e)).toList();
+    } catch (e) {
+      throw _handleError(e);
+    }
+  }
+
+  /// GET /users/roles
+  /// Get available user roles
+  Future<List<String>> getUserRoles() async {
+    try {
+      final response = await _dio.get('/users/roles');
+      return List<String>.from(response.data);
+    } catch (e) {
+      throw _handleError(e);
+    }
+  }
+
+  /// POST /users
+  /// Create new user (admin only)
+  Future<UserDto> createUser({
+    required String firstName,
+    required String lastName,
+    required String email,
+    required String role,
+    String? password,
+    String? department,
+    String? phoneNumber,
+    String? jobTitle,
+  }) async {
+    try {
+      final response = await _dio.post(
+        '/users',
+        data: {
+          'name': '$firstName $lastName',
+          'firstName': firstName,
+          'lastName': lastName,
+          'email': email,
+          'role': role,
+          if (password != null && password.isNotEmpty) 'password': password,
+          if (department != null) 'department': department,
+          if (phoneNumber != null) 'phoneNumber': phoneNumber,
+          if (jobTitle != null) 'jobTitle': jobTitle,
+        },
+      );
+      return UserDto.fromJson(response.data);
     } catch (e) {
       throw _handleError(e);
     }
@@ -259,6 +331,38 @@ class ApiService {
   Future<UserDto> getCurrentUser() async {
     try {
       final response = await _dio.get('/users/me');
+      return UserDto.fromJson(response.data);
+    } catch (e) {
+      throw _handleError(e);
+    }
+  }
+
+  /// PUT /users/{id}
+  /// Update user with full data
+  Future<UserDto> updateUserFull({
+    required String id,
+    String? firstName,
+    String? lastName,
+    String? email,
+    String? role,
+    String? department,
+    String? phoneNumber,
+    String? jobTitle,
+    String? password,
+  }) async {
+    try {
+      final data = <String, dynamic>{};
+      if (firstName != null && lastName != null) {
+        data['name'] = '$firstName $lastName';
+      }
+      if (email != null) data['email'] = email;
+      if (role != null) data['role'] = role;
+      if (department != null) data['department'] = department;
+      if (phoneNumber != null) data['phoneNumber'] = phoneNumber;
+      if (jobTitle != null) data['jobTitle'] = jobTitle;
+      if (password != null && password.isNotEmpty) data['password'] = password;
+      
+      final response = await _dio.put('/users/$id', data: data);
       return UserDto.fromJson(response.data);
     } catch (e) {
       throw _handleError(e);

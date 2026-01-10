@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../widgets/common/common.dart';
+import '../../../services/api_service.dart';
+import '../../../infrastructure/providers/repository_providers.dart';
 
 class RulesPage extends ConsumerStatefulWidget {
   const RulesPage({super.key});
@@ -11,37 +13,145 @@ class RulesPage extends ConsumerStatefulWidget {
 }
 
 class _RulesPageState extends ConsumerState<RulesPage> {
+  final ApiService _apiService = ApiService();
+  
   // States
   bool _isLoading = false;
   String? _error;
-  
-  // React tarafındaki CreateRuleRequest yapısıyla aynı modelleme
-  List<RuleModel> _rules = [
-    RuleModel(
-      id: '1', 
-      name: 'NoShow Kuralı', 
-      description: 'Gelmeyen kullanıcıların rezervasyonunu iptal et.', 
-      ruleType: 'NoShow', 
-      priority: 1, 
-      isActive: true
-    ),
-    RuleModel(
-      id: '2', 
-      name: 'Kapasite Sınırı', 
-      description: 'Ofis doluluk oranını %70 ile sınırla.', 
-      ruleType: 'Capacity', 
-      priority: 2, 
-      isActive: true
-    ),
-    RuleModel(
-      id: '3', 
-      name: 'Haftalık Bildirim', 
-      description: 'Her Pazartesi rapor gönder.', 
-      ruleType: 'Notification', 
-      priority: 5, 
-      isActive: false
-    ),
-  ];
+  List<RuleModel> _rules = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRules();
+  }
+
+  Future<String?> _getToken() async {
+    final authRepository = ref.read(authRepositoryProvider);
+    return await authRepository.getStoredToken();
+  }
+
+  Future<void> _loadRules() async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      final token = await _getToken();
+      
+      final rulesData = await _apiService.getRules(token: token);
+      
+      setState(() {
+        _rules = rulesData.map((json) => RuleModel.fromJson(json)).toList();
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _error = 'Kurallar yüklenirken hata oluştu: $e';
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _createRule(RuleModel rule) async {
+    try {
+      final token = await _getToken();
+      
+      await _apiService.createRule(
+        name: rule.name,
+        description: rule.description,
+        ruleType: rule.ruleType,
+        priority: rule.priority,
+        isActive: rule.isActive,
+        configuration: rule.configuration,
+        token: token,
+      );
+      
+      await _loadRules();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Kural başarıyla oluşturuldu'), backgroundColor: Colors.green),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Kural oluşturulurken hata: $e'), backgroundColor: Colors.red),
+        );
+      }
+    }
+  }
+
+  Future<void> _updateRule(RuleModel rule) async {
+    try {
+      final token = await _getToken();
+      
+      await _apiService.updateRule(
+        id: rule.id,
+        name: rule.name,
+        description: rule.description,
+        priority: rule.priority,
+        isActive: rule.isActive,
+        configuration: rule.configuration,
+        token: token,
+      );
+      
+      await _loadRules();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Kural başarıyla güncellendi'), backgroundColor: Colors.green),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Kural güncellenirken hata: $e'), backgroundColor: Colors.red),
+        );
+      }
+    }
+  }
+
+  Future<void> _deleteRule(String id) async {
+    try {
+      final token = await _getToken();
+      
+      await _apiService.deleteRule(id: id, token: token);
+      
+      await _loadRules();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Kural başarıyla silindi'), backgroundColor: Colors.green),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Kural silinirken hata: $e'), backgroundColor: Colors.red),
+        );
+      }
+    }
+  }
+
+  Future<void> _toggleRuleStatus(RuleModel rule) async {
+    try {
+      final token = await _getToken();
+      
+      await _apiService.toggleRuleStatus(
+        id: rule.id,
+        isActive: !rule.isActive,
+        token: token,
+      );
+      
+      await _loadRules();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Durum güncellenirken hata: $e'), backgroundColor: Colors.red),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,19 +160,15 @@ class _RulesPageState extends ConsumerState<RulesPage> {
 
     return PermissionGuardWidget(
       requiredRoute: '/rules',
-      child: AppLayout(
-        currentRoute: '/rules',
-        title: 'Kurallar',
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(isMobile ? 16 : 32),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildPageHeader(isMobile),
-              const SizedBox(height: 32),
-              _buildMainContent(isMobile),
-            ],
-          ),
+      child: SingleChildScrollView(
+        padding: EdgeInsets.all(isMobile ? 16 : 32),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildPageHeader(isMobile),
+            const SizedBox(height: 32),
+            _buildMainContent(isMobile),
+          ],
         ),
       ),
     );
@@ -215,54 +321,81 @@ class _RulesPageState extends ConsumerState<RulesPage> {
   // --- Modal: Yeni Kural/Düzenle (React Modal Simülasyonu) ---
   void _showRuleFormModal({RuleModel? rule}) {
     final isEdit = rule != null;
+    final nameController = TextEditingController(text: rule?.name ?? '');
+    final descController = TextEditingController(text: rule?.description ?? '');
+    final priorityController = TextEditingController(text: rule?.priority.toString() ?? '1');
+    String selectedType = rule?.ruleType ?? 'Capacity';
+    
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text(isEdit ? 'Kuralı Düzenle' : 'Yeni Kural Ekle', 
-          style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold)),
-        content: SizedBox(
-          width: 400,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildModalTextField('Kural Adı', rule?.name),
-              const SizedBox(height: 16),
-              _buildModalTextField('Açıklama', rule?.description),
-              const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                value: rule?.ruleType ?? 'NoShow',
-                decoration: const InputDecoration(labelText: 'Tür', border: OutlineInputBorder()),
-                items: ['NoShow', 'Capacity', 'Pricing', 'Availability', 'Notification']
-                    .map((t) => DropdownMenuItem(value: t, child: Text(t))).toList(),
-                onChanged: (_) {},
-              ),
-              const SizedBox(height: 16),
-              _buildModalTextField('Öncelik', rule?.priority.toString() ?? '1', isNumber: true),
-            ],
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) => AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: Text(isEdit ? 'Kuralı Düzenle' : 'Yeni Kural Ekle', 
+            style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold)),
+          content: SizedBox(
+            width: 400,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: nameController,
+                  decoration: const InputDecoration(labelText: 'Kural Adı', border: OutlineInputBorder()),
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: descController,
+                  decoration: const InputDecoration(labelText: 'Açıklama', border: OutlineInputBorder()),
+                  maxLines: 2,
+                ),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  value: selectedType,
+                  decoration: const InputDecoration(labelText: 'Tür', border: OutlineInputBorder()),
+                  items: ['Capacity', 'NoShow', 'WorkingHours', 'Pricing', 'Availability', 'Notification']
+                      .map((t) => DropdownMenuItem(value: t, child: Text(t))).toList(),
+                  onChanged: (val) => setModalState(() => selectedType = val ?? 'Capacity'),
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: priorityController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(labelText: 'Öncelik', border: OutlineInputBorder()),
+                ),
+              ],
+            ),
           ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context), child: const Text('İptal')),
+            ElevatedButton(
+              onPressed: () async {
+                Navigator.pop(context);
+                
+                final newRule = RuleModel(
+                  id: rule?.id ?? '',
+                  name: nameController.text,
+                  description: descController.text,
+                  ruleType: selectedType,
+                  priority: int.tryParse(priorityController.text) ?? 1,
+                  isActive: rule?.isActive ?? true,
+                );
+                
+                if (isEdit) {
+                  await _updateRule(newRule);
+                } else {
+                  await _createRule(newRule);
+                }
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF6366F1), foregroundColor: Colors.white),
+              child: const Text('Kaydet'),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('İptal')),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context),
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF6366F1), foregroundColor: Colors.white),
-            child: const Text('Kaydet'),
-          ),
-        ],
       ),
     );
   }
 
   // --- Helpers ---
-  Widget _buildModalTextField(String label, String? initialValue, {bool isNumber = false}) {
-    return TextFormField(
-      initialValue: initialValue,
-      keyboardType: isNumber ? TextInputType.number : TextInputType.text,
-      decoration: InputDecoration(labelText: label, border: const OutlineInputBorder()),
-    );
-  }
-
   Widget _buildStatusBadge(bool isActive) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -286,14 +419,47 @@ class _RulesPageState extends ConsumerState<RulesPage> {
       mainAxisSize: MainAxisSize.min,
       children: [
         IconButton(
+          onPressed: () => _toggleRuleStatus(rule),
+          icon: Icon(
+            rule.isActive ? Icons.pause_circle_outline : Icons.play_circle_outline,
+            color: rule.isActive ? Colors.orange : Colors.green,
+            size: 20,
+          ),
+          tooltip: rule.isActive ? 'Pasif Yap' : 'Aktif Yap',
+        ),
+        IconButton(
           onPressed: () => _showRuleFormModal(rule: rule),
           icon: const Icon(Icons.edit_outlined, color: Color(0xFF312E81), size: 20),
         ),
         IconButton(
-          onPressed: () => setState(() => _rules.removeWhere((r) => r.id == rule.id)),
+          onPressed: () => _confirmDelete(rule),
           icon: const Icon(Icons.delete_outline, color: Color(0xFF991B1B), size: 20),
         ),
       ],
+    );
+  }
+
+  void _confirmDelete(RuleModel rule) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Kuralı Sil'),
+        content: Text('"${rule.name}" kuralını silmek istediğinize emin misiniz?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('İptal'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _deleteRule(rule.id);
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            child: const Text('Sil', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -306,6 +472,9 @@ class RuleModel {
   final String ruleType;
   final int priority;
   final bool isActive;
+  final String? configuration;
+  final DateTime? validFrom;
+  final DateTime? validUntil;
 
   RuleModel({
     required this.id,
@@ -314,5 +483,36 @@ class RuleModel {
     required this.ruleType,
     required this.priority,
     required this.isActive,
+    this.configuration,
+    this.validFrom,
+    this.validUntil,
   });
+
+  factory RuleModel.fromJson(Map<String, dynamic> json) {
+    return RuleModel(
+      id: json['id']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+      description: json['description']?.toString() ?? '',
+      ruleType: json['type']?.toString() ?? json['ruleType']?.toString() ?? 'Unknown',
+      priority: json['priority'] as int? ?? 1,
+      isActive: json['isActive'] as bool? ?? true,
+      configuration: json['configuration']?.toString(),
+      validFrom: json['validFrom'] != null ? DateTime.tryParse(json['validFrom'].toString()) : null,
+      validUntil: json['validUntil'] != null ? DateTime.tryParse(json['validUntil'].toString()) : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'type': ruleType,
+      'priority': priority,
+      'isActive': isActive,
+      'configuration': configuration,
+      'validFrom': validFrom?.toIso8601String(),
+      'validUntil': validUntil?.toIso8601String(),
+    };
+  }
 }

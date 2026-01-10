@@ -27,27 +27,25 @@ class ReservationsPage extends ConsumerWidget {
 
     final pendingCount = reservations.where((r) => r['status'] == ReservationStatus.pending).length;
 
-    return AppLayout(
-      title: 'Rezervasyon Onayları',
-      child: SingleChildScrollView(
-        padding: EdgeInsets.all(isMobile ? 16 : 32),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildPageHeader(context, user?.id, isMobile),
-            const SizedBox(height: 24),
-            // Beklemede olanlar banner (React tarafındaki sarı banner)
-            if (pendingCount > 0) _buildPendingBanner(pendingCount),
-            const SizedBox(height: 24),
-            // Tablo veya Liste Görünümü
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 20,
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(isMobile ? 16 : 32),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildPageHeader(context, user?.id, isMobile),
+          const SizedBox(height: 24),
+          // Beklemede olanlar banner (React tarafındaki sarı banner)
+          if (pendingCount > 0) _buildPendingBanner(pendingCount),
+          const SizedBox(height: 24),
+          // Tablo veya Liste Görünümü
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 20,
                     offset: const Offset(0, 10),
                   )
                 ],
@@ -58,7 +56,6 @@ class ReservationsPage extends ConsumerWidget {
             ),
           ],
         ),
-      ),
     );
   }
 

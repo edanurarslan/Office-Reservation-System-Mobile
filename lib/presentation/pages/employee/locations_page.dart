@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../widgets/common/common.dart';
+
+import '../../../application/providers/locations_provider.dart';
+import '../../../domain/models/location_model.dart';
 
 class LocationsPage extends ConsumerStatefulWidget {
   const LocationsPage({super.key});
@@ -11,258 +13,301 @@ class LocationsPage extends ConsumerStatefulWidget {
 }
 
 class _LocationsPageState extends ConsumerState<LocationsPage> {
-  // States
-  bool _isLoading = false;
-  String? _error;
-  
-  // React tarafındaki veri yapısıyla aynı mock data
-  List<LocationModel> _locations = [
-    LocationModel(id: '1', name: 'Ana Ofis', address: 'Maslak, İstanbul', isActive: true),
-    LocationModel(id: '2', name: 'Ar-Ge Merkezi', address: 'Teknopark, Ankara', isActive: true),
-    LocationModel(id: '3', name: 'Depo / Lojistik', address: 'Nilüfer, Bursa', isActive: false),
-  ];
+  final _nameController = TextEditingController();
+  final _addressController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  final _searchController = TextEditingController();
+  String _searchQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(locationsProvider.notifier).loadLocations();
+    });
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _addressController.dispose();
+    _descriptionController.dispose();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  List<LocationDto> get _filteredLocations {
+    final state = ref.watch(locationsProvider);
+    if (_searchQuery.isEmpty) return state.locations;
+    final query = _searchQuery.toLowerCase();
+    return state.locations.where((loc) {
+      return loc.name.toLowerCase().contains(query) ||
+          loc.address.toLowerCase().contains(query) ||
+          (loc.description?.toLowerCase().contains(query) ?? false);
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final bool isMobile = screenWidth < 600;
+    final theme = Theme.of(context);
+    final state = ref.watch(locationsProvider);
+    final locations = _filteredLocations;
+    final locationCount = state.locations.length;
 
-    return PermissionGuardWidget(
-      requiredRoute: '/locations',
-      child: AppLayout(
-        currentRoute: '/locations',
-        title: 'Lokasyonlar',
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(isMobile ? 16 : 32),
+    return Stack(
+      children: [
+        Container(
+          color: const Color(0xFFF8FAFC),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildPageHeader(isMobile),
-              const SizedBox(height: 32),
-              _buildMainContent(isMobile),
+              _buildHeader(theme, locationCount),
+              Expanded(
+                child: state.isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : state.error != null
+                        ? _buildError(state.error!)
+                        : _buildContent(theme, locations),
+              ),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  // --- Header: Başlık, Açıklama ve Yeni Ekle Butonu ---
-  Widget _buildPageHeader(bool isMobile) {
-    return Wrap(
-      alignment: WrapAlignment.spaceBetween,
-      crossAxisAlignment: WrapCrossAlignment.end,
-      spacing: 20,
-      runSpacing: 20,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Lokasyonlar',
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: 32,
-                fontWeight: FontWeight.w800,
-                color: const Color(0xFF1E293B),
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'Tüm ofis lokasyonlarını yönetin.',
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: 14,
-                color: const Color(0xFF64748B),
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-        ElevatedButton.icon(
-          onPressed: () => print('Yeni Lokasyon'),
-          icon: const Icon(Icons.add, size: 18),
-          label: const Text('Yeni Lokasyon'),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF4F46E5),
-            foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            elevation: 8,
-            shadowColor: const Color(0xFF4F46E5).withOpacity(0.4),
+        Positioned(
+          bottom: 24,
+          right: 24,
+          child: FloatingActionButton.extended(
+            onPressed: () => _showAddDialog(context),
+            backgroundColor: theme.primaryColor,
+            icon: const Icon(Icons.add, color: Colors.white),
+            label: Text('Yeni Lokasyon', style: GoogleFonts.poppins(color: Colors.white)),
           ),
         ),
       ],
     );
   }
 
-  // --- Main Card: Tablo ve İçerik ---
-  Widget _buildMainContent(bool isMobile) {
+  Widget _buildHeader(ThemeData theme, int locationCount) {
     return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(isMobile ? 16 : 32),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFFE2E8F0).withOpacity(0.8)),
         boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF1F2687).withOpacity(0.07),
-            blurRadius: 32,
-            offset: const Offset(0, 8),
-          )
+          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 2)),
         ],
       ),
-      child: _isLoading 
-        ? const Center(child: Padding(padding: EdgeInsets.all(40), child: CircularProgressIndicator()))
-        : _error != null 
-          ? _buildErrorState()
-          : _locations.isEmpty 
-            ? _buildEmptyState()
-            : isMobile ? _buildMobileList() : _buildDesktopTable(),
-    );
-  }
-
-  // --- Desktop: React Table Görünümü ---
-  Widget _buildDesktopTable() {
-    return DataTable(
-      horizontalMargin: 0,
-      columnSpacing: 24,
-      headingRowHeight: 56,
-      dataRowMaxHeight: 72,
-      headingTextStyle: GoogleFonts.plusJakartaSans(
-        fontWeight: FontWeight.bold,
-        color: const Color(0xFF64748B),
-        fontSize: 14,
-      ),
-      columns: const [
-        DataColumn(label: Text('Lokasyon Adı')),
-        DataColumn(label: Text('Adres')),
-        DataColumn(label: Text('Durum')),
-        DataColumn(label: Text('İşlemler')),
-      ],
-      rows: _locations.map((loc) {
-        return DataRow(cells: [
-          DataCell(Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              const Icon(Icons.location_on_outlined, color: Color(0xFF6366F1), size: 18),
-              const SizedBox(width: 8),
-              Text(loc.name, style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF312E81))),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: theme.primaryColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(Icons.location_on, color: theme.primaryColor, size: 28),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Lokasyonlar', style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold, color: const Color(0xFF1E293B))),
+                    Text('$locationCount lokasyon bulundu', style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xFF64748B))),
+                  ],
+                ),
+              ),
+              IconButton(
+                onPressed: () => ref.read(locationsProvider.notifier).loadLocations(),
+                icon: Icon(Icons.refresh, color: theme.primaryColor),
+                tooltip: 'Yenile',
+              ),
             ],
-          )),
-          DataCell(Text(loc.address, style: const TextStyle(color: Color(0xFF64748B), fontSize: 13))),
-          DataCell(_buildStatusBadge(loc.isActive)),
-          DataCell(_buildActionButtons(loc)),
-        ]);
-      }).toList(),
-    );
-  }
-
-  // --- Mobil: Kart Listesi ---
-  Widget _buildMobileList() {
-    return ListView.separated(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: _locations.length,
-      separatorBuilder: (_, __) => const Divider(height: 32),
-      itemBuilder: (context, index) {
-        final loc = _locations[index];
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(loc.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                _buildStatusBadge(loc.isActive),
-              ],
+          ),
+          const SizedBox(height: 16),
+          TextField(
+            controller: _searchController,
+            onChanged: (value) => setState(() => _searchQuery = value),
+            decoration: InputDecoration(
+              hintText: 'Lokasyon ara...',
+              hintStyle: GoogleFonts.poppins(color: const Color(0xFF94A3B8)),
+              prefixIcon: const Icon(Icons.search, color: Color(0xFF64748B)),
+              filled: true,
+              fillColor: const Color(0xFFF1F5F9),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             ),
-            const SizedBox(height: 8),
-            Text(loc.address, style: const TextStyle(color: Color(0xFF64748B))),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildError(String error) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.error_outline, size: 64, color: Colors.red.shade300),
+          const SizedBox(height: 16),
+          Text('Hata olustu', style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w600, color: const Color(0xFF1E293B))),
+          const SizedBox(height: 8),
+          Text(error, style: GoogleFonts.poppins(fontSize: 14, color: const Color(0xFF64748B)), textAlign: TextAlign.center),
+          const SizedBox(height: 24),
+          ElevatedButton.icon(
+            onPressed: () => ref.read(locationsProvider.notifier).loadLocations(),
+            icon: const Icon(Icons.refresh),
+            label: const Text('Tekrar Dene'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildContent(ThemeData theme, List<LocationDto> locations) {
+    if (locations.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.location_off, size: 64, color: Colors.grey.shade300),
             const SizedBox(height: 16),
-            _buildActionButtons(loc),
+            Text(_searchQuery.isEmpty ? 'Henuz lokasyon yok' : 'Sonuc bulunamadi', style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w600, color: const Color(0xFF1E293B))),
           ],
-        );
-      },
+        ),
+      );
+    }
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: locations.length,
+      itemBuilder: (context, index) => _buildLocationCard(theme, locations[index]),
     );
   }
 
-  // --- Helpers: Badge ve Butonlar ---
-  Widget _buildStatusBadge(bool isActive) {
+  Widget _buildLocationCard(ThemeData theme, LocationDto location) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: isActive ? const Color(0xFFDCFCE7) : const Color(0xFFFEE2E2),
-        borderRadius: BorderRadius.circular(6),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 2))],
       ),
-      child: Text(
-        isActive ? 'Aktif' : 'Pasif',
-        style: TextStyle(
-          color: isActive ? const Color(0xFF166534) : const Color(0xFF991B1B),
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
+      child: ListTile(
+        contentPadding: const EdgeInsets.all(16),
+        leading: Container(
+          width: 48,
+          height: 48,
+          decoration: BoxDecoration(color: theme.primaryColor.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
+          child: Icon(Icons.location_on, color: theme.primaryColor),
+        ),
+        title: Text(location.name, style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: const Color(0xFF1E293B))),
+        subtitle: Text(location.address, style: GoogleFonts.poppins(fontSize: 13, color: const Color(0xFF64748B))),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(onPressed: () => _showEditDialog(context, location), icon: const Icon(Icons.edit_outlined), color: const Color(0xFF64748B)),
+            IconButton(onPressed: () => _showDeleteConfirm(context, location), icon: const Icon(Icons.delete_outline), color: Colors.red.shade400),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildActionButtons(LocationModel loc) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        OutlinedButton.icon(
-          onPressed: () => print('Edit ${loc.id}'),
-          icon: const Icon(Icons.edit, size: 14),
-          label: const Text('Düzenle'),
-          style: OutlinedButton.styleFrom(
-            foregroundColor: const Color(0xFF312E81),
-            side: const BorderSide(color: Color(0xFFE2E8F0)),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+  void _showAddDialog(BuildContext context) {
+    _nameController.clear();
+    _addressController.clear();
+    _descriptionController.clear();
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text('Yeni Lokasyon Ekle', style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(controller: _nameController, decoration: const InputDecoration(labelText: 'Lokasyon Adi', prefixIcon: Icon(Icons.location_on))),
+            const SizedBox(height: 12),
+            TextField(controller: _addressController, decoration: const InputDecoration(labelText: 'Adres', prefixIcon: Icon(Icons.place))),
+            const SizedBox(height: 12),
+            TextField(controller: _descriptionController, decoration: const InputDecoration(labelText: 'Aciklama', prefixIcon: Icon(Icons.description))),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Iptal')),
+          ElevatedButton(
+            onPressed: () async {
+              if (_nameController.text.isEmpty) return;
+              Navigator.pop(ctx);
+              await ref.read(locationsProvider.notifier).createLocation(
+                    name: _nameController.text,
+                    address: _addressController.text.isEmpty ? 'Belirtilmedi' : _addressController.text,
+                    description: _descriptionController.text.isEmpty ? null : _descriptionController.text,
+                  );
+            },
+            child: const Text('Ekle'),
           ),
-        ),
-        const SizedBox(width: 8),
-        ElevatedButton.icon(
-          onPressed: () => setState(() => _locations.removeWhere((l) => l.id == loc.id)),
-          icon: const Icon(Icons.delete_outline, size: 14),
-          label: const Text('Sil'),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFFFEF2F2),
-            foregroundColor: const Color(0xFF991B1B),
-            elevation: 0,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildEmptyState() {
-    return const Center(
-      child: Padding(
-        padding: EdgeInsets.all(40),
-        child: Text('Lokasyon bulunamadı', style: TextStyle(color: Colors.grey)),
+        ],
       ),
     );
   }
 
-  Widget _buildErrorState() {
-    return Center(child: Text(_error!, style: const TextStyle(color: Colors.red)));
+  void _showEditDialog(BuildContext context, LocationDto location) {
+    _nameController.text = location.name;
+    _addressController.text = location.address;
+    _descriptionController.text = location.description ?? '';
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text('Lokasyonu Duzenle', style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(controller: _nameController, decoration: const InputDecoration(labelText: 'Lokasyon Adi', prefixIcon: Icon(Icons.location_on))),
+            const SizedBox(height: 12),
+            TextField(controller: _addressController, decoration: const InputDecoration(labelText: 'Adres', prefixIcon: Icon(Icons.place))),
+            const SizedBox(height: 12),
+            TextField(controller: _descriptionController, decoration: const InputDecoration(labelText: 'Aciklama', prefixIcon: Icon(Icons.description))),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Iptal')),
+          ElevatedButton(
+            onPressed: () async {
+              if (_nameController.text.isEmpty) return;
+              Navigator.pop(ctx);
+              await ref.read(locationsProvider.notifier).updateLocation(
+                    id: location.id,
+                    name: _nameController.text,
+                    address: _addressController.text.isEmpty ? null : _addressController.text,
+                    description: _descriptionController.text.isEmpty ? null : _descriptionController.text,
+                  );
+            },
+            child: const Text('Kaydet'),
+          ),
+        ],
+      ),
+    );
   }
-}
 
-// Model - TSX tarafındaki yapı ile aynı
-class LocationModel {
-  final String id;
-  final String name;
-  final String address;
-  final bool isActive;
-
-  LocationModel({
-    required this.id,
-    required this.name,
-    required this.address,
-    required this.isActive,
-  });
+  void _showDeleteConfirm(BuildContext context, LocationDto location) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Lokasyonu Sil'),
+        content: Text('"${location.name}" lokasyonunu silmek istediginize emin misiniz?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Iptal')),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            onPressed: () async {
+              Navigator.pop(ctx);
+              await ref.read(locationsProvider.notifier).deleteLocation(location.id);
+            },
+            child: const Text('Sil', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
 }

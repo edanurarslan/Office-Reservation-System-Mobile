@@ -271,10 +271,10 @@ class _$LocationDtoImpl implements _LocationDto {
   const _$LocationDtoImpl(
       {required this.id,
       required this.name,
-      required this.address,
-      required this.city,
-      required this.country,
-      required this.zipCode,
+      this.address = '',
+      this.city = '',
+      this.country = '',
+      this.zipCode = '',
       this.description,
       this.latitude,
       this.longitude,
@@ -292,12 +292,16 @@ class _$LocationDtoImpl implements _LocationDto {
   @override
   final String name;
   @override
+  @JsonKey()
   final String address;
   @override
+  @JsonKey()
   final String city;
   @override
+  @JsonKey()
   final String country;
   @override
+  @JsonKey()
   final String zipCode;
   @override
   final String? description;
@@ -387,10 +391,10 @@ abstract class _LocationDto implements LocationDto {
   const factory _LocationDto(
       {required final String id,
       required final String name,
-      required final String address,
-      required final String city,
-      required final String country,
-      required final String zipCode,
+      final String address,
+      final String city,
+      final String country,
+      final String zipCode,
       final String? description,
       final double? latitude,
       final double? longitude,

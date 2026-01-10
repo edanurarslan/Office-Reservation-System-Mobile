@@ -50,21 +50,17 @@ class _NotificationsPageState extends ConsumerState<NotificationsPage> {
     final double screenWidth = MediaQuery.of(context).size.width;
     final bool isMobile = screenWidth < 600;
 
-    return AppLayout(
-      currentRoute: '/notifications',
-      title: 'Bildirimlerim',
-      child: SingleChildScrollView(
-        padding: EdgeInsets.all(isMobile ? 16 : 32),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(),
-            const SizedBox(height: 24),
-            _buildFilters(),
-            const SizedBox(height: 24),
-            _buildNotificationList(isMobile),
-          ],
-        ),
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(isMobile ? 16 : 32),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildHeader(),
+          const SizedBox(height: 24),
+          _buildFilters(),
+          const SizedBox(height: 24),
+          _buildNotificationList(isMobile),
+        ],
       ),
     );
   }

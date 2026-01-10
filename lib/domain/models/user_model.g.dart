@@ -12,7 +12,7 @@ _$UserDtoImpl _$$UserDtoImplFromJson(Map<String, dynamic> json) =>
       email: json['email'] as String,
       firstName: json['firstName'] as String,
       lastName: json['lastName'] as String,
-      role: $enumDecode(_$UserRoleEnumMap, json['role']),
+      role: UserRole.fromJson(json['role']),
       department: json['department'] as String?,
       jobTitle: json['jobTitle'] as String?,
       phoneNumber: json['phoneNumber'] as String?,
@@ -33,12 +33,6 @@ Map<String, dynamic> _$$UserDtoImplToJson(_$UserDtoImpl instance) =>
       'isActive': instance.isActive,
       'managerId': instance.managerId,
     };
-
-const _$UserRoleEnumMap = {
-  UserRole.employee: 1,
-  UserRole.manager: 2,
-  UserRole.admin: 3,
-};
 
 _$LoginResponseImpl _$$LoginResponseImplFromJson(Map<String, dynamic> json) =>
     _$LoginResponseImpl(

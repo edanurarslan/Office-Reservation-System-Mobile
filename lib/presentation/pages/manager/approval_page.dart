@@ -32,11 +32,7 @@ class _ApprovalPageState extends ConsumerState<ApprovalPage>
   Widget build(BuildContext context) {
     return PermissionGuardWidget(
       requiredRoute: '/approval',
-      child: AppLayout(
-        currentRoute: '/approval',
-        title: 'Onay Bekleyenler',
-        child: _buildContent(),
-      ),
+      child: _buildContent(),
     );
   }
 

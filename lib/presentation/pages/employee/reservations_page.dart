@@ -35,24 +35,21 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
       return statusMatch && dateMatch;
     }).toList();
 
-    return AppLayout(
-      currentRoute: '/reservations',
-      title: 'Rezervasyonlar',
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Center(
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 900),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(
-                  decoration: AppTheme.dashboardCard(),
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 900),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                decoration: AppTheme.dashboardCard(),
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
                         width: double.infinity,
                         height: 48,
                         child: ElevatedButton.icon(
@@ -199,7 +196,6 @@ class _ReservationsPageState extends ConsumerState<ReservationsPage> {
             ),
           ),
         ),
-      ),
     );
   }
 

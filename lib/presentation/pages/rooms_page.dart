@@ -18,21 +18,18 @@ class RoomsPage extends ConsumerWidget {
         .where((r) => r.type == ResourceType.room)
         .toList();
 
-    return AppLayout(
-      currentRoute: '/rooms',
-      title: 'Toplantı Odaları',
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Center(
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 1200),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header
-                Text(
-                  'Toplantı Odaları',
-                  style: GoogleFonts.inter(
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Text(
+                'Toplantı Odaları',
+                style: GoogleFonts.inter(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
                     color: AppTheme.textPrimary,
@@ -249,7 +246,6 @@ class RoomsPage extends ConsumerWidget {
             ),
           ),
         ),
-      ),
     );
   }
 }
