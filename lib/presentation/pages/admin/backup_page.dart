@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http; // API isteği için
 import 'package:path_provider/path_provider.dart'; // Cihaz klasör erişimi için
+import 'package:file_picker/file_picker.dart'; // Dosya seçme için
 // Web indirme desteği için
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html' as html;
@@ -21,6 +22,7 @@ class BackupPage extends ConsumerStatefulWidget {
 class _BackupPageState extends ConsumerState<BackupPage> {
   String _status = '';
   bool _isDownloading = false;
+  bool _isRestoring = false;
 
   // React tarafındaki handleBackup mantığının Flutter karşılığı
   Future<void> _handleBackup() async {
@@ -47,7 +49,7 @@ class _BackupPageState extends ConsumerState<BackupPage> {
           // --- WEB İÇİN İNDİRME ---
           final blob = html.Blob([bytes]);
           final url = html.Url.createObjectUrlFromBlob(blob);
-          final anchor = html.AnchorElement(href: url)
+          html.AnchorElement(href: url)
             ..setAttribute("download", filename)
             ..click();
           html.Url.revokeObjectUrl(url);
@@ -69,6 +71,53 @@ class _BackupPageState extends ConsumerState<BackupPage> {
       setState(() {
         _status = 'Yedekleme başarısız!';
         _isDownloading = false;
+      });
+    }
+  }
+
+  // Yedekten Geri Yükleme
+  Future<void> _handleRestore() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['json'],
+      );
+
+      if (result != null) {
+        setState(() {
+          _status = 'Yedek geri yükleniyor...';
+          _isRestoring = true;
+        });
+
+        final file = io.File(result.files.single.path!);
+        final bytes = await file.readAsBytes();
+
+        // Backend API'ye yedek dosyası gönder
+        final request = http.MultipartRequest(
+          'POST',
+          Uri.parse('http://localhost:5088/api/v1/restore'),
+        );
+        request.files.add(http.MultipartFile.fromBytes('file', bytes, filename: result.files.single.name));
+
+        final response = await request.send();
+
+        if (response.statusCode == 200) {
+          setState(() {
+            _status = 'Yedekten geri yükleme tamamlandı! Verileri doğrulayın.';
+            _isRestoring = false;
+          });
+        } else {
+          throw Exception('Geri yükleme başarısız: ${response.statusCode}');
+        }
+      } else {
+        setState(() {
+          _status = 'Dosya seçilmedi.';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _status = 'Geri yükleme başarısız: ${e.toString()}';
+        _isRestoring = false;
       });
     }
   }
@@ -119,6 +168,20 @@ class _BackupPageState extends ConsumerState<BackupPage> {
                         label: const Text('Yedekleme Başlat'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF6366F1),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          elevation: 0,
+                        ),
+                      ),
+                      ElevatedButton.icon(
+                        onPressed: _isRestoring ? null : _handleRestore,
+                        icon: _isRestoring 
+                          ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                          : const Icon(Icons.restore_rounded),
+                        label: const Text('Yedekten Geri Yükle'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF10B981),
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

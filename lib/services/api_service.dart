@@ -226,4 +226,77 @@ class ApiService {
   Future<void> toggleRuleStatus({required String id, required bool isActive, String? token}) async {
     await updateRule(id: id, isActive: isActive, token: token);
   }
+
+  // --- BACKUP & RESTORE ---
+  /// Veritabanının yedeklemesini indir
+  Future<List<int>> getBackup({String? token}) async {
+    final uri = Uri.parse('${ApiConstants.baseUrl}/api/v1/backup');
+    final response = await http.get(
+      uri,
+      headers: {
+        ApiConstants.headerContentType: ApiConstants.contentTypeJson,
+        if (token != null) ApiConstants.headerAuthorization: '${ApiConstants.bearerPrefix} $token',
+      },
+    );
+    if (response.statusCode == 200) {
+      return response.bodyBytes;
+    } else {
+      throw Exception('Failed to get backup');
+    }
+  }
+
+  /// Yedekten veritabanını geri yükle
+  Future<Map<String, dynamic>> restoreBackup({required List<int> fileBytes, required String fileName, String? token}) async {
+    final uri = Uri.parse('${ApiConstants.baseUrl}/api/v1/restore');
+    final request = http.MultipartRequest('POST', uri);
+    
+    request.headers.addAll({
+      if (token != null) ApiConstants.headerAuthorization: '${ApiConstants.bearerPrefix} $token',
+    });
+    
+    request.files.add(http.MultipartFile.fromBytes('file', fileBytes, filename: fileName));
+    
+    final response = await request.send();
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final responseBody = await response.stream.bytesToString();
+      return jsonDecode(responseBody);
+    } else {
+      throw Exception('Failed to restore backup');
+    }
+  }
+
+  /// Yedekleme geçmişini al
+  Future<Map<String, dynamic>> getBackupHistory({String? token}) async {
+    final uri = Uri.parse('${ApiConstants.baseUrl}/api/v1/backup/history');
+    final response = await http.get(
+      uri,
+      headers: {
+        ApiConstants.headerContentType: ApiConstants.contentTypeJson,
+        if (token != null) ApiConstants.headerAuthorization: '${ApiConstants.bearerPrefix} $token',
+      },
+    );
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to fetch backup history');
+    }
+  }
+
+  /// Yedekleme ayarlarını güncelle
+  Future<Map<String, dynamic>> updateBackupSettings({required Map<String, dynamic> settings, String? token}) async {
+    final uri = Uri.parse('${ApiConstants.baseUrl}/api/v1/backup/settings');
+    final response = await http.put(
+      uri,
+      headers: {
+        ApiConstants.headerContentType: ApiConstants.contentTypeJson,
+        if (token != null) ApiConstants.headerAuthorization: '${ApiConstants.bearerPrefix} $token',
+      },
+      body: jsonEncode(settings),
+    );
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to update backup settings');
+    }
+  }
 }
